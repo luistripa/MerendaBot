@@ -37,6 +37,9 @@ The bot was programmed to support connection to a PostgreSQL database.
 
 You must create a database called `merendabot` and run the `create.sql` file to create all tables.
 
+**WARNING!** The file `create.sql` deletes **<u>all tables, constraints and types</u>** with the same names before creating the tables.
+Make sure you're executing it on an empty database.
+
 
 # Commands
 
