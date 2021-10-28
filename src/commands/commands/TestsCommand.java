@@ -1,8 +1,8 @@
 package commands.commands;
 
+import commands.CommandCategory;
 import commands.CommandClass;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import university.Merenda;
@@ -10,7 +10,6 @@ import university.events.EventClass;
 import university.events.EventType;
 import university.events.Test;
 import university.subjects.Subject;
-import university.subjects.SubjectClass;
 
 import java.awt.*;
 import java.sql.ResultSet;
@@ -19,17 +18,19 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class TestsCommand extends CommandClass {
-    public TestsCommand(String category, String name, String help) {
+
+    private static final String COMMAND_FRIENDLY_NAME = "Testes";
+
+    public TestsCommand(CommandCategory category, String name, String help) {
         super(category, name, help);
     }
 
     @Override
     public MessageAction execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("Testes");
+        eb.setTitle(COMMAND_FRIENDLY_NAME);
         eb.setColor(Color.WHITE);
 
-        String fieldTitle = "Testes";
         StringBuilder fieldValue = new StringBuilder();
 
         try {
@@ -43,7 +44,7 @@ public class TestsCommand extends CommandClass {
 
                 fieldValue.append(
                         String.format(
-                                "**%s %s** - %s (%s)\n",
+                                "**%s %s** - %s (%s)%n",
                                 test.getName(),
                                 subject.getShortName(),
                                 test.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM")),
@@ -51,13 +52,13 @@ public class TestsCommand extends CommandClass {
                         )
                 );
             }
-            eb.addField(fieldTitle, fieldValue.toString(), false);
+            eb.addField(COMMAND_FRIENDLY_NAME, fieldValue.toString(), false);
             return event.getChannel().sendMessageEmbeds(eb.build());
 
         } catch (SQLException e) {
             e.printStackTrace();
             return event.getChannel().sendMessageEmbeds(
-                    getErrorEmbed("Testes", "Erro SQL", "Ocorreu um erro. Contacta o administrador.")
+                    getErrorEmbed(COMMAND_FRIENDLY_NAME, "Erro SQL", "Ocorreu um erro. Contacta o administrador.")
             );
         }
 

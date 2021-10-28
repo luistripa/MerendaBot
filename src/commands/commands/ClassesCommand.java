@@ -1,8 +1,8 @@
 package commands.commands;
 
+import commands.CommandCategory;
 import commands.CommandClass;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import university.Merenda;
@@ -10,7 +10,6 @@ import university.events.Event;
 import university.events.EventClass;
 import university.events.EventType;
 import university.subjects.Subject;
-import university.subjects.SubjectClass;
 
 import java.awt.*;
 import java.sql.ResultSet;
@@ -22,7 +21,7 @@ import java.util.Locale;
 
 public class ClassesCommand extends CommandClass {
 
-    public ClassesCommand(String category, String name, String help) {
+    public ClassesCommand(CommandCategory category, String name, String help) {
         super(category, name, help);
     }
 
@@ -43,7 +42,7 @@ public class ClassesCommand extends CommandClass {
                     Subject subject = Subject.getSubjectFromRS(rs, 11);
                     fieldValue.append(
                             String.format(
-                                    "**%s %s** (%s - %s) - [Link](%s)\n",
+                                    "**%s %s** (%s - %s) - [Link](%s)%n",
                                     e.getName(),
                                     subject.getShortName(),
                                     e.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),

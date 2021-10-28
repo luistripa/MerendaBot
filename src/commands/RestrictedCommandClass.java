@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.entities.User;
  */
 public abstract class RestrictedCommandClass extends CommandClass {
 
-    public RestrictedCommandClass(String category, String name, String description) {
+    protected RestrictedCommandClass(CommandCategory category, String name, String description) {
         super(category, name, description);
     }
 

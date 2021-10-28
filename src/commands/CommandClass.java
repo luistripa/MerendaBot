@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import university.Merenda;
 
@@ -17,12 +16,12 @@ public abstract class CommandClass implements Command {
     public static final String COMMAND_PREFIX = "merenda!";
     public static final String ADMIN_ID = "647790893646086167";
 
-    private final String category;
+    private final CommandCategory category;
     private final String name;
     private final String description;
     private final List<CommandParam> params;
 
-    public CommandClass(String category, String name, String description) {
+    protected CommandClass(CommandCategory category, String name, String description) {
         this.category = category;
         this.name = name;
         this.description = description;
@@ -30,7 +29,7 @@ public abstract class CommandClass implements Command {
     }
 
     @Override
-    public String getCategory() {
+    public CommandCategory getCategory() {
         return category;
     }
 

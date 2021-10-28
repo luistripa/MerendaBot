@@ -1,5 +1,6 @@
 package commands.commands;
 
+import commands.CommandCategory;
 import commands.RestrictedCommandClass;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -13,7 +14,9 @@ import university.polls.Poll;
  */
 public class PollCloseCommand extends RestrictedCommandClass {
 
-    public PollCloseCommand(String category, String name, String description) {
+    private static final String COMMAND_FRIENDLY_NAME = "Poll Close";
+
+    public PollCloseCommand(CommandCategory category, String name, String description) {
         super(category, name, description);
     }
 
@@ -23,26 +26,26 @@ public class PollCloseCommand extends RestrictedCommandClass {
         // User does not have permission
         if (!isAdmin(event.getAuthor()))
             return event.getChannel().sendMessageEmbeds(
-                    getErrorEmbed("Poll Close", "Erro de permissão", "Não tens permissão para executar esse comando")
+                    getErrorEmbed(COMMAND_FRIENDLY_NAME, "Erro de permissão", "Não tens permissão para executar esse comando")
             );
 
         // User did not reply to the original message
-        Message poll_message = event.getMessage().getReferencedMessage();
-        if (poll_message == null)
+        Message pollMessage = event.getMessage().getReferencedMessage();
+        if (pollMessage == null)
             return event.getChannel().sendMessageEmbeds(
-                    getErrorEmbed("Poll Close", "Mensagem sem reply", "Faz reply à mensagem da votação!")
+                    getErrorEmbed(COMMAND_FRIENDLY_NAME, "Mensagem sem reply", "Faz reply à mensagem da votação!")
             );
 
         // The poll does not exist
-        Poll poll = merenda.getPollHandler().getPoll(poll_message.getId());
+        Poll poll = merenda.getPollHandler().getPoll(pollMessage.getId());
         if (poll == null)
             return event.getChannel().sendMessageEmbeds(
-                    getErrorEmbed("Poll Close", "Votação não encontrada", "Votação não foi encontrada. Ou já encerrou, ou ocorreu um erro.")
+                    getErrorEmbed(COMMAND_FRIENDLY_NAME, "Votação não encontrada", "Votação não foi encontrada. Ou já encerrou, ou ocorreu um erro.")
             );
 
         merenda.getPollHandler().endPoll(poll.getMessage().getId());
         return event.getChannel().sendMessageEmbeds(
-                getSuccessEmbed("Poll Close", "Votação encerrada", "Votação encerrada com sucesso.")
+                getSuccessEmbed(COMMAND_FRIENDLY_NAME, "Votação encerrada", "Votação encerrada com sucesso.")
         );
     }
 }

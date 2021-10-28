@@ -1,8 +1,8 @@
 package commands.commands;
 
+import commands.CommandCategory;
 import commands.CommandClass;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import university.Merenda;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class NowCommand extends CommandClass {
-    public NowCommand(String category, String name, String help) {
+    public NowCommand(CommandCategory category, String name, String help) {
         super(category, name, help);
     }
 

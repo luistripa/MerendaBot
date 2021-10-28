@@ -12,7 +12,7 @@ import java.util.*;
 
 public interface Command {
 
-    String getCategory();
+    CommandCategory getCategory();
 
     String getName();
 

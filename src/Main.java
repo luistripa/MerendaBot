@@ -1,14 +1,10 @@
-import commands.CallbackCommand;
-import commands.CallbackCommandClass;
-import commands.Command;
-import commands.CommandParam;
+import commands.*;
 import commands.commands.*;
 import commands.exceptions.CommandNameAlreadyExistsException;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -16,14 +12,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.jetbrains.annotations.NotNull;
 import university.Merenda;
-import university.subjects.Subject;
 import university.timers.*;
 
 import javax.security.auth.login.LoginException;
 import java.sql.*;
-import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class Main extends ListenerAdapter {
@@ -83,7 +76,7 @@ public class Main extends ListenerAdapter {
 
         if (merenda.getCommandHandler().hasCommand(splitCommand[0])) {
             Command command = merenda.getCommandHandler().getCommand(splitCommand[0]);
-            if (command instanceof CallbackCommandClass)
+            if (command instanceof CallbackCommand)
                 command.execute(merenda, splitCommand, event)
                         .queue(m -> {
                             CallbackCommand c = (CallbackCommand) command;
@@ -186,9 +179,7 @@ public class Main extends ListenerAdapter {
                     "DEBUG environment variable is not set." +
                             "If you do not want DEBUG mode enabled you should set it to FALSE." +
                             "Will assume FALSE.");
-
-        // Check if sebug mode is set
-        if (System.getenv("DEBUG").equals("1")) {
+        else if (System.getenv("DEBUG").equals("1")) {
             logger.warning("DEBUG mode is set.");
         }
 
@@ -221,22 +212,22 @@ public class Main extends ListenerAdapter {
 
     private void registerCommands() {
         merenda.getCommandHandler().clearCommands();
-        merenda.getCommandHandler().addCommand(new HelpCommand("Core", "help", "Mostra o menu de ajuda.")
+        merenda.getCommandHandler().addCommand(new HelpCommand(CommandCategory.CORE, "help", "Mostra o menu de ajuda.")
                 .addParam(new CommandParam("comando", "opcional")
                         .addPossibleValue("Qualquer comando sem prefixo")));
 
-        merenda.getCommandHandler().addCommand(new ClassesCommand("Aulas", "aulas", "Lista todas as aulas."));
-        merenda.getCommandHandler().addCommand(new NowCommand("Aulas", "now", "Lista aulas a decorrer agora."));
-        merenda.getCommandHandler().addCommand(new TestsCommand("Aulas", "testes", "Lista todos os testes."));
-        merenda.getCommandHandler().addCommand(new AssigmentsCommand("Aulas", "trabalhos", "Lista todos os trabalhos"));
-        merenda.getCommandHandler().addCommand(new LinksCommand("Aulas", "links", "Lista todos os links importantes."));
-        merenda.getCommandHandler().addCommand(new TeachersCommand("Aulas", "professores", "Lista todos professores."));
+        merenda.getCommandHandler().addCommand(new ClassesCommand(CommandCategory.CLASSES, "aulas", "Lista todas as aulas."));
+        merenda.getCommandHandler().addCommand(new NowCommand(CommandCategory.CLASSES, "now", "Lista aulas a decorrer agora."));
+        merenda.getCommandHandler().addCommand(new TestsCommand(CommandCategory.CLASSES, "testes", "Lista todos os testes."));
+        merenda.getCommandHandler().addCommand(new AssigmentsCommand(CommandCategory.CLASSES, "trabalhos", "Lista todos os trabalhos"));
+        merenda.getCommandHandler().addCommand(new LinksCommand(CommandCategory.CLASSES, "links", "Lista todos os links importantes."));
+        merenda.getCommandHandler().addCommand(new TeachersCommand(CommandCategory.CLASSES, "professores", "Lista todos professores."));
 
-        merenda.getCommandHandler().addCommand(new TestCommand("Other", "test", "Testa o que tiver configurado."));
+        merenda.getCommandHandler().addCommand(new TestCommand(CommandCategory.OTHER, "test", "Testa o que tiver configurado."));
 
-        merenda.getCommandHandler().addCommand(new PollCommand("Polls", "poll", "Cria votações")
+        merenda.getCommandHandler().addCommand(new PollCommand(CommandCategory.POLLS, "poll", "Cria votações")
                 .addParam(new CommandParam("descrição", "Descrição da votação")));
-        merenda.getCommandHandler().addCommand(new PollCloseCommand("Polls", "poll_close", "Encerra uma votação, independentemente do número de votos."));
+        merenda.getCommandHandler().addCommand(new PollCloseCommand(CommandCategory.POLLS, "poll_close", "Encerra uma votação, independentemente do número de votos."));
     }
 
     private void registerTimers(JDA jda, Merenda merenda) {

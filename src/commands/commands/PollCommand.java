@@ -1,16 +1,12 @@
 package commands.commands;
 
-import commands.CallbackCommandClass;
-import commands.CommandClass;
+import commands.CallbackCommand;
+import commands.CommandCategory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
-import net.dv8tion.jda.api.events.user.GenericUserEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
@@ -21,9 +17,11 @@ import university.polls.PollClass;
 import java.awt.*;
 import java.util.Arrays;
 
-public class PollCommand extends CallbackCommandClass {
+public class PollCommand extends CallbackCommand {
 
-    public PollCommand(String category, String name, String description) {
+    private static final String COMMAND_FRIENDLY_NAME = "Votação";
+
+    public PollCommand(CommandCategory category, String name, String description) {
         super(category, name, description);
     }
 
@@ -32,12 +30,12 @@ public class PollCommand extends CallbackCommandClass {
 
         if (!event.isFromGuild()) {
             return event.getChannel().sendMessageEmbeds(
-                    getErrorEmbed("Votação", "Funcionalidade não disponível", "Desculpa, mas esta funcionalidade só pode ser utilizada em servidores.")
+                    getErrorEmbed(COMMAND_FRIENDLY_NAME, "Funcionalidade não disponível", "Desculpa, mas esta funcionalidade só pode ser utilizada em servidores.")
             );
         }
 
-        String[] poll_description = Arrays.copyOfRange(command, 1, command.length);
-        String description = String.join(" ", poll_description);
+        String[] pollDescription = Arrays.copyOfRange(command, 1, command.length);
+        String description = String.join(" ", pollDescription);
 
         EmbedBuilder eb = new EmbedBuilder();
         eb.setDescription("Esta votação será encerrada quando atingir maioria.");
@@ -72,12 +70,12 @@ public class PollCommand extends CallbackCommandClass {
         Poll poll = merenda.getPollHandler().getPoll(message.getId());
         if (poll == null)
             return event.replyEmbeds(
-                    getErrorEmbed("Votação", "Votação não encontrada", "Não encontrei essa votação. Provavelmente já encerrou ou existe um erro algures...")
+                    getErrorEmbed(COMMAND_FRIENDLY_NAME, "Votação não encontrada", "Não encontrei essa votação. Provavelmente já encerrou ou existe um erro algures...")
             );
 
         if (poll.hasVoteFrom(event.getUser()))
             return event.replyEmbeds(
-                    getErrorEmbed("Votação", "Voto já registado", "Desculpa, mas já participaste nesta votação. Os votos são únicos, privados e permanentes!")
+                    getErrorEmbed(COMMAND_FRIENDLY_NAME, "Voto já registado", "Desculpa, mas já participaste nesta votação. Os votos são únicos, privados e permanentes!")
             );
 
         switch (buttonId) {
@@ -90,27 +88,28 @@ public class PollCommand extends CallbackCommandClass {
             case "vote-against":
                 poll.voteAgainst(event.getUser());
                 break;
+            default: {
+                return event.replyEmbeds(
+                        getErrorEmbed(COMMAND_FRIENDLY_NAME, "Erro", "O botão não executou a ação correta. Contacta um administrador.")
+                );
+            }
         }
 
 
         event.getGuild().loadMembers().onSuccess(members -> {
-            int member_count = 0;
+            int memberCount = 0;
             for (Member member : members) {
                 if (!member.getUser().isBot())
-                    member_count += 1;
+                    memberCount += 1;
             }
 
-            if (poll.hasMajority(member_count)) {
-                poll.closePoll();
-                merenda.getPollHandler().endPoll(poll.getMessage().getId());
-
-            } else if (poll.getVoteCount() == member_count) {
+            if (poll.hasMajority(memberCount) || poll.getVoteCount() == memberCount) {
                 poll.closePoll();
                 merenda.getPollHandler().endPoll(poll.getMessage().getId());
             }
         });
         return event.replyEmbeds(
-                getSuccessEmbed("Votação", "Voto registado", "Obrigado! O teu voto foi registado!")
+                getSuccessEmbed(COMMAND_FRIENDLY_NAME, "Voto registado", "Obrigado! O teu voto foi registado!")
         );
     }
 }

@@ -1,21 +1,20 @@
 package commands.commands;
 
+import commands.CommandCategory;
 import commands.CommandClass;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import university.Merenda;
 import university.important_links.ImportantLink;
 import university.subjects.Subject;
-import university.subjects.SubjectClass;
 
 import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LinksCommand extends CommandClass {
-    public LinksCommand(String category, String name, String help) {
+    public LinksCommand(CommandCategory category, String name, String help) {
         super(category, name, help);
     }
 
@@ -33,12 +32,12 @@ public class LinksCommand extends CommandClass {
             while (rs.next()) {
                 ImportantLink link = ImportantLink.getLinkFromRS(rs);
                 if (link.getSubjectId() == 0) {
-                    fieldValue.append(String.format("**%s** - [Link](%s)\n", link.getName(), link.getLink()));
+                    fieldValue.append(String.format("**%s** - [Link](%s)%n", link.getName(), link.getLink()));
                 } else {
                     Subject subject = Subject.getSubjectFromRS(rs, 5);
                     fieldValue.append(
                             String.format(
-                                    "**%s %s** - [Link](%s)\n",
+                                    "**%s %s** - [Link](%s)%n",
                                     link.getName(),
                                     subject.getShortName(),
                                     link.getLink()

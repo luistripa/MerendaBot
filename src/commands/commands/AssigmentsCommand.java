@@ -1,14 +1,13 @@
 package commands.commands;
 
+import commands.CommandCategory;
 import commands.CommandClass;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import university.Merenda;
 import university.events.Assignment;
 import university.subjects.Subject;
-import university.subjects.SubjectClass;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AssigmentsCommand extends CommandClass {
-    public AssigmentsCommand(String category, String name, String help) {
+    public AssigmentsCommand(CommandCategory category, String name, String help) {
         super(category, name, help);
     }
 
@@ -48,7 +47,7 @@ public class AssigmentsCommand extends CommandClass {
                     continue;
 
                 fieldValue.append(String.format(
-                        "**%s %s** - %s (%s)\n",
+                        "**%s %s** - %s (%s)%n",
                         assignment.getName(),
                         subject.getShortName(),
                         assignment.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM")),

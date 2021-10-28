@@ -4,7 +4,6 @@ import commands.Command;
 import commands.CommandCategory;
 import commands.CommandClass;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import university.Merenda;
@@ -13,7 +12,7 @@ import java.awt.*;
 
 
 public class HelpCommand extends CommandClass {
-    public HelpCommand(String category, String name, String help) {
+    public HelpCommand(CommandCategory category, String name, String help) {
         super(category, name, help);
     }
 
@@ -49,15 +48,14 @@ public class HelpCommand extends CommandClass {
         eb.setColor(Color.WHITE);
         eb.setTitle("Comandos");
 
-        for (CommandCategory category : merenda.getCommandHandler().getCommandCategories()) {
-            String fieldTitle = category.getName();
+        for (String category : merenda.getCommandHandler().getCommandCategories()) {
             StringBuilder fieldValue = new StringBuilder();
-            for (Command c : category.getCommands()) {
+            for (Command command : merenda.getCommandHandler().getCommandsByCategory(category)) {
                 fieldValue.append(
-                        String.format("%s%s - %s\n", COMMAND_PREFIX, c.getName(), c.getDescription())
+                        String.format("%s%s - %s%n", COMMAND_PREFIX, command.getName(), command.getDescription())
                 );
             }
-            eb.addField(fieldTitle, fieldValue.toString(), false);
+            eb.addField(category, fieldValue.toString(), false);
         }
         eb.setFooter(String.format("%shelp <comando> para mais informações de um comando.", COMMAND_PREFIX));
         return event.getChannel().sendMessageEmbeds(eb.build());

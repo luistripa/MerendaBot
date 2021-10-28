@@ -1,13 +1,11 @@
 package commands.commands;
 
+import commands.CommandCategory;
 import commands.CommandClass;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
-import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import university.Merenda;
 
 
@@ -15,7 +13,7 @@ import university.Merenda;
  * This class is reserved for functionality tests. It is used to test functions to later be applied in a production command.
  */
 public class TestCommand extends CommandClass {
-    public TestCommand(String category, String name, String help) {
+    public TestCommand(CommandCategory category, String name, String help) {
         super(category, name, help);
     }
 
@@ -32,11 +30,6 @@ public class TestCommand extends CommandClass {
     }
 
     @Override
-    public ReplyAction processButtonPressed(Merenda merenda, ButtonClickEvent event) {
-        return super.processButtonPressed(merenda, event);
-    }
-
-    @Override
     public void processSelectionMenu(Merenda merenda, SelectionMenuEvent event) {
         String[] id = event.getSelectionMenu().getId().split(" ");
 
@@ -48,7 +41,7 @@ public class TestCommand extends CommandClass {
                 showResults(merenda, event);
                 break;
             default:
-                System.out.printf("Option not found %s\n", id[2]);
+                event.reply("Opção não encontrada.").queue();
                 break;
         }
     }
@@ -70,7 +63,7 @@ public class TestCommand extends CommandClass {
 
         System.out.println(pizza);
         for (String condiment : event.getValues()) {
-            System.out.printf("\t- %s\n", condiment);
+            System.out.printf("\t- %s%n", condiment);
         }
 
         event.reply("Pizza.").queue();

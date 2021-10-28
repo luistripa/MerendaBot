@@ -1,21 +1,19 @@
 package commands.commands;
 
+import commands.CommandCategory;
 import commands.CommandClass;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import university.Merenda;
 import university.subjects.Professor;
-import university.subjects.ProfessorClass;
 import university.subjects.Subject;
-import university.subjects.SubjectClass;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class TeachersCommand extends CommandClass {
-    public TeachersCommand(String category, String name, String help) {
+    public TeachersCommand(CommandCategory category, String name, String help) {
         super(category, name, help);
     }
 

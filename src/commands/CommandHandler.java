@@ -5,48 +5,52 @@ import java.util.*;
 public class CommandHandler {
 
     private final Map<String, Command> commandMap;
-    private final Map<String, CommandCategory> commandCategoryMap;
+    private final Map<String, List<Command>> commandsByCategory;
 
     public CommandHandler() {
         this.commandMap = new HashMap<>();
-        this.commandCategoryMap = new HashMap<>();
+        this.commandsByCategory = new HashMap<>();
     }
 
-    public boolean hasCommand(String command_id) {
-        return this.commandMap.get(command_id) != null;
+    public boolean hasCommand(String commandId) {
+        return this.commandMap.get(commandId) != null;
     }
 
-    public boolean hasCategory(String category) {
-        return this.commandCategoryMap.get(category) != null;
+    public boolean hasCategory(CommandCategory category) {
+        return this.commandsByCategory.get(category.toString()) != null;
     }
 
-    public Command getCommand(String command_id) {
-        return this.commandMap.get(command_id);
+    public Command getCommand(String commandId) {
+        return this.commandMap.get(commandId);
     }
 
     public List<Command> getCommands() {
         return (List<Command>) this.commandMap.values();
     }
 
-    public Collection<CommandCategory> getCommandCategories() {
-        return  this.commandCategoryMap.values();
+    public List<Command> getCommandsByCategory(String category) {
+        return commandsByCategory.get(category);
+    }
+
+    public Set<String> getCommandCategories() {
+        return  this.commandsByCategory.keySet();
     }
 
     public void addCommand(Command command) {
         if (!hasCategory(command.getCategory())) {
-            this.commandCategoryMap.put(command.getCategory(), new CommandCategoryClass(command.getCategory()));
+            this.commandsByCategory.put(command.getCategory().toString(), new LinkedList<>());
         }
-        this.commandCategoryMap.get(command.getCategory()).addCommand(command);
+        this.commandsByCategory.get(command.getCategory().toString()).add(command);
         this.commandMap.put(command.getName(), command);
     }
 
-    public void removeCommand(String command_id) {
-        Command command = this.commandMap.remove(command_id);
-        this.commandCategoryMap.get(command.getCategory()).removeCommand(command);
+    public void removeCommand(String commandId) {
+        Command command = this.commandMap.remove(commandId);
+        this.commandsByCategory.get(command.getCategory().toString()).remove(command);
     }
 
     public void clearCommands() {
         commandMap.clear();
-        commandCategoryMap.clear();
+        commandsByCategory.clear();
     }
 }
