@@ -7,23 +7,30 @@ and to warn when an event is about to happen.
 <table>
     <tr>
         <th>Variable Name</th>
+        <th>Required?</th>
         <th>Variable Value Description</th>
     </tr>
     <tr style="text-align: center;">
         <td>TOKEN</td>
+        <td>Yes</td>
         <td>The discord bot token.</td>
     </tr>
     <tr style="text-align: center;">
         <td>DATABASE_USER</td>
+        <td>Yes</td>
         <td>The user for the database connection.</td>
     </tr>
     <tr style="text-align: center;">
         <td>DATABASE_PASSWORD</td>
+        <td>Yes</td>
         <td>The password for the database connection.</td>
     </tr>
+    <tr style="text-align: center;">
+        <td>DEBUG</td>
+        <td>No (Default 0)</td>
+        <td>Enable/Disable debug mode (1 or 0 respectively)</td>
+    </tr>
 </table>
-
-You **<u>must</u>** have these environment variables set when running the bot.
 
 # Database connection
 The bot was programmed to support connection to a PostgreSQL database.
