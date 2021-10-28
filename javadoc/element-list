@@ -1,0 +1,13 @@
+unnamed package
+commands
+commands.commands
+commands.exceptions
+sql
+university
+university.assignments
+university.events
+university.important_links
+university.subjects
+university.tests
+university.timers
+university.polls

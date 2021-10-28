@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"commands"},{"l":"commands.commands"},{"l":"commands.exceptions"},{"l":"sql"},{"l":"university"},{"l":"university.assignments"},{"l":"university.events"},{"l":"university.important_links"},{"l":"university.subjects"},{"l":"university.tests"},{"l":"university.timer_tasks"},{"l":"university.voting"}]

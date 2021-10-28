@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="MerendaBot:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MerendaBot_jar</output-path>
+    <root id="archive" name="MerendaBot.jar">
+      <element id="module-output" name="MerendaBot" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/postgresql-42.2.24.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/JDA-4.3.0_334-withDependencies.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/gson-2.8.8.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
