@@ -22,6 +22,9 @@ import university.timers.*;
 import javax.security.auth.login.LoginException;
 import java.sql.*;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 public class Main extends ListenerAdapter {
     private static final String COMMAND_PREFIX = "merenda!";
@@ -30,8 +33,14 @@ public class Main extends ListenerAdapter {
 
     private static Merenda merenda;
 
-    public static void main(String[] args) throws ClassNotFoundException {
-        Class.forName("org.postgresql.Driver");
+    private static final Logger logger = Logger.getLogger("main-log");
+
+    public static void main(String[] args) {
+        logger.setLevel(Level.WARNING);
+
+        if (!verifyEnvironmentVariables()) {
+            System.exit(1);
+        }
 
         JDA jda = null;
         try {
@@ -118,6 +127,11 @@ public class Main extends ListenerAdapter {
                 event.reply("Isto ainda não foi implementado.").setEphemeral(true).queue();
                 break;
             }
+            default: {
+                String logMessage = String.format("Could not find selection menu handler type: %s", selectionMenu[0]);
+                logger.severe(logMessage);
+                event.reply("Não consegui entender essa ação. Contacta um administrador.").queue();
+            }
         }
     }
 
@@ -152,7 +166,57 @@ public class Main extends ListenerAdapter {
                 timer.processButtonClick(event);
                 break;
             }
+            default: {
+                String logMessage = String.format("Could not find button handler type: %s", button[0]);
+                logger.severe(logMessage);
+                event.reply("Não consegui entender essa ação. Contacta um administrador.").queue();
+            }
         }
+    }
+
+    /**
+     * Verifies if all environment variables are setup correctly.
+     *
+     * @return True if setup is correct, False otherwise.
+     */
+    private static boolean verifyEnvironmentVariables() {
+        // Check if DEBUG environment variable is not set
+        if (System.getenv("DEBUG") == null)
+            logger.warning(
+                    "DEBUG environment variable is not set." +
+                            "If you do not want DEBUG mode enabled you should set it to FALSE." +
+                            "Will assume FALSE.");
+
+        // Check if sebug mode is set
+        if (System.getenv("DEBUG").equals("1")) {
+            logger.warning("DEBUG mode is set.");
+        }
+
+        // Check if TOKEN environment variable is not set
+        if (System.getenv("TOKEN") == null) {
+            logger.severe("TOKEN environment variable is not set.");
+            return false;
+        }
+
+        // Check for DATABASE_USER
+        if (System.getenv("DATABASE_USER") == null) {
+            logger.severe("DATABASE_USER environment variable is not set.");
+            return false;
+        }
+
+        // Check for DATABASE_PASSWORD
+        if (System.getenv("DATABASE_PASSWORD") == null) {
+            logger.severe("DATABASE_PASSWORD environment variable is not set.");
+            return false;
+        }
+
+        // Check for DATABASE_NAME
+        if (System.getenv("DATABASE_NAME") == null) {
+            logger.severe("DATABASE_NAME environment variable is not set.");
+            return false;
+        }
+
+        return true;
     }
 
     private void registerCommands() {
