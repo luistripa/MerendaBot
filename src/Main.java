@@ -70,18 +70,18 @@ public class Main extends ListenerAdapter {
         if (!isCommand(message))
             return;
 
-        String[] split_command = splitCommand(message.getContentDisplay());
+        String[] splitCommand = splitCommand(message.getContentDisplay());
 
-        if (merenda.getCommandHandler().hasCommand(split_command[0])) {
-            Command command = merenda.getCommandHandler().getCommand(split_command[0]);
+        if (merenda.getCommandHandler().hasCommand(splitCommand[0])) {
+            Command command = merenda.getCommandHandler().getCommand(splitCommand[0]);
             if (command instanceof CallbackCommandClass)
-                command.execute(merenda, split_command, event)
+                command.execute(merenda, splitCommand, event)
                         .queue(m -> {
                             CallbackCommand c = (CallbackCommand) command;
                             c.messageCallback(merenda, m, event);
                         });
             else
-                command.execute(merenda, split_command, event).queue();
+                command.execute(merenda, splitCommand, event).queue();
 
         } else {
             event.getChannel().sendMessage(
@@ -107,7 +107,6 @@ public class Main extends ListenerAdapter {
          *
          * section 3 - Instruction (Handler specific. Some handlers may completely ignore this) (may have internal sections)
          */
-        List<String> values = event.getValues();
         String[] selectionMenu = event.getSelectionMenu().getId().split(" ");
         switch (selectionMenu[0]) {
             case "command": {
@@ -189,7 +188,7 @@ public class Main extends ListenerAdapter {
     }
 
     private String[] splitCommand(String content) {
-        String command_message = content.split(COMMAND_PREFIX)[1];
-        return command_message.split(" ");
+        String commandMessage = content.split(COMMAND_PREFIX)[1];
+        return commandMessage.split(" ");
     }
 }
