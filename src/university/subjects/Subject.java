@@ -37,13 +37,15 @@ public interface Subject {
     }
 
     static Subject getSubjectById(int id) throws SQLException {
-        PreparedStatement statement = Merenda.connection.prepareStatement(
+        ResultSet rs;
+        try (PreparedStatement statement = Merenda.connection.prepareStatement(
                 "select *\n" +
                         "from university_subject\n" +
                         "where id=?;"
-        );
-        statement.setInt(1, id);
-        ResultSet rs = statement.executeQuery();
+        )) {
+            statement.setInt(1, id);
+            rs = statement.executeQuery();
+        }
         if (rs.next())
             return Subject.getSubjectFromRS(rs);
         else
@@ -51,10 +53,11 @@ public interface Subject {
     }
 
     static ResultSet getSubjects() throws SQLException {
-        PreparedStatement statement = Merenda.connection.prepareStatement(
-                "select *\n"+
+        try (PreparedStatement statement = Merenda.connection.prepareStatement(
+                "select *\n" +
                         "from university_subject;"
-        );
-        return statement.executeQuery();
+        )) {
+            return statement.executeQuery();
+        }
     }
 }

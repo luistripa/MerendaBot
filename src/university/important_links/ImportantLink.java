@@ -26,12 +26,13 @@ public interface ImportantLink {
     int getSubjectId();
 
     static ResultSet getLinks(Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(
+        try (PreparedStatement statement = connection.prepareStatement(
                 "select * " +
                         "from university_link " +
                         "left outer join university_subject us on university_link.subject_id = us.id;"
-        );
-        return statement.executeQuery();
+        )) {
+            return statement.executeQuery();
+        }
     }
 
     static ImportantLink getLinkFromRS(ResultSet rs) throws SQLException {

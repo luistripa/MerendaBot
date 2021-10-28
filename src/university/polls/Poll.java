@@ -73,7 +73,7 @@ public interface Poll {
      * @param member_count The number of members to check for majority
      * @return True if poll has reached a majority, False otherwise.
      */
-    boolean hasMajority(int member_count);
+    boolean hasMajority(int memberCount);
 
     /**
      * Checks if poll was approved.

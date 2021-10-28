@@ -169,35 +169,39 @@ public class EventClass implements Event, Test, Assignment {
      * @return A ResultSet Object
      */
     public static ResultSet getEvents() throws SQLException {
-        PreparedStatement statement = Merenda.connection.prepareStatement(
+        try (PreparedStatement statement = Merenda.connection.prepareStatement(
                 "select * " +
                         "from university_event ue " +
-                        "inner join university_subject us on us.id = ue.subject_id "+
+                        "inner join university_subject us on us.id = ue.subject_id " +
                         "order by ue.start_date, ue.start_time;"
-        );
-        return statement.executeQuery();
+        )) {
+            return statement.executeQuery();
+        }
     }
 
     public static ResultSet getEvents(EventType eventType) throws SQLException {
-        PreparedStatement statement = Merenda.connection.prepareStatement(
-                "select *\n" +
-                        "from university_event ue\n" +
-                        "inner join university_subject us on ue.subject_id = us.id\n" +
-                        "where event_type::text = ?\n" +
+        try (PreparedStatement statement = Merenda.connection.prepareStatement(
+                "select * " +
+                        "from university_event ue " +
+                        "inner join university_subject us on ue.subject_id = us.id " +
+                        "where event_type::text = ? " +
                         "order by ue.start_date, ue.start_time;"
-        );
-        statement.setString(1, eventType.toString().toLowerCase());
-        return statement.executeQuery();
+        )) {
+            statement.setString(1, eventType.toString().toLowerCase());
+            return statement.executeQuery();
+        }
     }
 
     public static EventClass getEventById(int id) throws SQLException {
-        PreparedStatement statement = Merenda.connection.prepareStatement(
+        ResultSet rs;
+        try (PreparedStatement statement = Merenda.connection.prepareStatement(
                 "select * " +
                         "from university_event " +
                         "order by start_date, start_time, id=?"
-        );
-        statement.setInt(1, id);
-        ResultSet rs = statement.executeQuery();
+        )) {
+            statement.setInt(1, id);
+            rs = statement.executeQuery();
+        }
         if (rs.next())
             return getEventFromRS(rs);
         return null;
@@ -209,47 +213,50 @@ public class EventClass implements Event, Test, Assignment {
      * @return A ResultSet Object
      */
     public static ResultSet getEventsToday() throws SQLException {
-        LocalDateTime day_start = LocalDateTime.now().withSecond(0).withMinute(0).withHour(0);
-        LocalDateTime day_end = LocalDateTime.now().withSecond(59).withMinute(59).withHour(23);
+        LocalDateTime dayStart = LocalDateTime.now().withSecond(0).withMinute(0).withHour(0);
+        LocalDateTime dayEnd = LocalDateTime.now().withSecond(59).withMinute(59).withHour(23);
 
-        PreparedStatement statement = Merenda.connection.prepareStatement(
+        try (PreparedStatement statement = Merenda.connection.prepareStatement(
                 "select * " +
                         "from university_event " +
                         "where start_date >= ? and start_date <= ? " +
                         "order by start_date, start_time;"
-        );
-        statement.setTimestamp(1, Timestamp.valueOf(day_start));
-        statement.setTimestamp(2, Timestamp.valueOf(day_end));
-        return statement.executeQuery();
+        )) {
+            statement.setTimestamp(1, Timestamp.valueOf(dayStart));
+            statement.setTimestamp(2, Timestamp.valueOf(dayEnd));
+            return statement.executeQuery();
+        }
     }
 
     public static ResultSet getEventsToday(EventType type) throws SQLException {
-        LocalDateTime day_start = LocalDateTime.now().withSecond(0).withMinute(0).withHour(0);
-        LocalDateTime day_end = LocalDateTime.now().withSecond(59).withMinute(59).withHour(23);
+        LocalDateTime dayStart = LocalDateTime.now().withSecond(0).withMinute(0).withHour(0);
+        LocalDateTime dayEnd = LocalDateTime.now().withSecond(59).withMinute(59).withHour(23);
 
-        PreparedStatement statement = Merenda.connection.prepareStatement(
+        try (PreparedStatement statement = Merenda.connection.prepareStatement(
                 "select * " +
                         "from university_event " +
                         "where start_date >= ? and start_date <= ? and event_type = ? " +
                         "order by start_date, start_time;"
-        );
-        statement.setTimestamp(1, Timestamp.valueOf(day_start));
-        statement.setTimestamp(2, Timestamp.valueOf(day_end));
-        statement.setString(3, type.toString().toLowerCase());
-        return statement.executeQuery();
+        )) {
+            statement.setTimestamp(1, Timestamp.valueOf(dayStart));
+            statement.setTimestamp(2, Timestamp.valueOf(dayEnd));
+            statement.setString(3, type.toString().toLowerCase());
+            return statement.executeQuery();
+        }
     }
 
     public static ResultSet getEventsByWeekday(DayOfWeek dayOfWeek, EventType eventType) throws SQLException {
-        PreparedStatement statement = Merenda.connection.prepareStatement(
+        try (PreparedStatement statement = Merenda.connection.prepareStatement(
                 "select * from university_event ue\n" +
                         "inner join university_subject us on ue.subject_id = us.id\n" +
                         "where ue.end_date >= now() and\n" +
                         "map_weekday(extract(dow from ue.start_date)) = ? and\n" +
                         "    ue.event_type::text = ?\n" +
                         "order by ue.start_date, ue.start_time"
-        );
-        statement.setInt(1, dayOfWeek.getValue());
-        statement.setString(2, eventType.toString().toLowerCase());
-        return statement.executeQuery();
+        )) {
+            statement.setInt(1, dayOfWeek.getValue());
+            statement.setString(2, eventType.toString().toLowerCase());
+            return statement.executeQuery();
+        }
     }
 }

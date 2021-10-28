@@ -78,9 +78,9 @@ public class PollClass implements Poll {
     }
 
     @Override
-    public boolean hasMajority(int member_count) {
-        int votes_left = member_count - this.getVoteCount();
-        return for_votes > against_votes+votes_left || against_votes > for_votes + votes_left;
+    public boolean hasMajority(int memberCount) {
+        int votesLeft = memberCount - this.getVoteCount();
+        return for_votes > against_votes+votesLeft || against_votes > for_votes + votesLeft;
     }
 
     @Override

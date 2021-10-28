@@ -8,7 +8,7 @@ public class TimerHandler {
     public static final String CLASSES_TIMER = "classes";
     public static final String POLL_REFRESH_TIMER = "polls";
 
-    private Map<String, ScheduleTimer> timerMap;
+    private final Map<String, ScheduleTimer> timerMap;
 
     private final Timer timerScheduler = new Timer();
 
@@ -16,28 +16,28 @@ public class TimerHandler {
         timerMap = new HashMap<>();
     }
 
-    public ScheduleTimer getTimer(String timer_id) {
-        return timerMap.get(timer_id);
+    public ScheduleTimer getTimer(String timerId) {
+        return timerMap.get(timerId);
     }
 
     public Collection<ScheduleTimer> getTimers() {
         return timerMap.values();
     }
 
-    public void addTimer(String timer_id, ScheduleTimer timer) {
-        timerMap.put(timer_id, timer);
+    public void addTimer(String timerId, ScheduleTimer timer) {
+        timerMap.put(timerId, timer);
     }
 
-    public void removeTimer(String timer_id) {
-        timerMap.remove(timer_id).cancel();
+    public void removeTimer(String timerId) {
+        timerMap.remove(timerId).cancel();
     }
 
-    public void startTimer(String timer_id, long delay, long period) {
-        ScheduleTimer t = timerMap.get(timer_id);
+    public void startTimer(String timerId, long delay, long period) {
+        ScheduleTimer t = timerMap.get(timerId);
         timerScheduler.schedule((TimerTask) t, delay, period);
     }
 
-    public boolean stopTimer(String timer_id) {
-        return timerMap.get(timer_id).cancel();
+    public boolean stopTimer(String timerId) {
+        return timerMap.get(timerId).cancel();
     }
 }

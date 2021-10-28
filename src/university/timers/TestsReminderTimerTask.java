@@ -5,23 +5,16 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.Component;
 import university.Merenda;
 import university.events.Test;
-import university.important_links.ImportantLink;
 import university.subjects.Subject;
-import university.subjects.SubjectClass;
 
 import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -70,7 +63,6 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
         // Test is TEST_REMINDER_DAYS_BEFORE days from now
         if (now.toLocalDate().isEqual(test.getStartDate().minusDays(TEST_REMINDER_DAYS_BEFORE))) {
             notifyTest(channel, test);
-            // TODO: Alert for test
         }
     }
 

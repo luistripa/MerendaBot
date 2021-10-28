@@ -31,25 +31,28 @@ public interface Professor {
 
     static Professor getProfessorById(int id) throws SQLException {
 
-        PreparedStatement statement = Merenda.connection.prepareStatement(
+        ResultSet rs;
+        try (PreparedStatement statement = Merenda.connection.prepareStatement(
                 "select *\n" +
                         "from university_professor\n" +
                         "where id = ?;"
-        );
-        ResultSet rs = statement.executeQuery();
-        statement.setInt(1, id);
+        )) {
+            rs = statement.executeQuery();
+            statement.setInt(1, id);
+        }
         if (rs.next())
             return Professor.getProfessorFromRS(rs);
         return null;
     }
 
     static ResultSet getProfessors() throws SQLException {
-        PreparedStatement statement = Merenda.connection.prepareStatement(
+        try (PreparedStatement statement = Merenda.connection.prepareStatement(
                 "select *\n" +
                         "from university_professor up\n" +
                         "inner join public.university_subject us on up.subject_id = us.id\n" +
                         "order by us.id;"
-        );
-        return statement.executeQuery();
+        )) {
+            return statement.executeQuery();
+        }
     }
 }
