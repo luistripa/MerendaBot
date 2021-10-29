@@ -6,7 +6,7 @@
 <title>PollClass</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="dc.created" content="2021-10-19">
-<meta name="description" content="declaration: package: university.polls, class: PollClass">
+<meta name="description" content="declaration: package: com.merendabot.university.polls, class: PollClass">
 <meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../script-dir/jquery-ui.css" title="Style">
@@ -83,22 +83,22 @@ loadScripts(document, 'script');</script>
 <main role="main">
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">university.polls</a></div>
+<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">com.merendabot.university.polls</a></div>
 <h1 title="Class PollClass" class="title">Class PollClass</h1>
 </div>
 <div class="contentContainer">
 <div class="inheritance" title="Inheritance Tree">java.lang.Object
-<div class="inheritance">university.polls.PollClass</div>
+<div class="inheritance">com.merendabot.university.polls.PollClass</div>
 </div>
 <section class="description">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">PollClass</span>
 extends java.lang.Object
-implements <a href="Poll.html" title="interface in university.polls">Poll</a></pre>
+implements <a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></pre>
 <dl>
 <dt><span class="simpleTagLabel">Author:</span></dt>
 <dd>Luis Tripa</dd>
@@ -326,7 +326,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
  This is the message that is going to be updated once the poll ends.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#getMessage()">getMessage</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#getMessage()">getMessage</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A Message Object containing the poll original message.</dd>
 </dl>
@@ -342,7 +342,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
  Example: Do you agree with pinable on pizza?</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#getDescription()">getDescription</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#getDescription()">getDescription</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A String with the message of the poll</dd>
 </dl>
@@ -357,7 +357,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
  Beware that the poll may end sooner if a majority vote is met.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#getEndDate()">getEndDate</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#getEndDate()">getEndDate</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A LocalDateTime Object with the poll end date and time</dd>
 </dl>
@@ -371,7 +371,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="block">Gets the "owner" of the poll. The owner is the person who started the poll.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#getOwner()">getOwner</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#getOwner()">getOwner</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A User Object containing the owner of the poll.</dd>
 </dl>
@@ -385,7 +385,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="block">Checks if the given user already voted in the poll.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#hasVoteFrom(net.dv8tion.jda.api.entities.User)">hasVoteFrom</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#hasVoteFrom(net.dv8tion.jda.api.entities.User)">hasVoteFrom</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>user</code> - A User Object</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -401,7 +401,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="block">Get the number of favourable votes.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#getVotesFor()">getVotesFor</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#getVotesFor()">getVotesFor</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The number of favorable votes.</dd>
 </dl>
@@ -415,7 +415,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="block">Get the number of abstaining votes. Abstaining votes do not count for poll approval or rejection.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#getVotesAbstain()">getVotesAbstain</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#getVotesAbstain()">getVotesAbstain</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The number of abstaining votes.</dd>
 </dl>
@@ -429,7 +429,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="block">Get the number of unfavourable votes.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#getVotesAgainst()">getVotesAgainst</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#getVotesAgainst()">getVotesAgainst</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The number of unfavourable votes.</dd>
 </dl>
@@ -443,7 +443,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="block">Get the total number of votes.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#getVoteCount()">getVoteCount</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#getVoteCount()">getVoteCount</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The total number of votes.</dd>
 </dl>
@@ -457,7 +457,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="block">Checks if poll has reached a majority vote.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#hasMajority(int)">hasMajority</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#hasMajority(int)">hasMajority</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>member_count</code> - The number of members to check for majority</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -473,7 +473,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="block">Checks if poll was approved.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#isApproved()">isApproved</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#isApproved()">isApproved</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>True if approved, False otherwise.</dd>
 </dl>
@@ -487,7 +487,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="block">Checks if poll was a draw.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#isDraw()">isDraw</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#isDraw()">isDraw</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>True if poll is a draw, False otherwise.</dd>
 </dl>
@@ -501,7 +501,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="block">Checks if poll was rejected.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#isRejected()">isRejected</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#isRejected()">isRejected</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>True if rejected, False otherwise.</dd>
 </dl>
@@ -516,7 +516,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
  A closed poll does not accept new votes.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#isClosed()">isClosed</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#isClosed()">isClosed</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>True if is closed, False otherwise.</dd>
 </dl>
@@ -530,7 +530,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="block">Registers a favourable vote from a user.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#voteFor(net.dv8tion.jda.api.entities.User)">voteFor</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#voteFor(net.dv8tion.jda.api.entities.User)">voteFor</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>user</code> - The voting user</dd>
 </dl>
@@ -544,7 +544,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="block">Registers an abstaining vote from a user.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#voteAbstain(net.dv8tion.jda.api.entities.User)">voteAbstain</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#voteAbstain(net.dv8tion.jda.api.entities.User)">voteAbstain</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>user</code> - The voting user</dd>
 </dl>
@@ -558,7 +558,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="block">Registers an unfavourable vote from a user.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#voteAgainst(net.dv8tion.jda.api.entities.User)">voteAgainst</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#voteAgainst(net.dv8tion.jda.api.entities.User)">voteAgainst</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>user</code> - The voting user</dd>
 </dl>
@@ -570,7 +570,7 @@ java.time.LocalDateTime&nbsp;endDate)</span></div>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">closePoll</span>()</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Poll.html#closePoll()">closePoll</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in university.polls">Poll</a></code></dd>
+<dd><code><a href="Poll.html#closePoll()">closePoll</a></code>&nbsp;in interface&nbsp;<code><a href="Poll.html" title="interface in com.merendabot.university.polls">Poll</a></code></dd>
 </dl>
 </section>
 </li>

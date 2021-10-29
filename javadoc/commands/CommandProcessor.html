@@ -6,7 +6,7 @@
 <title>CommandProcessor</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="dc.created" content="2021-10-19">
-<meta name="description" content="declaration: package: commands, interface: CommandProcessor">
+<meta name="description" content="declaration: package: com.merendabot.commands, interface: CommandProcessor">
 <meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../script-dir/jquery-ui.css" title="Style">
@@ -83,14 +83,14 @@ loadScripts(document, 'script');</script>
 <main role="main">
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">commands</a></div>
+<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">com.merendabot.commands</a></div>
 <h1 title="Interface CommandProcessor" class="title">Interface CommandProcessor</h1>
 </div>
 <div class="contentContainer">
 <section class="description">
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><code><a href="CommandProcessorClass.html" title="class in commands">CommandProcessorClass</a></code></dd>
+<dd><code><a href="CommandProcessorClass.html" title="class in com.merendabot.commands">CommandProcessorClass</a></code></dd>
 </dl>
 <hr>
 <pre>public interface <span class="typeNameLabel">CommandProcessor</span></pre>
@@ -117,7 +117,7 @@ loadScripts(document, 'script');</script>
 <tbody>
 <tr class="altColor" id="i0">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addCommand(commands.Command)">addCommand</a></span>&#8203;(<a href="Command.html" title="interface in commands">Command</a>&nbsp;command)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addCommand(commands.Command)">addCommand</a></span>&#8203;(<a href="Command.html" title="interface in com.merendabot.commands">Command</a>&nbsp;command)</code></th>
 <td class="colLast">
 <div class="block">Adds a command to the processor.</div>
 </td>
@@ -126,28 +126,28 @@ loadScripts(document, 'script');</script>
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearCommands()">clearCommands</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Clears all commands AND categories from the processor.</div>
+<div class="block">Clears all com.merendabot.commands AND categories from the processor.</div>
 </td>
 </tr>
 <tr class="altColor" id="i2">
-<td class="colFirst"><code><a href="Command.html" title="interface in commands">Command</a></code></td>
+<td class="colFirst"><code><a href="Command.html" title="interface in com.merendabot.commands">Command</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCommand(java.lang.String)">getCommand</a></span>&#8203;(java.lang.String&nbsp;command_id)</code></th>
 <td class="colLast">
 <div class="block">Gets a command from the processor.</div>
 </td>
 </tr>
 <tr class="rowColor" id="i3">
-<td class="colFirst"><code>java.util.List&lt;<a href="CommandCategory.html" title="interface in commands">CommandCategory</a>&gt;</code></td>
+<td class="colFirst"><code>java.util.List&lt;<a href="CommandCategory.html" title="interface in com.merendabot.commands">CommandCategory</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCommandCategories()">getCommandCategories</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Gets an iterator of all categories registered in the processor.</div>
 </td>
 </tr>
 <tr class="altColor" id="i4">
-<td class="colFirst"><code>java.util.List&lt;<a href="Command.html" title="interface in commands">Command</a>&gt;</code></td>
+<td class="colFirst"><code>java.util.List&lt;<a href="Command.html" title="interface in com.merendabot.commands">Command</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCommands()">getCommands</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Gets an iterator of all commands registered in the processor.</div>
+<div class="block">Gets an iterator of all com.merendabot.commands registered in the processor.</div>
 </td>
 </tr>
 <tr class="rowColor" id="i5">
@@ -217,7 +217,7 @@ loadScripts(document, 'script');</script>
 <li class="blockList">
 <section class="detail">
 <h3><a id="getCommand(java.lang.String)">getCommand</a></h3>
-<div class="memberSignature"><span class="returnType"><a href="Command.html" title="interface in commands">Command</a></span>&nbsp;<span class="memberName">getCommand</span>&#8203;(<span class="arguments">java.lang.String&nbsp;command_id)</span></div>
+<div class="memberSignature"><span class="returnType"><a href="Command.html" title="interface in com.merendabot.commands">Command</a></span>&nbsp;<span class="memberName">getCommand</span>&#8203;(<span class="arguments">java.lang.String&nbsp;command_id)</span></div>
 <div class="block">Gets a command from the processor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -230,8 +230,8 @@ loadScripts(document, 'script');</script>
 <li class="blockList">
 <section class="detail">
 <h3><a id="getCommands()">getCommands</a></h3>
-<div class="memberSignature"><span class="returnType">java.util.List&lt;<a href="Command.html" title="interface in commands">Command</a>&gt;</span>&nbsp;<span class="memberName">getCommands</span>()</div>
-<div class="block">Gets an iterator of all commands registered in the processor.</div>
+<div class="memberSignature"><span class="returnType">java.util.List&lt;<a href="Command.html" title="interface in com.merendabot.commands">Command</a>&gt;</span>&nbsp;<span class="memberName">getCommands</span>()</div>
+<div class="block">Gets an iterator of all com.merendabot.commands registered in the processor.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>An Iterator Object</dd>
@@ -241,7 +241,7 @@ loadScripts(document, 'script');</script>
 <li class="blockList">
 <section class="detail">
 <h3><a id="getCommandCategories()">getCommandCategories</a></h3>
-<div class="memberSignature"><span class="returnType">java.util.List&lt;<a href="CommandCategory.html" title="interface in commands">CommandCategory</a>&gt;</span>&nbsp;<span class="memberName">getCommandCategories</span>()</div>
+<div class="memberSignature"><span class="returnType">java.util.List&lt;<a href="CommandCategory.html" title="interface in com.merendabot.commands">CommandCategory</a>&gt;</span>&nbsp;<span class="memberName">getCommandCategories</span>()</div>
 <div class="block">Gets an iterator of all categories registered in the processor.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -252,7 +252,7 @@ loadScripts(document, 'script');</script>
 <li class="blockList">
 <section class="detail">
 <h3><a id="addCommand(commands.Command)">addCommand</a></h3>
-<div class="memberSignature"><span class="returnType">void</span>&nbsp;<span class="memberName">addCommand</span>&#8203;(<span class="arguments"><a href="Command.html" title="interface in commands">Command</a>&nbsp;command)</span></div>
+<div class="memberSignature"><span class="returnType">void</span>&nbsp;<span class="memberName">addCommand</span>&#8203;(<span class="arguments"><a href="Command.html" title="interface in com.merendabot.commands">Command</a>&nbsp;command)</span></div>
 <div class="block">Adds a command to the processor.
  The command should not exist in the processor.</div>
 <dl>
@@ -281,7 +281,7 @@ loadScripts(document, 'script');</script>
 <section class="detail">
 <h3><a id="clearCommands()">clearCommands</a></h3>
 <div class="memberSignature"><span class="returnType">void</span>&nbsp;<span class="memberName">clearCommands</span>()</div>
-<div class="block">Clears all commands AND categories from the processor.</div>
+<div class="block">Clears all com.merendabot.commands AND categories from the processor.</div>
 </section>
 </li>
 </ul>

@@ -1,10 +1,10 @@
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import university.events.Event;
-import university.events.EventClass;
-import university.events.EventInterval;
-import university.events.EventType;
+import com.merendabot.university.events.Event;
+import com.merendabot.university.events.EventClass;
+import com.merendabot.university.events.EventInterval;
+import com.merendabot.university.events.EventType;
 
 import java.sql.Date;
 import java.sql.Time;

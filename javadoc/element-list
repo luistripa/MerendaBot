@@ -1,13 +1,13 @@
 unnamed package
-commands
-commands.commands
-commands.exceptions
+com.merendabot.commands
+com.merendabot.commands.com.merendabot.commands
+com.merendabot.commands.exceptions
 sql
-university
-university.assignments
-university.events
-university.important_links
-university.subjects
-university.tests
-university.timers
-university.polls
+com.merendabot.university
+com.merendabot.university.assignments
+com.merendabot.university.events
+com.merendabot.university.important_links
+com.merendabot.university.subjects
+com.merendabot.university.tests
+com.merendabot.university.timers
+com.merendabot.university.polls

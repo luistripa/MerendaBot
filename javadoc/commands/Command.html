@@ -6,7 +6,7 @@
 <title>Command</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="dc.created" content="2021-10-19">
-<meta name="description" content="declaration: package: commands, interface: Command">
+<meta name="description" content="declaration: package: com.merendabot.commands, interface: Command">
 <meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../script-dir/jquery-ui.css" title="Style">
@@ -83,14 +83,14 @@ loadScripts(document, 'script');</script>
 <main role="main">
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">commands</a></div>
+<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">com.merendabot.commands</a></div>
 <h1 title="Interface Command" class="title">Interface Command</h1>
 </div>
 <div class="contentContainer">
 <section class="description">
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><code><a href="commands/AssigmentsCommand.html" title="class in commands.commands">AssigmentsCommand</a></code>, <code><a href="commands/ClassesCommand.html" title="class in commands.commands">ClassesCommand</a></code>, <code><a href="CommandClass.html" title="class in commands">CommandClass</a></code>, <code><a href="commands/GetCommand.html" title="class in commands.commands">GetCommand</a></code>, <code><a href="commands/HelpCommand.html" title="class in commands.commands">HelpCommand</a></code>, <code><a href="commands/LinksCommand.html" title="class in commands.commands">LinksCommand</a></code>, <code><a href="commands/NowCommand.html" title="class in commands.commands">NowCommand</a></code>, <code><a href="commands/PollCommand.html" title="class in commands.commands">PollCommand</a></code>, <code><a href="commands/ReloadCommand.html" title="class in commands.commands">ReloadCommand</a></code>, <code><a href="commands/TeachersCommand.html" title="class in commands.commands">TeachersCommand</a></code>, <code><a href="commands/TestCommand.html" title="class in commands.commands">TestCommand</a></code>, <code><a href="commands/TestsCommand.html" title="class in commands.commands">TestsCommand</a></code>, <code><a href="commands/UpdateCommand.html" title="class in commands.commands">UpdateCommand</a></code></dd>
+<dd><code><a href="commands/AssigmentsCommand.html" title="class in com.merendabot.commands.commands">AssigmentsCommand</a></code>, <code><a href="commands/ClassesCommand.html" title="class in com.merendabot.commands.commands">ClassesCommand</a></code>, <code><a href="CommandClass.html" title="class in com.merendabot.commands">CommandClass</a></code>, <code><a href="commands/GetCommand.html" title="class in com.merendabot.commands.commands">GetCommand</a></code>, <code><a href="commands/HelpCommand.html" title="class in com.merendabot.commands.commands">HelpCommand</a></code>, <code><a href="commands/LinksCommand.html" title="class in com.merendabot.commands.commands">LinksCommand</a></code>, <code><a href="commands/NowCommand.html" title="class in com.merendabot.commands.commands">NowCommand</a></code>, <code><a href="commands/PollCommand.html" title="class in com.merendabot.commands.commands">PollCommand</a></code>, <code><a href="commands/ReloadCommand.html" title="class in com.merendabot.commands.commands">ReloadCommand</a></code>, <code><a href="commands/TeachersCommand.html" title="class in com.merendabot.commands.commands">TeachersCommand</a></code>, <code><a href="commands/TestCommand.html" title="class in com.merendabot.commands.commands">TestCommand</a></code>, <code><a href="commands/TestsCommand.html" title="class in com.merendabot.commands.commands">TestsCommand</a></code>, <code><a href="commands/UpdateCommand.html" title="class in com.merendabot.commands.commands">UpdateCommand</a></code></dd>
 </dl>
 <hr>
 <pre>public interface <span class="typeNameLabel">Command</span></pre>
@@ -116,15 +116,15 @@ loadScripts(document, 'script');</script>
 </thead>
 <tbody>
 <tr class="altColor" id="i0">
-<td class="colFirst"><code><a href="Command.html" title="interface in commands">Command</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addParam(commands.CommandParam)">addParam</a></span>&#8203;(<a href="CommandParam.html" title="class in commands">CommandParam</a>&nbsp;param)</code></th>
+<td class="colFirst"><code><a href="Command.html" title="interface in com.merendabot.commands">Command</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addParam(commands.CommandParam)">addParam</a></span>&#8203;(<a href="CommandParam.html" title="class in com.merendabot.commands">CommandParam</a>&nbsp;param)</code></th>
 <td class="colLast">
 <div class="block">Adds a parameter to the command.</div>
 </td>
 </tr>
 <tr class="rowColor" id="i1">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#execute(university.Merenda,java.lang.String%5B%5D,net.dv8tion.jda.api.events.message.MessageReceivedEvent)">execute</a></span>&#8203;(<a href="../university/Merenda.html" title="class in university">Merenda</a>&nbsp;merenda,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#execute(university.Merenda,java.lang.String%5B%5D,net.dv8tion.jda.api.events.message.MessageReceivedEvent)">execute</a></span>&#8203;(<a href="../university/Merenda.html" title="class in com.merendabot.university">Merenda</a>&nbsp;merenda,
 java.lang.String[]&nbsp;command,
 net.dv8tion.jda.api.events.message.MessageReceivedEvent&nbsp;event)</code></th>
 <td class="colLast">
@@ -154,13 +154,13 @@ net.dv8tion.jda.api.events.message.MessageReceivedEvent&nbsp;event)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor" id="i6">
-<td class="colFirst"><code>java.util.Iterator&lt;<a href="CommandParam.html" title="class in commands">CommandParam</a>&gt;</code></td>
+<td class="colFirst"><code>java.util.Iterator&lt;<a href="CommandParam.html" title="class in com.merendabot.commands">CommandParam</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParams()">getParams</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor" id="i7">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processButtonPressed(university.Merenda,net.dv8tion.jda.api.events.interaction.ButtonClickEvent)">processButtonPressed</a></span>&#8203;(<a href="../university/Merenda.html" title="class in university">Merenda</a>&nbsp;merenda,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processButtonPressed(university.Merenda,net.dv8tion.jda.api.events.interaction.ButtonClickEvent)">processButtonPressed</a></span>&#8203;(<a href="../university/Merenda.html" title="class in com.merendabot.university">Merenda</a>&nbsp;merenda,
 net.dv8tion.jda.api.events.interaction.ButtonClickEvent&nbsp;event)</code></th>
 <td class="colLast">
 <div class="block">Processes a button click for this command.</div>
@@ -204,7 +204,7 @@ net.dv8tion.jda.api.events.interaction.ButtonClickEvent&nbsp;event)</code></th>
 <li class="blockList">
 <section class="detail">
 <h3><a id="getParams()">getParams</a></h3>
-<div class="memberSignature"><span class="returnType">java.util.Iterator&lt;<a href="CommandParam.html" title="class in commands">CommandParam</a>&gt;</span>&nbsp;<span class="memberName">getParams</span>()</div>
+<div class="memberSignature"><span class="returnType">java.util.Iterator&lt;<a href="CommandParam.html" title="class in com.merendabot.commands">CommandParam</a>&gt;</span>&nbsp;<span class="memberName">getParams</span>()</div>
 </section>
 </li>
 <li class="blockList">
@@ -221,7 +221,7 @@ net.dv8tion.jda.api.events.interaction.ButtonClickEvent&nbsp;event)</code></th>
 <li class="blockList">
 <section class="detail">
 <h3><a id="addParam(commands.CommandParam)">addParam</a></h3>
-<div class="memberSignature"><span class="returnType"><a href="Command.html" title="interface in commands">Command</a></span>&nbsp;<span class="memberName">addParam</span>&#8203;(<span class="arguments"><a href="CommandParam.html" title="class in commands">CommandParam</a>&nbsp;param)</span></div>
+<div class="memberSignature"><span class="returnType"><a href="Command.html" title="interface in com.merendabot.commands">Command</a></span>&nbsp;<span class="memberName">addParam</span>&#8203;(<span class="arguments"><a href="CommandParam.html" title="class in com.merendabot.commands">CommandParam</a>&nbsp;param)</span></div>
 <div class="block">Adds a parameter to the command.
  Parameters will show on command help messages.</div>
 <dl>
@@ -235,7 +235,7 @@ net.dv8tion.jda.api.events.interaction.ButtonClickEvent&nbsp;event)</code></th>
 <li class="blockList">
 <section class="detail">
 <h3><a id="execute(university.Merenda,java.lang.String[],net.dv8tion.jda.api.events.message.MessageReceivedEvent)">execute</a></h3>
-<div class="memberSignature"><span class="returnType">void</span>&nbsp;<span class="memberName">execute</span>&#8203;(<span class="arguments"><a href="../university/Merenda.html" title="class in university">Merenda</a>&nbsp;merenda,
+<div class="memberSignature"><span class="returnType">void</span>&nbsp;<span class="memberName">execute</span>&#8203;(<span class="arguments"><a href="../university/Merenda.html" title="class in com.merendabot.university">Merenda</a>&nbsp;merenda,
 java.lang.String[]&nbsp;command,
 net.dv8tion.jda.api.events.message.MessageReceivedEvent&nbsp;event)</span></div>
 <div class="block">Executes the command itself.</div>
@@ -250,7 +250,7 @@ net.dv8tion.jda.api.events.message.MessageReceivedEvent&nbsp;event)</span></div>
 <li class="blockList">
 <section class="detail">
 <h3><a id="processButtonPressed(university.Merenda,net.dv8tion.jda.api.events.interaction.ButtonClickEvent)">processButtonPressed</a></h3>
-<div class="memberSignature"><span class="returnType">void</span>&nbsp;<span class="memberName">processButtonPressed</span>&#8203;(<span class="arguments"><a href="../university/Merenda.html" title="class in university">Merenda</a>&nbsp;merenda,
+<div class="memberSignature"><span class="returnType">void</span>&nbsp;<span class="memberName">processButtonPressed</span>&#8203;(<span class="arguments"><a href="../university/Merenda.html" title="class in com.merendabot.university">Merenda</a>&nbsp;merenda,
 net.dv8tion.jda.api.events.interaction.ButtonClickEvent&nbsp;event)</span></div>
 <div class="block">Processes a button click for this command.</div>
 <dl>
