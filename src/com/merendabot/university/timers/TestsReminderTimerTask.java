@@ -17,10 +17,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Logger;
 
 public class TestsReminderTimerTask extends AbstractTimerTask {
 
     private static final int TEST_REMINDER_DAYS_BEFORE = 5;
+
+    private static final Logger logger = Logger.getLogger("main-log");
 
     private Queue<Test> testCache;
     private LocalDateTime nextCacheReload;
@@ -34,13 +37,13 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
     public void run() {
         Guild guild = this.getJDA().getGuildById(GUILD_ID);
         if (guild == null) {
-            System.out.println("Error: Could not find guild with id " + GUILD_ID);
+            logger.severe("Could not find guild with id "+GUILD_ID);
             this.cancel();
             return;
         }
         TextChannel channel = guild.getTextChannelById(CHANNEL_ID);
         if (channel == null) {
-            System.out.println("Error: Could not find channel with id " + CHANNEL_ID);
+            logger.severe("Could not find channel with id "+CHANNEL_ID);
             this.cancel();
             return;
         }
@@ -63,7 +66,6 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
         // Test is TEST_REMINDER_DAYS_BEFORE days from now
         if (now.toLocalDate().isEqual(test.getStartDate().minusDays(TEST_REMINDER_DAYS_BEFORE))) {
             notifyTest(channel, test);
-            // TODO: Alert for test
         }
     }
 
@@ -72,7 +74,10 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
         switch (event.getButton().getId().split(" ")[2]) {
             case "panic": {
                 event.reply(":eyes:").queue();
+                break;
             }
+            default:
+                event.reply(":confused:").queue();
         }
     }
 

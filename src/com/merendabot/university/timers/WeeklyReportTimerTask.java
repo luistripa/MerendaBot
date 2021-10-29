@@ -18,6 +18,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.logging.Logger;
 
 public class WeeklyReportTimerTask extends AbstractTimerTask {
     /**
@@ -28,6 +29,8 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
      */
 
     private static final DayOfWeek REPORT_DAY_OF_WEEK = DayOfWeek.SUNDAY;
+
+    private static final Logger logger = Logger.getLogger("main-log");
 
     private boolean hasReported;
 
@@ -40,19 +43,19 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
     public void run() {
         // JDA connection not available
         if (!this.getJDA().getStatus().equals(JDA.Status.CONNECTED)) {
-            System.out.println("Warning: JDA status is not CONNECTED. Weekly report will not be sent.");
+            logger.warning("JDA status is not CONNECTED. Weekly report will not be sent.");
             return;
         }
 
         Guild guild = this.getJDA().getGuildById(GUILD_ID);
         if (guild == null) {
-            System.out.printf("Error: Guild with ID %s could not be found\n", GUILD_ID);
+            logger.severe("Could not find guild with id "+GUILD_ID);
             return;
         }
 
         TextChannel channel = guild.getTextChannelById(CHANNEL_ID);
         if (channel == null) {
-            System.out.printf("Error: Channel with ID %s could not be found in guild %s\n", CHANNEL_ID, GUILD_ID);
+            logger.severe("Could not find channel with id "+CHANNEL_ID);
             return;
         }
 

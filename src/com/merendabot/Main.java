@@ -179,7 +179,7 @@ public class Main extends ListenerAdapter {
         if (System.getenv("DEBUG") == null)
             logger.warning(
                     "DEBUG environment variable is not set." +
-                            "If you do not want DEBUG mode enabled you should set it to FALSE." +
+                            "If you do not want DEBUG mode enabled you should set it to FALSE. " +
                             "Will assume FALSE.");
         else if (System.getenv("DEBUG").equals("1")) {
             logger.warning("DEBUG mode is set.");

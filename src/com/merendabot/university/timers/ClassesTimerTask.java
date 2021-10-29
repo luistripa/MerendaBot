@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Logger;
 
 /**
  * Represents the alert for classes.
@@ -26,6 +27,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * It also includes the zoom link for that class.
  */
 public class ClassesTimerTask extends AbstractTimerTask {
+
+    private static final Logger logger = Logger.getLogger("main-log");
 
 
     private Queue<Event> eventCache;
@@ -41,13 +44,13 @@ public class ClassesTimerTask extends AbstractTimerTask {
     public void run() {
         Guild guild = this.getJDA().getGuildById(GUILD_ID);
         if (guild == null) {
-            System.out.println("Error: Could not find guild with id "+GUILD_ID);
+            logger.severe("Could not find guild with id "+GUILD_ID);
             this.cancel();
             return;
         }
         TextChannel channel = guild.getTextChannelById(CHANNEL_ID);
         if (channel == null) {
-            System.out.println("Error: Could not find channel with id "+CHANNEL_ID);
+            logger.severe("Could not find channel with id "+CHANNEL_ID);
             this.cancel();
             return;
         }
