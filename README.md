@@ -43,7 +43,7 @@ Make sure you're executing it on an empty database.
 
 # Commands
 
-The bot possesses the following commands:
+The bot possesses the following com.merendabot.commands:
 - [x] list of all classes
 - [x] list of classes happening now
 - [x] list of tests

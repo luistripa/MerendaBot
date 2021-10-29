@@ -6,7 +6,7 @@
 <title>CommandProcessorClass</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="dc.created" content="2021-10-19">
-<meta name="description" content="declaration: package: commands, class: CommandProcessorClass">
+<meta name="description" content="declaration: package: com.merendabot.commands, class: CommandProcessorClass">
 <meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../script-dir/jquery-ui.css" title="Style">
@@ -83,22 +83,22 @@ loadScripts(document, 'script');</script>
 <main role="main">
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">commands</a></div>
+<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">com.merendabot.commands</a></div>
 <h1 title="Class CommandProcessorClass" class="title">Class CommandProcessorClass</h1>
 </div>
 <div class="contentContainer">
 <div class="inheritance" title="Inheritance Tree">java.lang.Object
-<div class="inheritance">commands.CommandHandler</div>
+<div class="inheritance">com.merendabot.commands.CommandHandler</div>
 </div>
 <section class="description">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="CommandProcessor.html" title="interface in commands">CommandProcessor</a></code></dd>
+<dd><code><a href="CommandProcessor.html" title="interface in com.merendabot.commands">CommandProcessor</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">CommandProcessorClass</span>
 extends java.lang.Object
-implements <a href="CommandProcessor.html" title="interface in commands">CommandProcessor</a></pre>
+implements <a href="CommandProcessor.html" title="interface in com.merendabot.commands">CommandProcessor</a></pre>
 </section>
 <section class="summary">
 <ul class="blockList">
@@ -147,7 +147,7 @@ implements <a href="CommandProcessor.html" title="interface in commands">Command
 <tbody>
 <tr class="altColor" id="i0">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addCommand(commands.Command)">addCommand</a></span>&#8203;(<a href="Command.html" title="interface in commands">Command</a>&nbsp;command)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addCommand(commands.Command)">addCommand</a></span>&#8203;(<a href="Command.html" title="interface in com.merendabot.commands">Command</a>&nbsp;command)</code></th>
 <td class="colLast">
 <div class="block">Adds a command to the processor.</div>
 </td>
@@ -156,28 +156,28 @@ implements <a href="CommandProcessor.html" title="interface in commands">Command
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearCommands()">clearCommands</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Clears all commands AND categories from the processor.</div>
+<div class="block">Clears all com.merendabot.commands AND categories from the processor.</div>
 </td>
 </tr>
 <tr class="altColor" id="i2">
-<td class="colFirst"><code><a href="Command.html" title="interface in commands">Command</a></code></td>
+<td class="colFirst"><code><a href="Command.html" title="interface in com.merendabot.commands">Command</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCommand(java.lang.String)">getCommand</a></span>&#8203;(java.lang.String&nbsp;command_id)</code></th>
 <td class="colLast">
 <div class="block">Gets a command from the processor.</div>
 </td>
 </tr>
 <tr class="rowColor" id="i3">
-<td class="colFirst"><code>java.util.List&lt;<a href="CommandCategory.html" title="interface in commands">CommandCategory</a>&gt;</code></td>
+<td class="colFirst"><code>java.util.List&lt;<a href="CommandCategory.html" title="interface in com.merendabot.commands">CommandCategory</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCommandCategories()">getCommandCategories</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Gets an iterator of all categories registered in the processor.</div>
 </td>
 </tr>
 <tr class="altColor" id="i4">
-<td class="colFirst"><code>java.util.List&lt;<a href="Command.html" title="interface in commands">Command</a>&gt;</code></td>
+<td class="colFirst"><code>java.util.List&lt;<a href="Command.html" title="interface in com.merendabot.commands">Command</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCommands()">getCommands</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Gets an iterator of all commands registered in the processor.</div>
+<div class="block">Gets an iterator of all com.merendabot.commands registered in the processor.</div>
 </td>
 </tr>
 <tr class="rowColor" id="i5">
@@ -247,7 +247,7 @@ implements <a href="CommandProcessor.html" title="interface in commands">Command
 <div class="block">Checks if a given command exists in the processor.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="CommandProcessor.html#hasCommand(java.lang.String)">hasCommand</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in commands">CommandProcessor</a></code></dd>
+<dd><code><a href="CommandProcessor.html#hasCommand(java.lang.String)">hasCommand</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in com.merendabot.commands">CommandProcessor</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>command_id</code> - The id for the command</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -263,7 +263,7 @@ implements <a href="CommandProcessor.html" title="interface in commands">Command
 <div class="block">Checks if a given category exists in the processor.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="CommandProcessor.html#hasCategory(java.lang.String)">hasCategory</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in commands">CommandProcessor</a></code></dd>
+<dd><code><a href="CommandProcessor.html#hasCategory(java.lang.String)">hasCategory</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in com.merendabot.commands">CommandProcessor</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>category</code> - The id for the category</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -274,12 +274,12 @@ implements <a href="CommandProcessor.html" title="interface in commands">Command
 <li class="blockList">
 <section class="detail">
 <h3><a id="getCommand(java.lang.String)">getCommand</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType"><a href="Command.html" title="interface in commands">Command</a></span>&nbsp;<span class="memberName">getCommand</span>&#8203;(<span class="arguments">java.lang.String&nbsp;command_id)</span></div>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType"><a href="Command.html" title="interface in com.merendabot.commands">Command</a></span>&nbsp;<span class="memberName">getCommand</span>&#8203;(<span class="arguments">java.lang.String&nbsp;command_id)</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="CommandProcessor.html#getCommand(java.lang.String)">CommandProcessor</a></code></span></div>
 <div class="block">Gets a command from the processor.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="CommandProcessor.html#getCommand(java.lang.String)">getCommand</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in commands">CommandProcessor</a></code></dd>
+<dd><code><a href="CommandProcessor.html#getCommand(java.lang.String)">getCommand</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in com.merendabot.commands">CommandProcessor</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>command_id</code> - The id for the command.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -290,12 +290,12 @@ implements <a href="CommandProcessor.html" title="interface in commands">Command
 <li class="blockList">
 <section class="detail">
 <h3><a id="getCommands()">getCommands</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.util.List&lt;<a href="Command.html" title="interface in commands">Command</a>&gt;</span>&nbsp;<span class="memberName">getCommands</span>()</div>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.util.List&lt;<a href="Command.html" title="interface in com.merendabot.commands">Command</a>&gt;</span>&nbsp;<span class="memberName">getCommands</span>()</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="CommandProcessor.html#getCommands()">CommandProcessor</a></code></span></div>
-<div class="block">Gets an iterator of all commands registered in the processor.</div>
+<div class="block">Gets an iterator of all com.merendabot.commands registered in the processor.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="CommandProcessor.html#getCommands()">getCommands</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in commands">CommandProcessor</a></code></dd>
+<dd><code><a href="CommandProcessor.html#getCommands()">getCommands</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in com.merendabot.commands">CommandProcessor</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>An Iterator Object</dd>
 </dl>
@@ -304,12 +304,12 @@ implements <a href="CommandProcessor.html" title="interface in commands">Command
 <li class="blockList">
 <section class="detail">
 <h3><a id="getCommandCategories()">getCommandCategories</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.util.List&lt;<a href="CommandCategory.html" title="interface in commands">CommandCategory</a>&gt;</span>&nbsp;<span class="memberName">getCommandCategories</span>()</div>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.util.List&lt;<a href="CommandCategory.html" title="interface in com.merendabot.commands">CommandCategory</a>&gt;</span>&nbsp;<span class="memberName">getCommandCategories</span>()</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="CommandProcessor.html#getCommandCategories()">CommandProcessor</a></code></span></div>
 <div class="block">Gets an iterator of all categories registered in the processor.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="CommandProcessor.html#getCommandCategories()">getCommandCategories</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in commands">CommandProcessor</a></code></dd>
+<dd><code><a href="CommandProcessor.html#getCommandCategories()">getCommandCategories</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in com.merendabot.commands">CommandProcessor</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>An Iterator Object</dd>
 </dl>
@@ -318,13 +318,13 @@ implements <a href="CommandProcessor.html" title="interface in commands">Command
 <li class="blockList">
 <section class="detail">
 <h3><a id="addCommand(commands.Command)">addCommand</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">addCommand</span>&#8203;(<span class="arguments"><a href="Command.html" title="interface in commands">Command</a>&nbsp;command)</span></div>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">addCommand</span>&#8203;(<span class="arguments"><a href="Command.html" title="interface in com.merendabot.commands">Command</a>&nbsp;command)</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="CommandProcessor.html#addCommand(commands.Command)">CommandProcessor</a></code></span></div>
 <div class="block">Adds a command to the processor.
  The command should not exist in the processor.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="CommandProcessor.html#addCommand(commands.Command)">addCommand</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in commands">CommandProcessor</a></code></dd>
+<dd><code><a href="CommandProcessor.html#addCommand(commands.Command)">addCommand</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in com.merendabot.commands">CommandProcessor</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>command</code> - A Command Object</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -341,7 +341,7 @@ implements <a href="CommandProcessor.html" title="interface in commands">Command
  The command should exist in the processor.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="CommandProcessor.html#removeCommand(java.lang.String)">removeCommand</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in commands">CommandProcessor</a></code></dd>
+<dd><code><a href="CommandProcessor.html#removeCommand(java.lang.String)">removeCommand</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in com.merendabot.commands">CommandProcessor</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>command_id</code> - The command id.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -354,10 +354,10 @@ implements <a href="CommandProcessor.html" title="interface in commands">Command
 <h3><a id="clearCommands()">clearCommands</a></h3>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">clearCommands</span>()</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="CommandProcessor.html#clearCommands()">CommandProcessor</a></code></span></div>
-<div class="block">Clears all commands AND categories from the processor.</div>
+<div class="block">Clears all com.merendabot.commands AND categories from the processor.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="CommandProcessor.html#clearCommands()">clearCommands</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in commands">CommandProcessor</a></code></dd>
+<dd><code><a href="CommandProcessor.html#clearCommands()">clearCommands</a></code>&nbsp;in interface&nbsp;<code><a href="CommandProcessor.html" title="interface in com.merendabot.commands">CommandProcessor</a></code></dd>
 </dl>
 </section>
 </li>
