@@ -2,17 +2,12 @@ package com.merendabot.university.timers;
 
 import com.merendabot.university.MessageDispatcher;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
-import com.merendabot.university.Merenda;
 import com.merendabot.university.events.Test;
 import com.merendabot.university.subjects.Subject;
 
 import java.awt.*;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,7 +37,7 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
             testCache = loadCache();
 
         Test test = testCache.peek();
-        if (test == null)
+        if (test == null) // There are no tests
             return;
 
         // Test date already passed
@@ -97,14 +92,15 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
 
         try {
             String fieldTitle = String.format(
-                    "%s %s",
+                    "%s %s :pencil:",
                     test.getName(),
                     Subject.getSubjectById(test.getSubjectId()).getShortName());
             String fieldValue = String.format(
-                    "%s %s-%s",
-                    test.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM")),
-                    test.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
-                    test.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
+                    "%s (%s) %s-%s",
+                    test.getStartDate().format(DateTimeFormatter.ofPattern("dd MMM")),
+                    test.getStartDate().format(DateTimeFormatter.ofPattern("EEE")),
+                    test.getStartTime().format(DateTimeFormatter.ofPattern("H:mm")),
+                    test.getEndTime().format(DateTimeFormatter.ofPattern("H:mm"))
             );
             eb.addField(fieldTitle, fieldValue, false);
 
