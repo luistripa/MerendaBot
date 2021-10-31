@@ -27,8 +27,8 @@ and to warn when an event is about to happen.
     </tr>
     <tr style="text-align: center;">
         <td>DEBUG</td>
-        <td>No (Default 0)</td>
-        <td>Enable/Disable debug mode (1 or 0 respectively)</td>
+        <td>No (Default FALSE)</td>
+        <td>Enable/Disable debug mode (TRUE or FALSE respectively)</td>
     </tr>
 </table>
 
