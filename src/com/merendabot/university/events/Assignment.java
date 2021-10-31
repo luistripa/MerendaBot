@@ -1,15 +1,12 @@
 package com.merendabot.university.events;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public interface Assignment extends Event {
 
-    static Assignment getAssignmentFromRS(ResultSet rs) throws SQLException {
-        return EventClass.getEventFromRS(rs);
-    }
+    static List<Event> getAssignments() throws SQLException {
 
-    static ResultSet getAssignments() throws SQLException {
         return EventClass.getEvents(EventType.ASSIGNMENT);
     }
 }

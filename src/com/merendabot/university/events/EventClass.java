@@ -9,7 +9,14 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Represents an event.
+ *
+ * Events are points or intervals in time where something happens, like a class, test or assignment delivery.
+ */
 public class EventClass implements Event, Test, Assignment {
 
     private int id;
@@ -103,16 +110,6 @@ public class EventClass implements Event, Test, Assignment {
         return subjectId;
     }
 
-    /**
-     * Gets the subject associated with this event.
-     *
-     * @return A Subject Object
-     */
-    @Override
-    public @Nullable Subject getSubject() {
-        return subject;
-    }
-
     @Override
     public boolean isNow() {
         LocalDateTime now = LocalDateTime.now();
@@ -165,21 +162,27 @@ public class EventClass implements Event, Test, Assignment {
     /**
      * Gets all events from the database.
      *
-     * @return A ResultSet Object
+     * @return A List of Events
      */
-    public static ResultSet getEvents() throws SQLException {
-        try (PreparedStatement statement = Merenda.connection.prepareStatement(
+    public static List<Event> getEvents() throws SQLException {
+        List<Event> events = new ArrayList<>();
+        try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select * " +
                         "from university_event ue " +
                         "inner join university_subject us on us.id = ue.subject_id " +
                         "order by ue.start_date, ue.start_time;"
         )) {
-            return statement.executeQuery();
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                events.add(getEventFromRS(rs));
+            }
+            return events;
         }
     }
 
-    public static ResultSet getEvents(EventType eventType) throws SQLException {
-        try (PreparedStatement statement = Merenda.connection.prepareStatement(
+    public static List<Event> getEvents(EventType eventType) throws SQLException {
+        List<Event> events = new ArrayList<>();
+        try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select * " +
                         "from university_event ue " +
                         "inner join university_subject us on ue.subject_id = us.id " +
@@ -187,23 +190,26 @@ public class EventClass implements Event, Test, Assignment {
                         "order by ue.start_date, ue.start_time;"
         )) {
             statement.setString(1, eventType.toString().toLowerCase());
-            return statement.executeQuery();
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                events.add(getEventFromRS(rs));
+            }
+            return events;
         }
     }
 
-    public static EventClass getEventById(int id) throws SQLException {
-        ResultSet rs;
-        try (PreparedStatement statement = Merenda.connection.prepareStatement(
+    @Nullable public static Event getEventById(int id) throws SQLException {
+        try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select * " +
                         "from university_event " +
                         "order by start_date, start_time, id=?"
         )) {
             statement.setInt(1, id);
-            rs = statement.executeQuery();
+            ResultSet rs = statement.executeQuery();
+            if (rs.next())
+                return getEventFromRS(rs);
+            return null;
         }
-        if (rs.next())
-            return getEventFromRS(rs);
-        return null;
     }
 
     /**
@@ -211,11 +217,12 @@ public class EventClass implements Event, Test, Assignment {
      *
      * @return A ResultSet Object
      */
-    public static ResultSet getEventsToday() throws SQLException {
+    public static List<Event> getEventsToday() throws SQLException {
+        List<Event> events = new ArrayList<>();
         LocalDateTime dayStart = LocalDateTime.now().withSecond(0).withMinute(0).withHour(0);
         LocalDateTime dayEnd = LocalDateTime.now().withSecond(59).withMinute(59).withHour(23);
 
-        try (PreparedStatement statement = Merenda.connection.prepareStatement(
+        try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select * " +
                         "from university_event " +
                         "where start_date >= ? and start_date <= ? " +
@@ -223,15 +230,19 @@ public class EventClass implements Event, Test, Assignment {
         )) {
             statement.setTimestamp(1, Timestamp.valueOf(dayStart));
             statement.setTimestamp(2, Timestamp.valueOf(dayEnd));
-            return statement.executeQuery();
+            ResultSet rs = statement.executeQuery();
+            while (rs.next())
+                events.add(getEventFromRS(rs));
+            return events;
         }
     }
 
-    public static ResultSet getEventsToday(EventType type) throws SQLException {
+    public static List<Event> getEventsToday(EventType type) throws SQLException {
+        List<Event> events = new ArrayList<>();
         LocalDateTime dayStart = LocalDateTime.now().withSecond(0).withMinute(0).withHour(0);
         LocalDateTime dayEnd = LocalDateTime.now().withSecond(59).withMinute(59).withHour(23);
 
-        try (PreparedStatement statement = Merenda.connection.prepareStatement(
+        try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select * " +
                         "from university_event " +
                         "where start_date >= ? and start_date <= ? and event_type = ? " +
@@ -240,12 +251,16 @@ public class EventClass implements Event, Test, Assignment {
             statement.setTimestamp(1, Timestamp.valueOf(dayStart));
             statement.setTimestamp(2, Timestamp.valueOf(dayEnd));
             statement.setString(3, type.toString().toLowerCase());
-            return statement.executeQuery();
+            ResultSet rs = statement.executeQuery();
+            while (rs.next())
+                events.add(getEventFromRS(rs));
+            return events;
         }
     }
 
-    public static ResultSet getEventsByWeekday(DayOfWeek dayOfWeek, EventType eventType) throws SQLException {
-        try (PreparedStatement statement = Merenda.connection.prepareStatement(
+    public static List<Event> getEventsByWeekday(DayOfWeek dayOfWeek, EventType eventType) throws SQLException {
+        List<Event> events = new ArrayList<>();
+        try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select * from university_event ue\n" +
                         "inner join university_subject us on ue.subject_id = us.id\n" +
                         "where ue.end_date >= now() and\n" +
@@ -255,7 +270,11 @@ public class EventClass implements Event, Test, Assignment {
         )) {
             statement.setInt(1, dayOfWeek.getValue());
             statement.setString(2, eventType.toString().toLowerCase());
-            return statement.executeQuery();
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                events.add(EventClass.getEventFromRS(rs));
+            }
+            return events;
         }
     }
 }

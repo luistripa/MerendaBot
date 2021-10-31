@@ -1,18 +1,15 @@
 package com.merendabot.university.timers;
 
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.interactions.components.Button;
 import com.merendabot.university.Merenda;
+import com.merendabot.university.MessageDispatcher;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.interactions.components.Button;
 import com.merendabot.university.events.Event;
 import com.merendabot.university.events.EventClass;
 import com.merendabot.university.events.EventType;
 import com.merendabot.university.subjects.Subject;
 
 import java.awt.*;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,27 +31,13 @@ public class ClassesTimerTask extends AbstractTimerTask {
     private Queue<Event> eventCache;
     private LocalDateTime nextCacheLoad;
 
-    public ClassesTimerTask(JDA jda, Merenda merenda) {
-        super(jda, merenda);
+    public ClassesTimerTask() {
         eventCache = new ConcurrentLinkedQueue<>();
         loadCache();
     }
 
     @Override
     public void run() {
-        Guild guild = this.getJDA().getGuildById(GUILD_ID);
-        if (guild == null) {
-            logger.severe("Could not find guild with id "+GUILD_ID);
-            this.cancel();
-            return;
-        }
-        TextChannel channel = guild.getTextChannelById(CHANNEL_ID);
-        if (channel == null) {
-            logger.severe("Could not find channel with id "+CHANNEL_ID);
-            this.cancel();
-            return;
-        }
-
         LocalDateTime now = LocalDateTime.now();
 
         // Check if should reload the cache
@@ -62,15 +45,15 @@ public class ClassesTimerTask extends AbstractTimerTask {
             loadCache();
 
         Event event = eventCache.peek();
-        if (event == null)
+        if (event == null) // There are no events
             return;
 
-        if (now.toLocalTime().isAfter(event.getEndTime())) {
+        if (now.toLocalTime().isAfter(event.getEndTime())) { // Event has passed
             eventCache.remove();
 
         } else {
-            if (now.toLocalTime().isAfter(event.getStartTime())) {
-                notifyEvent(channel, eventCache.remove());
+            if (now.toLocalTime().isAfter(event.getStartTime())) { // Start of event has passed but has not ended
+                notifyEvent(eventCache.remove());
             }
         }
     }
@@ -86,10 +69,8 @@ public class ClassesTimerTask extends AbstractTimerTask {
     private void loadCache() {
         LocalDateTime now = LocalDateTime.now();
         try {
-            ResultSet rs = EventClass.getEventsByWeekday(now.getDayOfWeek(), EventType.CLASS);
-            while (rs.next()) {
-                Event event = EventClass.getEventFromRS(rs);
-                Subject subject = Subject.getSubjectFromRS(rs, 11);
+            for (Event event : EventClass.getEventsByWeekday(now.getDayOfWeek(), EventType.CLASS)) {
+                Subject subject = Subject.getSubjectById(event.getSubjectId());
                 event.setSubject(subject);
                 eventCache.add(event);
             }
@@ -100,32 +81,37 @@ public class ClassesTimerTask extends AbstractTimerTask {
     }
 
     /**
-     * Sends the event message to the specified channel.
+     * Sends the event message to the default channel.
      *
-     * @param channel The channel to send the message to
      * @param event The event that is happening now
      */
-    private void notifyEvent(TextChannel channel, Event event) {
+    private void notifyEvent(Event event) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.WHITE);
         eb.setTitle("Heyy!! Uma aula está prestes a começar!");
 
-        String embedFieldTitle = String.format(
-                "Aula %s",
-                event.getSubject().getShortName()
-        );
-        String embedFieldValue = String.format(
-                "%s - %s",
-                event.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
-                event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
-        );
-        eb.addField(
-                embedFieldTitle,
-                embedFieldValue,
-                false
-        );
-        channel.sendMessageEmbeds(eb.build()).setActionRow(
-                Button.link(event.getLink(), "Zoom")
-        ).queue();
+        try {
+            String embedFieldTitle = String.format(
+                    "Aula %s",
+                    Subject.getSubjectById(event.getSubjectId()).getShortName()
+            );
+            String embedFieldValue = String.format(
+                    "%s - %s",
+                    event.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                    event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
+            );
+            eb.addField(
+                    embedFieldTitle,
+                    embedFieldValue,
+                    false
+            );
+            MessageDispatcher.getInstance().sendMessage(
+                    eb.build(),
+                    Button.link(event.getLink(), "Zoom")
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 }

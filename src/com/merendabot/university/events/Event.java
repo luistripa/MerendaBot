@@ -1,6 +1,5 @@
 package com.merendabot.university.events;
 
-import org.jetbrains.annotations.Nullable;
 import com.merendabot.university.subjects.Subject;
 
 import java.time.LocalDate;
@@ -82,13 +81,6 @@ public interface Event {
      * @return 0 if no subject linked, n > 0 otherwise.
      */
     int getSubjectId();
-
-    /**
-     * Gets the subject associated with this event.
-     *
-     * @return A Subject Object
-     */
-    @Nullable Subject getSubject();
 
     /**
      * Checks if the event is happening now.

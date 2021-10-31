@@ -14,22 +14,6 @@ public abstract class AbstractTimerTask extends TimerTask implements ScheduleTim
     public static final String DEV_GUILD = "797614596985716827";
     public static final String DEV_GUILD_CHANNEL = "897477068831469638";
 
-    private final JDA jda;
-    private final Merenda merenda;
-
-    public AbstractTimerTask(JDA jda, Merenda merenda) {
-        this.jda = jda;
-        this.merenda = merenda;
-    }
-
-    protected JDA getJDA() {
-        return this.jda;
-    }
-
-    protected Merenda getMerenda() {
-        return this.merenda;
-    }
-
     public void processButtonClick(ButtonClickEvent event) {
         event.reply("Error Timer Task: Received a button click but method is not overriden.").queue();
     }

@@ -12,7 +12,6 @@ import com.merendabot.university.events.EventType;
 import com.merendabot.university.subjects.Subject;
 
 import java.awt.*;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.format.DateTimeFormatter;
@@ -33,13 +32,11 @@ public class ClassesCommand extends CommandClass {
 
         try {
             for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-                ResultSet rs = EventClass.getEventsByWeekday(dayOfWeek, EventType.CLASS);
                 String fieldTitle = dayOfWeek.getDisplayName(TextStyle.FULL_STANDALONE, Locale.forLanguageTag("PT"));
                 StringBuilder fieldValue = new StringBuilder();
 
-                while (rs.next()) {
-                    Event e = EventClass.getEventFromRS(rs);
-                    Subject subject = Subject.getSubjectFromRS(rs, 11);
+                for (Event e : EventClass.getEventsByWeekday(dayOfWeek, EventType.CLASS)) {
+                    Subject subject = Subject.getSubjectById(e.getSubjectId());
                     fieldValue.append(
                             String.format(
                                     "**%s %s** (%s - %s) - [Link](%s)%n",

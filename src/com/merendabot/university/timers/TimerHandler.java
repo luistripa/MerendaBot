@@ -1,19 +1,22 @@
 package com.merendabot.university.timers;
 
+
+import com.merendabot.university.Merenda;
+
 import java.util.*;
 
 public class TimerHandler {
 
     public static final String WEEKLY_REPORT_TIMER = "weekly-report";
     public static final String CLASSES_TIMER = "classes";
-    public static final String POLL_REFRESH_TIMER = "polls";
+    public static final String TESTS_REMINDER_TIMER = "test-reminder";
 
     private final Map<String, ScheduleTimer> timerMap;
-
     private final Timer timerScheduler = new Timer();
 
     public TimerHandler() {
         timerMap = new HashMap<>();
+        registerTimers();
     }
 
     public ScheduleTimer getTimer(String timerId) {
@@ -39,5 +42,20 @@ public class TimerHandler {
 
     public boolean stopTimer(String timerId) {
         return timerMap.get(timerId).cancel();
+    }
+
+
+    /*
+    PRIVATE METHODS
+     */
+
+    private void registerTimers() {
+        addTimer(TimerHandler.CLASSES_TIMER, new ClassesTimerTask());
+        addTimer(TimerHandler.WEEKLY_REPORT_TIMER, new WeeklyReportTimerTask());
+        addTimer(TimerHandler.TESTS_REMINDER_TIMER, new TestsReminderTimerTask());
+
+        startTimer(TimerHandler.CLASSES_TIMER, 0, 1000);
+        startTimer(TimerHandler.WEEKLY_REPORT_TIMER, 0, 300000); // 5 minutes
+        startTimer(TimerHandler.TESTS_REMINDER_TIMER, 0, 1000);
     }
 }

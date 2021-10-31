@@ -5,6 +5,7 @@ import com.merendabot.university.Merenda;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface Subject {
@@ -19,44 +20,48 @@ public interface Subject {
 
     void addProfessor(Professor professor);
 
-    static Subject getSubjectFromRS(ResultSet rs_subjects) throws SQLException {
+    static Subject getSubjectFromRS(ResultSet rs) throws SQLException {
         return new SubjectClass(
-                rs_subjects.getInt(1),
-                rs_subjects.getString(2),
-                rs_subjects.getString(3)
+                rs.getInt(1),
+                rs.getString(2),
+                rs.getString(3)
         );
     }
 
-    static Subject getSubjectFromRS(ResultSet rs_subjects, int start) throws SQLException {
+    static Subject getSubjectFromRS(ResultSet rs, int start) throws SQLException {
         return new SubjectClass(
-                rs_subjects.getInt(start),
-                rs_subjects.getString(start+1),
-                rs_subjects.getString(start+2)
+                rs.getInt(start),
+                rs.getString(start+1),
+                rs.getString(start+2)
         );
     }
 
     static Subject getSubjectById(int id) throws SQLException {
-        ResultSet rs;
-        try (PreparedStatement statement = Merenda.connection.prepareStatement(
+        try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select *\n" +
                         "from university_subject\n" +
                         "where id=?;"
         )) {
             statement.setInt(1, id);
-            rs = statement.executeQuery();
+            ResultSet rs = statement.executeQuery();
+            if (rs.next())
+                return getSubjectFromRS(rs);
+            else
+                return null;
         }
-        if (rs.next())
-            return Subject.getSubjectFromRS(rs);
-        else
-            return null;
     }
 
-    static ResultSet getSubjects() throws SQLException {
-        try (PreparedStatement statement = Merenda.connection.prepareStatement(
+    static List<Subject> getSubjects() throws SQLException {
+        List<Subject> subjects = new ArrayList<>();
+        try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select *\n" +
                         "from university_subject;"
         )) {
-            return statement.executeQuery();
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                subjects.add(getSubjectFromRS(rs));
+            }
+            return subjects;
         }
     }
 }

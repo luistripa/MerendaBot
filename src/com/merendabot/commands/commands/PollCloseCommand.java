@@ -37,13 +37,13 @@ public class PollCloseCommand extends RestrictedCommandClass {
             );
 
         // The poll does not exist
-        Poll poll = merenda.getPollHandler().getPoll(pollMessage.getId());
+        Poll poll = merenda.getPoll(pollMessage.getId());
         if (poll == null)
             return event.getChannel().sendMessageEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Votação não encontrada", "Votação não foi encontrada. Ou já encerrou, ou ocorreu um erro.")
             );
 
-        merenda.getPollHandler().endPoll(poll.getMessage().getId());
+        merenda.closePoll(poll.getId());
         return event.getChannel().sendMessageEmbeds(
                 getSuccessEmbed(COMMAND_FRIENDLY_NAME, "Votação encerrada", "Votação encerrada com sucesso.")
         );

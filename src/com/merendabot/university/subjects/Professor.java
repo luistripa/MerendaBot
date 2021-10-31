@@ -2,9 +2,12 @@ package com.merendabot.university.subjects;
 
 import com.merendabot.university.Merenda;
 
+import javax.xml.transform.Result;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public interface Professor {
 
@@ -29,29 +32,33 @@ public interface Professor {
     }
 
     static Professor getProfessorById(int id) throws SQLException {
-
-        ResultSet rs;
-        try (PreparedStatement statement = Merenda.connection.prepareStatement(
+        try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select *\n" +
                         "from university_professor\n" +
                         "where id = ?;"
         )) {
-            rs = statement.executeQuery();
+            ResultSet rs = statement.executeQuery();
             statement.setInt(1, id);
+            if (rs.next())
+                return getProfessorFromRS(rs);
+            else
+                return null;
         }
-        if (rs.next())
-            return Professor.getProfessorFromRS(rs);
-        return null;
     }
 
-    static ResultSet getProfessors() throws SQLException {
-        try (PreparedStatement statement = Merenda.connection.prepareStatement(
+    static List<Professor> getProfessors() throws SQLException {
+        List<Professor> professors = new ArrayList<>();
+        try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select *\n" +
                         "from university_professor up\n" +
                         "inner join public.university_subject us on up.subject_id = us.id\n" +
                         "order by us.id;"
         )) {
-            return statement.executeQuery();
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                professors.add(getProfessorFromRS(rs));
+            }
+            return professors;
         }
     }
 }

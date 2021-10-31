@@ -37,6 +37,11 @@ public class PollClass implements Poll {
     }
 
     @Override
+    public String getId() {
+        return this.message.getId();
+    }
+
+    @Override
     public Message getMessage() {
         return this.message;
     }

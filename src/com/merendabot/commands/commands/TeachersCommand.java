@@ -25,12 +25,10 @@ public class TeachersCommand extends CommandClass {
         String fieldTitle = "";
         StringBuilder fieldValue = new StringBuilder();
         try {
-            ResultSet rs = Professor.getProfessors();
-            while (rs.next()) {
-                Professor professor = Professor.getProfessorFromRS(rs);
-                Subject subject = Subject.getSubjectFromRS(rs, 5);
+            for (Professor professor : Professor.getProfessors()) {
+                Subject subject = Subject.getSubjectById(professor.getSubjectId());
 
-                if (fieldTitle.equals("")) {
+                if (fieldTitle.isEmpty()) {
                     fieldTitle = subject.getShortName();
                     fieldValue.setLength(0);
 

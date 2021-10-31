@@ -1,5 +1,8 @@
 package com.merendabot.university.timers;
 
+import com.merendabot.university.MessageDispatcher;
+import com.merendabot.university.events.Event;
+import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -11,8 +14,7 @@ import com.merendabot.university.Merenda;
 import com.merendabot.university.events.Assignment;
 import com.merendabot.university.events.Test;
 
-import java.awt.*;
-import java.sql.ResultSet;
+import java.awt.Color;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -34,28 +36,15 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
 
     private boolean hasReported;
 
-    public WeeklyReportTimerTask(JDA jda, Merenda merenda) {
-        super(jda, merenda);
+    public WeeklyReportTimerTask() {
         this.hasReported = false;
     }
 
     @Override
     public void run() {
         // JDA connection not available
-        if (!this.getJDA().getStatus().equals(JDA.Status.CONNECTED)) {
-            logger.warning("JDA status is not CONNECTED. Weekly report will not be sent.");
-            return;
-        }
-
-        Guild guild = this.getJDA().getGuildById(GUILD_ID);
-        if (guild == null) {
-            logger.severe("Could not find guild with id "+GUILD_ID);
-            return;
-        }
-
-        TextChannel channel = guild.getTextChannelById(CHANNEL_ID);
-        if (channel == null) {
-            logger.severe("Could not find channel with id "+CHANNEL_ID);
+        if (!Merenda.getJDA().getStatus().equals(JDA.Status.CONNECTED)) {
+            logger.warning("JDA status is not CONNECTED. Weekly report will not be sent. STATUS: "+Merenda.getJDA().getStatus());
             return;
         }
 
@@ -78,12 +67,11 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
 
             this.hasReported = true;
 
-            channel.sendMessageEmbeds(messageEmbed)
-                    .setActionRow(
-                            Button.secondary("timer weekly-report next-week", "E para a semana?")
-                    ).queue();
+            MessageDispatcher.getInstance().sendMessage(
+                    messageEmbed, Button.secondary("timer weekly-report next-week", "E para a semana?")
+            );
         } catch (SQLException e) {
-            channel.sendMessage("Ocorreu um erro. Contacta um administrador.").queue();
+            MessageDispatcher.getInstance().sendMessage("Ocorreu um erro. Contacta um administrador.");
         }
     }
 
@@ -116,14 +104,13 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
     private MessageEmbed.Field getTests(LocalDate start, LocalDate end) throws SQLException {
         StringBuilder fieldValue = new StringBuilder();
 
-        ResultSet rs = Test.getTests(getMerenda().getConnection());
-        while (rs.next()) {
-            Test test = Test.getTestFromRS(rs);
+        for (Test test : Test.getTests()) {
             if (test.getStartDate().isBefore(end.plusDays(1)) && test.getStartDate().isAfter(start))
                 fieldValue.append(
                         String.format(
-                                "%s - %s (%s)\n",
+                                "%s %s - %s (%s)%n",
                                 test.getName(),
+                                Subject.getSubjectById(test.getSubjectId()).getShortName(),
                                 test.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM")),
                                 test.getStartDate().format(DateTimeFormatter.ofPattern("E"))
                         )
@@ -147,13 +134,11 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
     private MessageEmbed.Field getAssignments(LocalDate start, LocalDate end) throws SQLException {
         StringBuilder fieldValue = new StringBuilder();
 
-        ResultSet rs = Assignment.getAssignments();
-        while (rs.next()) {
-            Assignment assignment = Assignment.getAssignmentFromRS(rs);
+        for (Event assignment : Assignment.getAssignments()) {
             if (assignment.getStartDate().isBefore(end) && assignment.getStartDate().isAfter(start))
                 fieldValue.append(
                         String.format(
-                                "%s - %s (%s)\n",
+                                "%s - %s (%s)%n",
                                 assignment.getName(),
                                 assignment.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM")),
                                 assignment.getStartDate().format(DateTimeFormatter.ofPattern("E"))

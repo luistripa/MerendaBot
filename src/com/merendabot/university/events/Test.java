@@ -1,16 +1,11 @@
 package com.merendabot.university.events;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public interface Test extends Event {
 
-    static Test getTestFromRS(ResultSet rs) throws SQLException {
-        return EventClass.getEventFromRS(rs);
-    }
-
-    static ResultSet getTests(Connection connection) throws SQLException {
-        return EventClass.getEvents(EventType.TEST);
+    static List<Test> getTests() throws SQLException {
+        return (List<Test>) (List<? extends Event>) EventClass.getEvents(EventType.TEST);
     }
 }

@@ -32,8 +32,8 @@ public class HelpCommand extends CommandClass {
      * @param event The event that called the method
      */
     private MessageAction showHelpForCommand(Merenda merenda, String command, MessageReceivedEvent event) {
-        if (merenda.getCommandHandler().hasCommand(command)) {
-            Command c = merenda.getCommandHandler().getCommand(command);
+        if (merenda.hasCommand(command)) {
+            Command c = merenda.getCommand(command);
             return event.getChannel().sendMessageEmbeds(c.getHelp());
         } else {
             return event.getChannel().sendMessageEmbeds(
@@ -48,9 +48,9 @@ public class HelpCommand extends CommandClass {
         eb.setColor(Color.WHITE);
         eb.setTitle("Comandos");
 
-        for (String category : merenda.getCommandHandler().getCommandCategories()) {
+        for (String category : merenda.getCommandCategories()) {
             StringBuilder fieldValue = new StringBuilder();
-            for (Command command : merenda.getCommandHandler().getCommandsByCategory(category)) {
+            for (Command command : merenda.getCommandsByCategory(category)) {
                 fieldValue.append(
                         String.format("%s%s - %s%n", COMMAND_PREFIX, command.getName(), command.getDescription())
                 );

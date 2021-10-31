@@ -6,20 +6,20 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import com.merendabot.university.Merenda;
-import com.merendabot.university.events.EventClass;
-import com.merendabot.university.events.EventType;
 import com.merendabot.university.events.Test;
 import com.merendabot.university.subjects.Subject;
 
-import java.awt.*;
-import java.sql.ResultSet;
+import java.awt.Color;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Logger;
 
 public class TestsCommand extends CommandClass {
 
     private static final String COMMAND_FRIENDLY_NAME = "Testes";
+
+    private static final Logger logger = Logger.getLogger("main-log");
 
     public TestsCommand(CommandCategory category, String name, String help) {
         super(category, name, help);
@@ -34,10 +34,15 @@ public class TestsCommand extends CommandClass {
         StringBuilder fieldValue = new StringBuilder();
 
         try {
-            ResultSet rs = EventClass.getEvents(EventType.TEST);
-            while (rs.next()) {
-                Test test = Test.getTestFromRS(rs);
-                Subject subject = Subject.getSubjectFromRS(rs, 11);
+            for (Test test : Test.getTests()) {
+                Subject subject = Subject.getSubjectById(test.getSubjectId());
+
+                if (subject == null) {
+                    logger.severe("Could not find subject with id "+test.getSubjectId());
+                    return event.getChannel().sendMessageEmbeds(
+                            getErrorEmbed(COMMAND_FRIENDLY_NAME, "Erro", "Ocorreu um erro. Contacta um administrador.")
+                    );
+                }
 
                 if (test.getStartDate().isBefore(LocalDate.now()))
                     continue;

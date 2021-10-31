@@ -15,6 +15,7 @@ import com.merendabot.university.polls.Poll;
 import com.merendabot.university.polls.PollClass;
 
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 public class PollCommand extends CallbackCommand {
@@ -56,9 +57,9 @@ public class PollCommand extends CallbackCommand {
     }
 
     @Override
-    public void messageCallback(Merenda merenda, Message message, MessageReceivedEvent event) {
+    public void messageCallback(Message message, MessageReceivedEvent event) {
         Poll poll = new PollClass(message, event.getAuthor(), event.getMessageId());
-        merenda.getPollHandler().addPoll(poll);
+        Merenda.getInstance().addPoll(poll);
         event.getMessage().delete().queue();
     }
 
@@ -67,7 +68,7 @@ public class PollCommand extends CallbackCommand {
         String buttonId = event.getButton().getId().split(" ")[2];
         Message message = event.getMessage();
 
-        Poll poll = merenda.getPollHandler().getPoll(message.getId());
+        Poll poll = merenda.getPoll(message.getId());
         if (poll == null)
             return event.replyEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Votação não encontrada", "Não encontrei essa votação. Provavelmente já encerrou ou existe um erro algures...")
@@ -95,7 +96,6 @@ public class PollCommand extends CallbackCommand {
             }
         }
 
-
         event.getGuild().loadMembers().onSuccess(members -> {
             int memberCount = 0;
             for (Member member : members) {
@@ -105,7 +105,7 @@ public class PollCommand extends CallbackCommand {
 
             if (poll.hasMajority(memberCount) || poll.getVoteCount() == memberCount) {
                 poll.closePoll();
-                merenda.getPollHandler().endPoll(poll.getMessage().getId());
+                merenda.closePoll(poll.getId());
             }
         });
         return event.replyEmbeds(

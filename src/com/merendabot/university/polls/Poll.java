@@ -6,6 +6,14 @@ import net.dv8tion.jda.api.entities.User;
 public interface Poll {
 
     /**
+     * Gets the id of the poll.
+     * The poll id is equal to the original poll message id.
+     *
+     * @return The poll id
+     */
+    String getId();
+
+    /**
      * Gets the original message that holds the poll information.
      * This is the message that is going to be updated once the poll ends.
      *

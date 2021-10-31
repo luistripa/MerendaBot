@@ -1,8 +1,13 @@
 package com.merendabot.commands;
 
+import com.merendabot.commands.commands.*;
+import com.merendabot.university.Merenda;
+
 import java.util.*;
 
 public class CommandHandler {
+
+    public static final String COMMAND_PREFIX = "merenda!";
 
     private final Map<String, Command> commandMap;
     private final Map<String, List<Command>> commandsByCategory;
@@ -10,6 +15,7 @@ public class CommandHandler {
     public CommandHandler() {
         this.commandMap = new HashMap<>();
         this.commandsByCategory = new HashMap<>();
+        registerCommands();
     }
 
     public boolean hasCommand(String commandId) {
@@ -24,10 +30,6 @@ public class CommandHandler {
         return this.commandMap.get(commandId);
     }
 
-    public List<Command> getCommands() {
-        return (List<Command>) this.commandMap.values();
-    }
-
     public List<Command> getCommandsByCategory(String category) {
         return commandsByCategory.get(category);
     }
@@ -36,7 +38,12 @@ public class CommandHandler {
         return  this.commandsByCategory.keySet();
     }
 
-    public void addCommand(Command command) {
+
+    /*
+    PRIVATE METHODS
+     */
+
+    private void addCommand(Command command) {
         if (!hasCategory(command.getCategory())) {
             this.commandsByCategory.put(command.getCategory().toString(), new LinkedList<>());
         }
@@ -44,13 +51,22 @@ public class CommandHandler {
         this.commandMap.put(command.getName(), command);
     }
 
-    public void removeCommand(String commandId) {
-        Command command = this.commandMap.remove(commandId);
-        this.commandsByCategory.get(command.getCategory().toString()).remove(command);
-    }
+    private void registerCommands() {
+        addCommand(new HelpCommand(CommandCategory.CORE, "help", "Mostra o menu de ajuda.")
+                .addParam(new CommandParam("comando", "opcional")
+                        .addPossibleValue("Qualquer comando sem prefixo")));
 
-    public void clearCommands() {
-        commandMap.clear();
-        commandsByCategory.clear();
+        addCommand(new ClassesCommand(CommandCategory.CLASSES, "aulas", "Lista todas as aulas."));
+        addCommand(new NowCommand(CommandCategory.CLASSES, "now", "Lista aulas a decorrer agora."));
+        addCommand(new TestsCommand(CommandCategory.CLASSES, "testes", "Lista todos os testes."));
+        addCommand(new AssigmentsCommand(CommandCategory.CLASSES, "trabalhos", "Lista todos os trabalhos"));
+        addCommand(new LinksCommand(CommandCategory.CLASSES, "links", "Lista todos os links importantes."));
+        addCommand(new TeachersCommand(CommandCategory.CLASSES, "professores", "Lista todos professores."));
+
+        addCommand(new TestCommand(CommandCategory.OTHER, "test", "Testa o que tiver configurado."));
+
+        addCommand(new PollCommand(CommandCategory.POLLS, "poll", "Cria votações")
+                .addParam(new CommandParam("descrição", "Descrição da votação")));
+        addCommand(new PollCloseCommand(CommandCategory.POLLS, "poll_close", "Encerra uma votação, independentemente do número de votos."));
     }
 }
