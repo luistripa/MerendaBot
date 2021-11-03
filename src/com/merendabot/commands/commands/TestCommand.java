@@ -5,7 +5,6 @@ import com.merendabot.commands.CommandClass;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import com.merendabot.university.Merenda;
 
 

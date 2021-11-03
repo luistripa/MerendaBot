@@ -2,7 +2,6 @@ package com.merendabot.commands.commands;
 
 import com.merendabot.commands.CommandCategory;
 import com.merendabot.commands.CommandClass;
-import com.merendabot.university.MessageDispatcher;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import com.merendabot.university.Merenda;
@@ -10,7 +9,6 @@ import com.merendabot.university.important_links.ImportantLink;
 import com.merendabot.university.subjects.Subject;
 
 import java.awt.*;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LinksCommand extends CommandClass {
@@ -28,13 +26,11 @@ public class LinksCommand extends CommandClass {
         StringBuilder fieldValue = new StringBuilder();
 
         try {
-            ResultSet rs = ImportantLink.getLinks(merenda.getConnection());
-            while (rs.next()) {
-                ImportantLink link = ImportantLink.getLinkFromRS(rs);
+            for (ImportantLink link : ImportantLink.getLinks()) {
                 if (link.getSubjectId() == 0) {
                     fieldValue.append(String.format("**%s** - [Link](%s)%n", link.getName(), link.getLink()));
                 } else {
-                    Subject subject = Subject.getSubjectFromRS(rs, 5);
+                    Subject subject = Subject.getSubjectById(link.getSubjectId());
                     fieldValue.append(
                             String.format(
                                     "**%s %s** - [Link](%s)%n",
@@ -45,6 +41,7 @@ public class LinksCommand extends CommandClass {
                     );
                 }
             }
+
             eb.addField(fieldTitle, fieldValue.toString(), false);
             event.getChannel().sendMessageEmbeds(eb.build()).queue();
 

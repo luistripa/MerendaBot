@@ -3,9 +3,7 @@ package com.merendabot.commands.commands;
 import com.merendabot.commands.Command;
 import com.merendabot.commands.CommandCategory;
 import com.merendabot.commands.CommandClass;
-import com.merendabot.university.MessageDispatcher;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import com.merendabot.university.Merenda;
 

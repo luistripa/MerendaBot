@@ -16,6 +16,11 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
+/**
+ * Represents the test reminder.
+ *
+ * This will alert for tests that are to be made in a predefined number of days.
+ */
 public class TestsReminderTimerTask extends AbstractTimerTask {
 
     private static final int TEST_REMINDER_DAYS_BEFORE = 5;

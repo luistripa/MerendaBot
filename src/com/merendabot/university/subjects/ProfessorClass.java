@@ -5,14 +5,13 @@ public class ProfessorClass implements Professor {
     private int id;
     private String name;
     private String email;
-    private int subject_id;
-    private Subject subject;
+    private int subjectId;
 
-    public ProfessorClass(int id, String name, String email, int subject_id) {
+    public ProfessorClass(int id, String name, String email, int subjectId) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.subject_id = subject_id;
+        this.subjectId = subjectId;
     }
 
     @Override
@@ -32,16 +31,6 @@ public class ProfessorClass implements Professor {
 
     @Override
     public int getSubjectId() {
-        return subject_id;
-    }
-
-    @Override
-    public Subject getSubject() {
-        return subject;
-    }
-
-    @Override
-    public void setSubject(Subject subject) {
-        this.subject = subject;
+        return subjectId;
     }
 }

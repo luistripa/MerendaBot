@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 /**
  * Represents the message dispatcher.
- * The message dispatcher is a singleton class that handles message queuing.
+ * The message dispatcher is a singleton class that handles default guild channels.
  *
  * Options include sending Strings or MessageEmbeds to provided channels or a default one, set by the programmer.
  */
@@ -46,10 +46,22 @@ public class MessageDispatcher {
         return instance;
     }
 
+    /**
+     * Gets the default guild from the MessageDispatcher.
+     * {@link #getInstance()} should have been called at least once before this method should be called.
+     *
+     * @return A Guild object
+     */
     public Guild getDefaultGuild() {
         return defaultGuild;
     }
 
+    /**
+     * Gets the default channel where to send timer messages.
+     * {@link #getInstance()} should have been called at least once before this method should be called.
+     *
+     * @return A TextChannel object
+     */
     public TextChannel getDefaultChannel() {
         return defaultChannel;
     }

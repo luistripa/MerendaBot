@@ -20,13 +20,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.logging.Logger;
 
+/**
+ * Represents the weekly report.
+ *
+ * The weekly report is a report that comes out every sunday detailing all the activities, such as assignments
+ * or tests, that are going to be done that week.
+ */
 public class WeeklyReportTimerTask extends AbstractTimerTask {
-    /**
-     * Represents the weekly report.
-     *
-     * The weekly report is a report that comes out every sunday detailing all the activities, such as assignments
-     * or tests, that are going to be done that week.
-     */
 
     private static final DayOfWeek REPORT_DAY_OF_WEEK = DayOfWeek.SUNDAY;
 

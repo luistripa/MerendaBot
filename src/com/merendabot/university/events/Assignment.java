@@ -7,6 +7,6 @@ public interface Assignment extends Event {
 
     static List<Event> getAssignments() throws SQLException {
 
-        return EventClass.getEvents(EventType.ASSIGNMENT);
+        return Event.getEvents(EventType.ASSIGNMENT);
     }
 }

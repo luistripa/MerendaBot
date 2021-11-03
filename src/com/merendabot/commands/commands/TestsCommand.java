@@ -4,7 +4,6 @@ import com.merendabot.commands.CommandCategory;
 import com.merendabot.commands.CommandClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import com.merendabot.university.Merenda;
 import com.merendabot.university.events.Test;
 import com.merendabot.university.subjects.Subject;

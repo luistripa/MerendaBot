@@ -2,12 +2,10 @@ package com.merendabot.commands.commands;
 
 import com.merendabot.commands.CommandCategory;
 import com.merendabot.commands.CommandClass;
-import com.merendabot.university.MessageDispatcher;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import com.merendabot.university.Merenda;
 import com.merendabot.university.events.Event;
-import com.merendabot.university.events.EventClass;
 import com.merendabot.university.events.EventType;
 import com.merendabot.university.subjects.Subject;
 
@@ -35,7 +33,7 @@ public class ClassesCommand extends CommandClass {
                 String fieldTitle = dayOfWeek.getDisplayName(TextStyle.FULL_STANDALONE, Locale.forLanguageTag("PT"));
                 StringBuilder fieldValue = new StringBuilder();
 
-                for (Event e : EventClass.getEventsByWeekday(dayOfWeek, EventType.CLASS)) {
+                for (Event e : Event.getEventsByWeekday(dayOfWeek, EventType.CLASS)) {
                     Subject subject = Subject.getSubjectById(e.getSubjectId());
                     fieldValue.append(
                             String.format(

@@ -4,7 +4,6 @@ import com.merendabot.university.MessageDispatcher;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.interactions.components.Button;
 import com.merendabot.university.events.Event;
-import com.merendabot.university.events.EventClass;
 import com.merendabot.university.events.EventType;
 import com.merendabot.university.subjects.Subject;
 
@@ -74,7 +73,7 @@ public class ClassesTimerTask extends AbstractTimerTask {
     private void loadCache() {
         LocalDateTime now = LocalDateTime.now();
         try {
-            eventCache.addAll(EventClass.getEventsByWeekday(now.getDayOfWeek(), EventType.CLASS));
+            eventCache.addAll(Event.getEventsByWeekday(now.getDayOfWeek(), EventType.CLASS));
         } catch (SQLException e) {
             e.printStackTrace();
         }

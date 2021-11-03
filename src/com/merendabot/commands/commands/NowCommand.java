@@ -29,7 +29,7 @@ public class NowCommand extends CommandClass {
         String fieldValue = "Não existem aulas a decorrer.";
 
         try {
-            for (Event e : EventClass.getEventsByWeekday(now.getDayOfWeek(), EventType.CLASS)) {
+            for (Event e : Event.getEventsByWeekday(now.getDayOfWeek(), EventType.CLASS)) {
                 if (e.isNow()) {
                     fieldValue = String.format(
                             "%s (%s - %s) - [Link](%s)",

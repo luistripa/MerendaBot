@@ -38,18 +38,18 @@ public interface Command {
 
     /**
      * Executes the command itself.
+     *
      *  @param merenda The system object
      * @param command An array containing the command and its parameters
      * @param event The event that triggered the method
-     * @return
      */
     void execute(Merenda merenda, String[] command, MessageReceivedEvent event);
 
     /**
      * Processes a button click for this command.
+     *
      *  @param merenda The system object
      * @param event The event that triggered the method
-     * @return
      */
     void processButtonPressed(Merenda merenda, ButtonClickEvent event);
 

@@ -2,21 +2,17 @@ package com.merendabot.commands.commands;
 
 import com.merendabot.commands.CallbackCommand;
 import com.merendabot.commands.CommandCategory;
-import com.merendabot.university.MessageDispatcher;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
-import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import com.merendabot.university.Merenda;
 import com.merendabot.university.polls.Poll;
 import com.merendabot.university.polls.PollClass;
 
 import java.awt.*;
-import java.sql.SQLException;
 import java.util.Arrays;
 
 public class PollCommand extends CallbackCommand {

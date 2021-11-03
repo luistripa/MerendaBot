@@ -17,9 +17,9 @@ public class PollClass implements Poll {
     private final Set<User> userSet;
 
     // Vote counting
-    private int for_votes;
-    private int abstain_votes;
-    private int against_votes;
+    private int forVotes;
+    private int abstainVotes;
+    private int againstVotes;
 
     private boolean isClosed;
 
@@ -29,9 +29,9 @@ public class PollClass implements Poll {
 
         this.owner = owner;
         this.userSet = new HashSet<>();
-        this.for_votes = 0;
-        this.abstain_votes = 0;
-        this.against_votes = 0;
+        this.forVotes = 0;
+        this.abstainVotes = 0;
+        this.againstVotes = 0;
 
         this.isClosed = false;
     }
@@ -63,28 +63,28 @@ public class PollClass implements Poll {
 
     @Override
     public int getVotesFor() {
-        return for_votes;
+        return forVotes;
     }
 
     @Override
     public int getVotesAbstain() {
-        return abstain_votes;
+        return abstainVotes;
     }
 
     @Override
     public int getVotesAgainst() {
-        return against_votes;
+        return againstVotes;
     }
 
     @Override
     public int getVoteCount() {
-        return for_votes + abstain_votes + against_votes;
+        return forVotes + abstainVotes + againstVotes;
     }
 
     @Override
     public boolean hasMajority(int memberCount) {
         int votesLeft = memberCount - this.getVoteCount();
-        return for_votes > against_votes+votesLeft || against_votes > for_votes + votesLeft;
+        return forVotes > againstVotes+votesLeft || againstVotes > forVotes + votesLeft;
     }
 
     @Override
@@ -114,7 +114,7 @@ public class PollClass implements Poll {
 
         if (hasVoteFrom(user))
             return;
-        for_votes += 1;
+        forVotes += 1;
         userSet.add(user);
     }
 
@@ -125,7 +125,7 @@ public class PollClass implements Poll {
 
         if (hasVoteFrom(user))
             return;
-        abstain_votes += 1;
+        abstainVotes += 1;
         userSet.add(user);
     }
 
@@ -136,7 +136,7 @@ public class PollClass implements Poll {
 
         if (hasVoteFrom(user))
             return;
-        against_votes += 1;
+        againstVotes += 1;
         userSet.add(user);
     }
 
