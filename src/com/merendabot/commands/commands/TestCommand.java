@@ -18,7 +18,7 @@ public class TestCommand extends CommandClass {
     }
 
     @Override
-    public MessageAction execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
+    public void execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
         SelectionMenu selectionMenu = SelectionMenu.create("command test pizza")
                 .setPlaceholder("Escolhe uma pizza")
                 .setRequiredRange(1, 1)
@@ -26,7 +26,7 @@ public class TestCommand extends CommandClass {
                 .addOption("Pizza Hawaii", "pizza-hawaii")
                 .addOption("Pizza Carbonara", "pizza-carbonara")
                 .build();
-        return event.getChannel().sendMessage("Pizza").setActionRow(selectionMenu);
+        event.getChannel().sendMessage("Pizza").setActionRow(selectionMenu).queue();
     }
 
     @Override

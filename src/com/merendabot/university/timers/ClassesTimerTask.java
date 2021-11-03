@@ -1,6 +1,5 @@
 package com.merendabot.university.timers;
 
-import com.merendabot.university.Merenda;
 import com.merendabot.university.MessageDispatcher;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.interactions.components.Button;
@@ -28,7 +27,7 @@ public class ClassesTimerTask extends AbstractTimerTask {
     private static final Logger logger = Logger.getLogger("main-log");
 
 
-    private Queue<Event> eventCache;
+    private final Queue<Event> eventCache;
     private LocalDateTime nextCacheLoad;
 
     public ClassesTimerTask() {
@@ -40,7 +39,7 @@ public class ClassesTimerTask extends AbstractTimerTask {
     public void run() {
         LocalDateTime now = LocalDateTime.now();
 
-        // Check if should reload the cache
+        // Check if it should reload the cache
         if (now.isAfter(nextCacheLoad))
             loadCache();
 
@@ -48,12 +47,18 @@ public class ClassesTimerTask extends AbstractTimerTask {
         if (event == null) // There are no events
             return;
 
+        Subject subject = Subject.getSubjectById(event.getSubjectId());
+        if (subject == null) {
+            logger.warning("Could not find subject with id: "+event.getSubjectId());
+            return;
+        }
+
         if (now.toLocalTime().isAfter(event.getEndTime())) { // Event has passed
             eventCache.remove();
 
         } else {
             if (now.toLocalTime().isAfter(event.getStartTime())) { // Start of event has passed but has not ended
-                notifyEvent(eventCache.remove());
+                notifyEvent(eventCache.remove(), subject);
             }
         }
     }
@@ -69,13 +74,9 @@ public class ClassesTimerTask extends AbstractTimerTask {
     private void loadCache() {
         LocalDateTime now = LocalDateTime.now();
         try {
-            for (Event event : EventClass.getEventsByWeekday(now.getDayOfWeek(), EventType.CLASS)) {
-                Subject subject = Subject.getSubjectById(event.getSubjectId());
-                event.setSubject(subject);
-                eventCache.add(event);
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            eventCache.addAll(EventClass.getEventsByWeekday(now.getDayOfWeek(), EventType.CLASS));
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         nextCacheLoad = now.plusDays(1).withHour(0).withMinute(0).withSecond(0);
     }
@@ -85,33 +86,30 @@ public class ClassesTimerTask extends AbstractTimerTask {
      *
      * @param event The event that is happening now
      */
-    private void notifyEvent(Event event) {
+    private void notifyEvent(Event event, Subject subject) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.WHITE);
         eb.setTitle("Heyy!! Uma aula está prestes a começar!");
 
-        try {
-            String embedFieldTitle = String.format(
-                    "Aula %s",
-                    Subject.getSubjectById(event.getSubjectId()).getShortName()
-            );
-            String embedFieldValue = String.format(
-                    "%s - %s",
-                    event.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
-                    event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
-            );
-            eb.addField(
-                    embedFieldTitle,
-                    embedFieldValue,
-                    false
-            );
-            MessageDispatcher.getInstance().sendMessage(
-                    eb.build(),
-                    Button.link(event.getLink(), "Zoom")
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        String embedFieldTitle = String.format(
+                "Aula %s",
+                subject.getShortName()
+        );
+        String embedFieldValue = String.format(
+                "%s - %s",
+                event.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
+        );
+        eb.addField(
+                embedFieldTitle,
+                embedFieldValue,
+                false
+        );
 
+        // Send the message
+        MessageDispatcher.getInstance().getDefaultChannel()
+                .sendMessageEmbeds(eb.build())
+                .setActionRow(Button.link(event.getLink(), "Zoom"))
+                .queue();
     }
 }

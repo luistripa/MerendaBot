@@ -1,11 +1,11 @@
 package com.merendabot.university.timers;
 
 import com.merendabot.university.MessageDispatcher;
+import com.merendabot.university.events.Test;
+import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
-import com.merendabot.university.events.Test;
-import com.merendabot.university.subjects.Subject;
 
 import java.awt.*;
 import java.sql.SQLException;
@@ -40,6 +40,12 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
         if (test == null) // There are no tests
             return;
 
+        Subject subject = Subject.getSubjectById(test.getSubjectId());
+        if (subject == null) {
+            logger.warning("Could not find subject with id: "+test.getSubjectId());
+            return;
+        }
+
         // Test date already passed
         if (now.toLocalDate().isAfter(test.getStartDate())) {
             testCache.remove();
@@ -49,7 +55,7 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
         LocalDate date = test.getStartDate().minusDays(TEST_REMINDER_DAYS_BEFORE);
 
         if (now.toLocalDate().isEqual(date)) // Test is TEST_REMINDER_DAYS_BEFORE days from now
-            notifyTest(testCache.remove());
+            notifyTest(testCache.remove(), subject);
 
         else if (date.isBefore(now.toLocalDate())) // Test reminding date has already passed
             testCache.remove();
@@ -57,13 +63,29 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
 
     @Override
     public void processButtonClick(ButtonClickEvent event) {
-        switch (event.getButton().getId().split(" ")[2]) {
+        Button button = event.getButton();
+
+        if (button == null) {
+            logger.severe("Could not find button.");
+            event.reply("Não encontrei esse botão... Contacta um administrador.").queue();
+            return;
+        }
+
+        if (button.getId() == null) {
+            logger.severe("Button does not have an id.");
+            event.reply("Não encontrei esse botão... Contacta um administrador.").queue();
+            return;
+        }
+        String action = button.getId().split(" ")[2];
+        switch (action) {
             case "panic": {
                 event.reply(":eyes:").queue();
                 break;
             }
-            default:
-                event.reply(":confused:").queue();
+            default: {
+                logger.warning("Could not find action with id: "+action);
+                event.reply("A ação que esse botão pediu não é válida. Contacta um administrador.").queue();
+            }
         }
     }
 
@@ -85,32 +107,27 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
     }
 
 
-    private void notifyTest(Test test) {
+    private void notifyTest(Test test, Subject subject) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.WHITE);
         eb.setTitle("Hellooo!! Um teste está para ser realizado em breve!");
 
-        try {
-            String fieldTitle = String.format(
-                    "%s %s :pencil:",
-                    test.getName(),
-                    Subject.getSubjectById(test.getSubjectId()).getShortName());
-            String fieldValue = String.format(
-                    "%s (%s) %s-%s",
-                    test.getStartDate().format(DateTimeFormatter.ofPattern("dd MMM")),
-                    test.getStartDate().format(DateTimeFormatter.ofPattern("EEE")),
-                    test.getStartTime().format(DateTimeFormatter.ofPattern("H:mm")),
-                    test.getEndTime().format(DateTimeFormatter.ofPattern("H:mm"))
-            );
-            eb.addField(fieldTitle, fieldValue, false);
+        String fieldTitle = String.format(
+                "%s %s :pencil:",
+                test.getName(),
+                subject.getShortName());
+        String fieldValue = String.format(
+                "%s (%s) %s-%s",
+                test.getStartDate().format(DateTimeFormatter.ofPattern("dd MMM")),
+                test.getStartDate().format(DateTimeFormatter.ofPattern("EEE")),
+                test.getStartTime().format(DateTimeFormatter.ofPattern("H:mm")),
+                test.getEndTime().format(DateTimeFormatter.ofPattern("H:mm"))
+        );
+        eb.addField(fieldTitle, fieldValue, false);
 
-            MessageDispatcher.getInstance().sendMessage(
-                    eb.build(), Button.danger("timer test-reminder panic", "Panic!")
-            );
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        MessageDispatcher.getInstance().getDefaultChannel()
+                .sendMessageEmbeds(eb.build())
+                .setActionRow(Button.danger("timer test-reminder panic", "Panic!"))
+                .queue();
     }
 }

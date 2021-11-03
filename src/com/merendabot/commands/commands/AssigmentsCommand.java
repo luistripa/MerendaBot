@@ -5,7 +5,6 @@ import com.merendabot.commands.CommandClass;
 import com.merendabot.university.events.Event;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import com.merendabot.university.Merenda;
 import com.merendabot.university.events.Assignment;
 import com.merendabot.university.subjects.Subject;
@@ -26,7 +25,7 @@ public class AssigmentsCommand extends CommandClass {
     }
 
     @Override
-    public MessageAction execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
+    public void execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Trabalhos");
 
@@ -46,9 +45,10 @@ public class AssigmentsCommand extends CommandClass {
 
                     if (subject == null) {
                         logger.severe("Could not find subject with id " + assignment.getSubjectId());
-                        return event.getChannel().sendMessageEmbeds(
+                        event.getChannel().sendMessageEmbeds(
                                 getErrorEmbed("Assignments", "Erro", "Ocorreu um erro. Contacta um administrador.")
-                        );
+                        ).queue();
+                        return;
                     }
                     subjectCache.put(subject.getId(), subject);
                 }
@@ -69,13 +69,13 @@ public class AssigmentsCommand extends CommandClass {
                 fieldValue.append("Não existem trabalhos.");
 
             eb.addField(fieldTitle, fieldValue.toString(), false);
-            return event.getChannel().sendMessageEmbeds(eb.build());
+            event.getChannel().sendMessageEmbeds(eb.build()).queue();
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return event.getChannel().sendMessageEmbeds(
+            event.getChannel().sendMessageEmbeds(
                     getErrorEmbed("Assignments", "Erro SQL", "Ocorreu um erro. Contacta o admininstrador.")
-            );
+            ).queue();
         }
     }
 }

@@ -1,8 +1,6 @@
 package com.merendabot.university.timers;
 
 
-import com.merendabot.university.Merenda;
-
 import java.util.*;
 
 public class TimerHandler {

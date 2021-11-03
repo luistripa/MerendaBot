@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.jetbrains.annotations.NotNull;
 import com.merendabot.university.Merenda;
@@ -53,17 +55,7 @@ public class Main extends ListenerAdapter {
         Merenda.setJDA(event.getJDA());
         MessageDispatcher.getInstance();
 
-        // Setup Merenda. This must be done on a different thread, so we can call jda.awaitReady()
-        new Thread(() -> {
-            try {
-                Merenda.getJDA().awaitReady();
-                Merenda.getInstance().setup();
-            } catch (SQLException | InterruptedException e) {
-                e.printStackTrace();
-                Thread.currentThread().interrupt();
-            }
-        }).start();
-
+        Merenda.getInstance().setup();
     }
 
     @Override
@@ -79,14 +71,7 @@ public class Main extends ListenerAdapter {
 
         if (merenda.hasCommand(splitCommand[0])) {
             Command command = merenda.getCommand(splitCommand[0]);
-            if (command instanceof CallbackCommand)
-                command.execute(merenda, splitCommand, event)
-                        .queue(m -> {
-                            CallbackCommand c = (CallbackCommand) command;
-                            c.messageCallback(m, event);
-                        });
-            else
-                command.execute(merenda, splitCommand, event).queue();
+            command.execute(merenda, splitCommand, event);
 
         } else {
             event.getChannel().sendMessage(
@@ -113,10 +98,15 @@ public class Main extends ListenerAdapter {
          * section 3 - Instruction (Handler specific. Some handlers may completely ignore this) (may have internal sections)
          */
         Merenda merenda = Merenda.getInstance();
-        String[] selectionMenu = event.getSelectionMenu().getId().split(" ");
-        switch (selectionMenu[0]) {
+        SelectionMenu selectionMenu = event.getSelectionMenu();
+        if (selectionMenu == null || selectionMenu.getId() == null) {
+            logger.warning("Selection Menu is null or does not have an ID.");
+            return;
+        }
+        String[] selectionMenuId = selectionMenu.getId().split(" ");
+        switch (selectionMenuId[0]) {
             case "command": {
-                Command command = merenda.getCommand(selectionMenu[1]);
+                Command command = merenda.getCommand(selectionMenuId[1]);
                 command.processSelectionMenu(merenda, event);
                 break;
             }
@@ -125,7 +115,7 @@ public class Main extends ListenerAdapter {
                 break;
             }
             default: {
-                String logMessage = String.format("Could not find selection menu handler type: %s", selectionMenu[0]);
+                String logMessage = String.format("Could not find selection menu handler type: %s", selectionMenuId[0]);
                 logger.severe(logMessage);
                 event.reply("Não consegui entender essa ação. Contacta um administrador.").queue();
             }
@@ -146,14 +136,20 @@ public class Main extends ListenerAdapter {
          */
 
         Merenda merenda = Merenda.getInstance();
+        Button button = event.getButton();
 
-        String[] button = event.getButton().getId().split(" ");
+        if (button == null || button.getId() == null) {
+            logger.warning("Button is null or its id is null.");
+            return;
+        }
 
-        switch (button[0]) { // Section 1 of button id
+        String[] buttonId = button.getId().split(" ");
+
+        switch (buttonId[0]) { // Section 1 of button id
             case "command": {
-                if (merenda.hasCommand(button[1])) {
-                    Command command  = merenda.getCommand(button[1]); // Command id is in Section 2
-                    command.processButtonPressed(merenda, event).setEphemeral(true).queue();
+                if (merenda.hasCommand(buttonId[1])) {
+                    Command command  = merenda.getCommand(buttonId[1]); // Command id is in Section 2
+                    command.processButtonPressed(merenda, event);
                 } else {
                     event.reply("Uhmm... não encontrei essa ação. Se isto for um erro contacta o administrador.")
                             .setEphemeral(true).queue();
@@ -161,12 +157,12 @@ public class Main extends ListenerAdapter {
                 break;
             }
             case "timer": {
-                ScheduleTimer timer = merenda.getTimer(button[1]);
+                ScheduleTimer timer = merenda.getTimer(buttonId[1]);
                 timer.processButtonClick(event);
                 break;
             }
             default: {
-                String logMessage = String.format("Could not find button handler type: %s", button[0]);
+                String logMessage = String.format("Could not find button handler type: %s", buttonId[0]);
                 logger.severe(logMessage);
                 event.reply("Não consegui entender essa ação. Contacta um administrador.").queue();
             }

@@ -88,10 +88,4 @@ public interface Event {
      * @return True if now, False otherwise.
      */
     boolean isNow();
-
-    /**
-     * Sets the subject associated with the event
-     * @param subject A Subject Object
-     */
-    void setSubject(Subject subject);
 }

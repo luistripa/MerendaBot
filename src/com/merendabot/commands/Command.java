@@ -43,7 +43,7 @@ public interface Command {
      * @param event The event that triggered the method
      * @return
      */
-    MessageAction execute(Merenda merenda, String[] command, MessageReceivedEvent event);
+    void execute(Merenda merenda, String[] command, MessageReceivedEvent event);
 
     /**
      * Processes a button click for this command.
@@ -51,7 +51,7 @@ public interface Command {
      * @param event The event that triggered the method
      * @return
      */
-    ReplyAction processButtonPressed(Merenda merenda, ButtonClickEvent event);
+    void processButtonPressed(Merenda merenda, ButtonClickEvent event);
 
     /**
      * Processes a selection menu event.

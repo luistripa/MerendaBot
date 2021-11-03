@@ -41,9 +41,11 @@ public interface Professor {
             statement.setInt(1, id);
             if (rs.next())
                 return getProfessorFromRS(rs);
-            else
-                return null;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     static List<Professor> getProfessors() throws SQLException {

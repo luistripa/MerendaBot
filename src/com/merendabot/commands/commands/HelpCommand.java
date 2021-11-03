@@ -3,9 +3,10 @@ package com.merendabot.commands.commands;
 import com.merendabot.commands.Command;
 import com.merendabot.commands.CommandCategory;
 import com.merendabot.commands.CommandClass;
+import com.merendabot.university.MessageDispatcher;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import com.merendabot.university.Merenda;
 
 import java.awt.*;
@@ -17,11 +18,11 @@ public class HelpCommand extends CommandClass {
     }
 
     @Override
-    public MessageAction execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
+    public void execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
         if (this.verifyCommandParams(command, 1))
-            return showHelpForCommand(merenda, command[1], event);
+            showHelpForCommand(merenda, command[1], event);
         else
-            return showHelpMenu(merenda, event);
+            showHelpMenu(merenda, event);
     }
 
     /**
@@ -29,21 +30,20 @@ public class HelpCommand extends CommandClass {
      *
      * @param merenda The system object
      * @param command The command to show help from
-     * @param event The event that called the method
      */
-    private MessageAction showHelpForCommand(Merenda merenda, String command, MessageReceivedEvent event) {
+    private void showHelpForCommand(Merenda merenda, String command, MessageReceivedEvent event) {
         if (merenda.hasCommand(command)) {
             Command c = merenda.getCommand(command);
-            return event.getChannel().sendMessageEmbeds(c.getHelp());
+            event.getChannel().sendMessageEmbeds(c.getHelp()).queue();
         } else {
-            return event.getChannel().sendMessageEmbeds(
+            event.getChannel().sendMessageEmbeds(
                     getErrorEmbed(String.format("Help - %s", command), "Comando não encontrado", "Ajuda para esse comando não existe.")
-            );
+            ).queue();
         }
 
     }
 
-    private MessageAction showHelpMenu(Merenda merenda, MessageReceivedEvent event) {
+    private void showHelpMenu(Merenda merenda, MessageReceivedEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.WHITE);
         eb.setTitle("Comandos");
@@ -58,6 +58,6 @@ public class HelpCommand extends CommandClass {
             eb.addField(category, fieldValue.toString(), false);
         }
         eb.setFooter(String.format("%shelp <comando> para mais informações de um comando.", COMMAND_PREFIX));
-        return event.getChannel().sendMessageEmbeds(eb.build());
+        event.getChannel().sendMessageEmbeds(eb.build()).queue();
     }
 }

@@ -2,6 +2,7 @@ package com.merendabot.commands.commands;
 
 import com.merendabot.commands.CallbackCommand;
 import com.merendabot.commands.CommandCategory;
+import com.merendabot.university.MessageDispatcher;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -27,12 +28,13 @@ public class PollCommand extends CallbackCommand {
     }
 
     @Override
-    public MessageAction execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
+    public void execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
 
         if (!event.isFromGuild()) {
-            return event.getChannel().sendMessageEmbeds(
+            event.getChannel().sendMessageEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Funcionalidade não disponível", "Desculpa, mas esta funcionalidade só pode ser utilizada em servidores.")
-            );
+            ).queue();
+            return;
         }
 
         String[] pollDescription = Arrays.copyOfRange(command, 1, command.length);
@@ -48,12 +50,11 @@ public class PollCommand extends CallbackCommand {
         eb.addField("Iniciada por:", String.format("<@%s>", event.getAuthor().getId()), true);
         eb.addField("Status:", "Aberta :pencil:", true);
 
-
-        return event.getChannel().sendMessageEmbeds(eb.build()).setActionRow(
+        event.getChannel().sendMessageEmbeds(eb.build()).setActionRow(
                 Button.success("command poll vote-for", "A Favor"),
                 Button.secondary("command poll vote-abstain", "Abster"),
                 Button.danger("command poll vote-against", "Contra")
-        );
+        ).queue(message -> messageCallback(message, event));
     }
 
     @Override
@@ -64,20 +65,24 @@ public class PollCommand extends CallbackCommand {
     }
 
     @Override
-    public ReplyAction processButtonPressed(Merenda merenda, ButtonClickEvent event) {
+    public void processButtonPressed(Merenda merenda, ButtonClickEvent event) {
         String buttonId = event.getButton().getId().split(" ")[2];
         Message message = event.getMessage();
 
         Poll poll = merenda.getPoll(message.getId());
-        if (poll == null)
-            return event.replyEmbeds(
+        if (poll == null) {
+            event.replyEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Votação não encontrada", "Não encontrei essa votação. Provavelmente já encerrou ou existe um erro algures...")
-            );
+            ).queue();
+            return;
+        }
 
-        if (poll.hasVoteFrom(event.getUser()))
-            return event.replyEmbeds(
+        if (poll.hasVoteFrom(event.getUser())) {
+            event.replyEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Voto já registado", "Desculpa, mas já participaste nesta votação. Os votos são únicos, privados e permanentes!")
-            );
+            ).queue();
+            return;
+        }
 
         switch (buttonId) {
             case "vote-for":
@@ -90,9 +95,9 @@ public class PollCommand extends CallbackCommand {
                 poll.voteAgainst(event.getUser());
                 break;
             default: {
-                return event.replyEmbeds(
+                event.replyEmbeds(
                         getErrorEmbed(COMMAND_FRIENDLY_NAME, "Erro", "O botão não executou a ação correta. Contacta um administrador.")
-                );
+                ).setEphemeral(true).queue();
             }
         }
 
@@ -108,8 +113,8 @@ public class PollCommand extends CallbackCommand {
                 merenda.closePoll(poll.getId());
             }
         });
-        return event.replyEmbeds(
+        event.replyEmbeds(
                 getSuccessEmbed(COMMAND_FRIENDLY_NAME, "Voto registado", "Obrigado! O teu voto foi registado!")
-        );
+        ).setEphemeral(true).queue();
     }
 }

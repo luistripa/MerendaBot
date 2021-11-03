@@ -1,5 +1,6 @@
 package com.merendabot.university;
 
+import com.merendabot.Main;
 import com.merendabot.commands.Command;
 import com.merendabot.commands.CommandHandler;
 import com.merendabot.university.polls.Poll;
@@ -24,7 +25,7 @@ public class Merenda  {
     private PollHandler pollHandler;
     private TimerHandler timerHandler;
 
-    protected Merenda() {
+    private Merenda() {
 
     }
 
@@ -43,16 +44,24 @@ public class Merenda  {
         return jda;
     }
 
-    public void setup() throws SQLException {
-        Properties properties = new Properties();
-        properties.setProperty("user", System.getenv("DATABASE_USER"));
-        properties.setProperty("password", System.getenv("DATABASE_PASSWORD"));
+    public void setup() {
+        new Thread(() -> {
+            try {
+                Merenda.getJDA().awaitReady();
+                Properties properties = new Properties();
+                properties.setProperty("user", System.getenv("DATABASE_USER"));
+                properties.setProperty("password", System.getenv("DATABASE_PASSWORD"));
 
-        connection = DriverManager.getConnection(URL, properties);
-
-        commandHandler = new CommandHandler();
-        pollHandler = new PollHandler();
-        timerHandler = new TimerHandler();
+                connection = DriverManager.getConnection(URL, properties);
+                commandHandler = new CommandHandler();
+                pollHandler = new PollHandler();
+                timerHandler = new TimerHandler();
+            } catch (SQLException | InterruptedException e) {
+                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                Main.logger.severe("Error seting up merenda. System won't be able to process commands or timers.");
+            }
+        }).start();
     }
 
     /*

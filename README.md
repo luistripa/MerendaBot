@@ -43,7 +43,7 @@ Make sure you're executing it on an empty database.
 
 # Commands
 
-The bot possesses the following com.merendabot.commands:
+The bot possesses the following commands:
 - [x] list of all classes
 - [x] list of classes happening now
 - [x] list of tests
@@ -59,5 +59,5 @@ The bot possesses the following com.merendabot.commands:
 The bot possesses the following timers:
 - [x] class alert (alerts when a class is about to start)
 - [x] weekly reports (reports all tests and assignments for the week)
-- [ ] test alert (alerts when a test is to be done soon)
+- [x] test alert (alerts when a test is to be done soon)
 - [ ] assignment alert (alerts when an assignment is to be delivered soon)

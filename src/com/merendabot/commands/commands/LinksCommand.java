@@ -2,9 +2,9 @@ package com.merendabot.commands.commands;
 
 import com.merendabot.commands.CommandCategory;
 import com.merendabot.commands.CommandClass;
+import com.merendabot.university.MessageDispatcher;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import com.merendabot.university.Merenda;
 import com.merendabot.university.important_links.ImportantLink;
 import com.merendabot.university.subjects.Subject;
@@ -19,7 +19,7 @@ public class LinksCommand extends CommandClass {
     }
 
     @Override
-    public MessageAction execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
+    public void execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Links Importantes");
         eb.setColor(Color.WHITE);
@@ -46,13 +46,13 @@ public class LinksCommand extends CommandClass {
                 }
             }
             eb.addField(fieldTitle, fieldValue.toString(), false);
-            return event.getChannel().sendMessageEmbeds(eb.build());
+            event.getChannel().sendMessageEmbeds(eb.build()).queue();
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return event.getChannel().sendMessageEmbeds(
+            event.getChannel().sendMessageEmbeds(
                     getErrorEmbed("Links", "Erro SQL", "Ocorreu um erro. Contacta o administrador.")
-            );
+            ).queue();
         }
     }
 }

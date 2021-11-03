@@ -1,20 +1,18 @@
 package com.merendabot.university.timers;
 
+import com.merendabot.university.Merenda;
 import com.merendabot.university.MessageDispatcher;
+import com.merendabot.university.events.Assignment;
 import com.merendabot.university.events.Event;
+import com.merendabot.university.events.Test;
 import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
-import com.merendabot.university.Merenda;
-import com.merendabot.university.events.Assignment;
-import com.merendabot.university.events.Test;
 
-import java.awt.Color;
+import java.awt.*;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -67,11 +65,14 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
 
             this.hasReported = true;
 
-            MessageDispatcher.getInstance().sendMessage(
-                    messageEmbed, Button.secondary("timer weekly-report next-week", "E para a semana?")
-            );
+            MessageDispatcher.getInstance().getDefaultChannel()
+                    .sendMessageEmbeds(messageEmbed).setActionRow(Button.secondary("timer weekly-report next-week", "E para a semana?"))
+                    .queue();
+
         } catch (SQLException e) {
-            MessageDispatcher.getInstance().sendMessage("Ocorreu um erro. Contacta um administrador.");
+            MessageDispatcher.getInstance().getDefaultChannel()
+                    .sendMessage("Ocorreu um erro. Contacta um administrador.")
+                    .queue();
         }
     }
 

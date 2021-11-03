@@ -2,7 +2,6 @@ package com.merendabot.university.events;
 
 import org.jetbrains.annotations.Nullable;
 import com.merendabot.university.Merenda;
-import com.merendabot.university.subjects.Subject;
 
 import java.sql.*;
 import java.time.DayOfWeek;
@@ -29,7 +28,6 @@ public class EventClass implements Event, Test, Assignment {
     private LocalTime endTime;
     private String link;
     private int subjectId;
-    private Subject subject;
 
     public EventClass(
             int id,
@@ -129,11 +127,6 @@ public class EventClass implements Event, Test, Assignment {
             return false;
         }
 
-    }
-
-    @Override
-    public void setSubject(Subject subject) {
-        this.subject = subject;
     }
 
     /**

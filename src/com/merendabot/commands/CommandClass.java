@@ -1,5 +1,6 @@
 package com.merendabot.commands;
 
+import com.merendabot.university.MessageDispatcher;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
@@ -77,10 +78,10 @@ public abstract class CommandClass implements Command {
     }
 
     @Override
-    public ReplyAction processButtonPressed(Merenda merenda, ButtonClickEvent event) {
-        return event.replyEmbeds(
+    public void processButtonPressed(Merenda merenda, ButtonClickEvent event) {
+        event.replyEmbeds(
                 getSuccessEmbed("Botão", "Botão premido", "Um botão foi premido, mas não realizou nenhuma ação.")
-        );
+        ).queue();
     }
 
     @Override

@@ -26,7 +26,7 @@ public class TestsCommand extends CommandClass {
     }
 
     @Override
-    public MessageAction execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
+    public void execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(COMMAND_FRIENDLY_NAME);
         eb.setColor(Color.WHITE);
@@ -39,9 +39,10 @@ public class TestsCommand extends CommandClass {
 
                 if (subject == null) {
                     logger.severe("Could not find subject with id "+test.getSubjectId());
-                    return event.getChannel().sendMessageEmbeds(
+                    event.getChannel().sendMessageEmbeds(
                             getErrorEmbed(COMMAND_FRIENDLY_NAME, "Erro", "Ocorreu um erro. Contacta um administrador.")
-                    );
+                    ).queue();
+                    return;
                 }
 
                 if (test.getStartDate().isBefore(LocalDate.now()))
@@ -58,13 +59,13 @@ public class TestsCommand extends CommandClass {
                 );
             }
             eb.addField(COMMAND_FRIENDLY_NAME, fieldValue.toString(), false);
-            return event.getChannel().sendMessageEmbeds(eb.build());
+            event.getChannel().sendMessageEmbeds(eb.build()).queue();
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return event.getChannel().sendMessageEmbeds(
+            event.getChannel().sendMessageEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Erro SQL", "Ocorreu um erro. Contacta o administrador.")
-            );
+            ).queue();
         }
 
 
