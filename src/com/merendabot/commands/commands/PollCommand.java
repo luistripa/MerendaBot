@@ -2,6 +2,7 @@ package com.merendabot.commands.commands;
 
 import com.merendabot.commands.CallbackCommand;
 import com.merendabot.commands.CommandCategory;
+import com.merendabot.university.polls.BinaryPoll;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -63,15 +64,23 @@ public class PollCommand extends CallbackCommand {
     @Override
     public void processButtonPressed(Merenda merenda, ButtonClickEvent event) {
         String buttonId = event.getButton().getId().split(" ")[2];
-        Message message = event.getMessage();
 
-        Poll poll = merenda.getPoll(message.getId());
-        if (poll == null) {
+        Poll pollInstance = merenda.getPoll(event.getMessageId());
+        if (pollInstance == null) {
             event.replyEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Votação não encontrada", "Não encontrei essa votação. Provavelmente já encerrou ou existe um erro algures...")
             ).queue();
             return;
         }
+
+        if (!(pollInstance instanceof BinaryPoll)) {
+            event.replyEmbeds(
+                    getErrorEmbed(COMMAND_FRIENDLY_NAME, "Votação inválida", "Essa votação não é uma votação binária.")
+            ).queue();
+            return;
+        }
+
+        BinaryPoll poll = (BinaryPoll) pollInstance;
 
         if (poll.hasVoteFrom(event.getUser())) {
             event.replyEmbeds(

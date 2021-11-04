@@ -5,60 +5,19 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
-import java.util.HashSet;
-import java.util.Set;
 
-public class PollClass implements Poll {
-
-    private final Message message;
-    private final String description;
-
-    private final User owner;
-    private final Set<User> userSet;
+public class PollClass extends AbstractPoll implements BinaryPoll {
 
     // Vote counting
     private int forVotes;
     private int abstainVotes;
     private int againstVotes;
 
-    private boolean isClosed;
-
     public PollClass(Message message, User owner, String description) {
-        this.message = message;
-        this.description = description;
-
-        this.owner = owner;
-        this.userSet = new HashSet<>();
+        super(message, owner, description);
         this.forVotes = 0;
         this.abstainVotes = 0;
         this.againstVotes = 0;
-
-        this.isClosed = false;
-    }
-
-    @Override
-    public String getId() {
-        return this.message.getId();
-    }
-
-    @Override
-    public Message getMessage() {
-        return this.message;
-    }
-
-    @Override
-    public String getDescription() {
-        return this.description;
-    }
-
-    @Override
-    public User getOwner() {
-        return owner;
-    }
-
-    @Override
-    public boolean hasVoteFrom(User user) {
-        return userSet.contains(user);
     }
 
     @Override
@@ -103,46 +62,41 @@ public class PollClass implements Poll {
     }
 
     @Override
-    public boolean isClosed() {
-        return isClosed;
-    }
-
-    @Override
     public void voteFor(User user) {
-        if (isClosed)
+        if (isClosed())
             return;
 
         if (hasVoteFrom(user))
             return;
         forVotes += 1;
-        userSet.add(user);
+        getUserSet().add(user);
     }
 
     @Override
     public void voteAbstain(User user) {
-        if (isClosed)
+        if (isClosed())
             return;
 
         if (hasVoteFrom(user))
             return;
         abstainVotes += 1;
-        userSet.add(user);
+        getUserSet().add(user);
     }
 
     @Override
     public void voteAgainst(User user) {
-        if (isClosed)
+        if (isClosed())
             return;
 
         if (hasVoteFrom(user))
             return;
         againstVotes += 1;
-        userSet.add(user);
+        getUserSet().add(user);
     }
 
     @Override
     public void closePoll() {
-        EmbedBuilder eb = new EmbedBuilder(message.getEmbeds().get(0));
+        EmbedBuilder eb = new EmbedBuilder(getMessage().getEmbeds().get(0));
         eb.clearFields();
         eb.addField("Iniciada por:", String.format("<@%s>", this.getOwner().getId()), true);
 
@@ -167,7 +121,7 @@ public class PollClass implements Poll {
         eb.addField("Absteve-se", String.valueOf(getVotesAbstain()), true);
         eb.addField("Contra", String.valueOf(getVotesAgainst()), true);
 
-        isClosed = true;
-        message.editMessageEmbeds(eb.build()).setActionRows().queue();
+        setClosed(true);
+        getMessage().editMessageEmbeds(eb.build()).setActionRows().queue();
     }
 }

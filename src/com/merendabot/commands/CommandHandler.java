@@ -68,5 +68,6 @@ public class CommandHandler {
         addCommand(new PollCommand(CommandCategory.POLLS, "poll", "Cria votações")
                 .addParam(new CommandParam("descrição", "Descrição da votação")));
         addCommand(new PollCloseCommand(CommandCategory.POLLS, "poll_close", "Encerra uma votação, independentemente do número de votos."));
+        addCommand(new MultiChoicePollCommand(CommandCategory.POLLS, "multipoll", "Cria poll de multiplas opções"));
     }
 }
