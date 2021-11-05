@@ -44,8 +44,8 @@ public class MultiChoicePollCommand extends CommandClass {
         eb.addField("Status:", "Aberta :pencil:", true);
 
         SelectionMenu.Builder selectionMenu = SelectionMenu.create("command multipoll vote");
-        selectionMenu.setRequiredRange(1, options.size());
-        selectionMenu.setPlaceholder("Escolhe uma ou várias opções.");
+        selectionMenu.setRequiredRange(1, 1);
+        selectionMenu.setPlaceholder("Escolhe uma opção.");
 
         Set<String> optionsSet = new HashSet<>(options);
         for (String option : optionsSet) {

@@ -8,11 +8,13 @@ import java.util.*;
 public class MultiChoicePollClass extends AbstractPoll implements MultiChoicePoll {
 
     public final Map<String, Integer> options;
+    private int voteCount;
 
     public MultiChoicePollClass(Message message, User owner, String description, Set<String> optionsSet) {
         super(message, owner, description);
 
         this.options = new HashMap<>();
+        this.voteCount = 0;
         for (String option : optionsSet)
             this.options.put(option.toLowerCase().replace(" ", "-"), 0);
     }
@@ -37,6 +39,7 @@ public class MultiChoicePollClass extends AbstractPoll implements MultiChoicePol
         for (String value : values) {
             options.replace(value, options.get(value)+1);
         }
+        voteCount++;
     }
 
     @Override
