@@ -7,6 +7,7 @@ import com.merendabot.university.polls.MultiChoicePoll;
 import com.merendabot.university.polls.MultiChoicePollClass;
 import com.merendabot.university.polls.Poll;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
@@ -101,7 +102,18 @@ public class MultiChoicePollCommand extends CommandClass {
                 getSuccessEmbed(COMMAND_FRIENDLY_NAME, "Voto registado", "Obrigado! O teu voto foi registado!")
         ).setEphemeral(true).queue();
 
-        // TODO: Check for majority
+        event.getGuild().loadMembers().onSuccess(members -> {
+            int memberCount = 0;
+            for (Member member : members) {
+                if (!member.getUser().isBot())
+                    memberCount += 1;
+            }
+
+            if (poll.hasMajority(memberCount) || poll.getVoteCount() == memberCount) {
+                poll.closePoll();
+                merenda.closePoll(poll.getId());
+            }
+        });
     }
 
     private List<String> joinQuotes(String[] commandList) {

@@ -18,6 +18,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 /**
@@ -113,7 +114,7 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
                                 test.getName(),
                                 Subject.getSubjectById(test.getSubjectId()).getShortName(),
                                 test.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM")),
-                                test.getStartDate().format(DateTimeFormatter.ofPattern("E"))
+                                test.getStartDate().format(DateTimeFormatter.ofPattern("EEEE", Locale.forLanguageTag("PT")))
                         )
                 );
         }
@@ -136,15 +137,18 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
         StringBuilder fieldValue = new StringBuilder();
 
         for (Event assignment : Assignment.getAssignments()) {
-            if (assignment.getStartDate().isBefore(end) && assignment.getStartDate().isAfter(start))
+            if (assignment.getStartDate().isBefore(end) && assignment.getStartDate().isAfter(start)) {
+                Subject subject = Subject.getSubjectById(assignment.getSubjectId());
                 fieldValue.append(
                         String.format(
-                                "%s - %s (%s)%n",
+                                "%s %s - %s (%s)%n",
                                 assignment.getName(),
+                                subject.getShortName(),
                                 assignment.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM")),
-                                assignment.getStartDate().format(DateTimeFormatter.ofPattern("E"))
+                                assignment.getStartDate().format(DateTimeFormatter.ofPattern("EEEE", Locale.forLanguageTag("PT")))
                         )
                 );
+            }
         }
         if (fieldValue.length() == 0)
             fieldValue.append("Não há trabalhos esta semana.");

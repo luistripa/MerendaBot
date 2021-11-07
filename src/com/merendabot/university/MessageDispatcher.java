@@ -16,8 +16,8 @@ public class MessageDispatcher {
 
     private static MessageDispatcher instance = null;
 
-    private static final String DEFAULT_GUILD = "";
-    private static final String DEFAULT_CHANNEL = "";
+    private static final String DEFAULT_GUILD = "687683461523439644";
+    private static final String DEFAULT_CHANNEL = "897851097518080021";
 
     private static final String DEBUG_GUILD = "797614596985716827";
     private static final String DEBUG_CHANNEL = "897477068831469638";
