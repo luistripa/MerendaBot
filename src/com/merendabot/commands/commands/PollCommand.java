@@ -69,14 +69,14 @@ public class PollCommand extends CallbackCommand {
         if (pollInstance == null) {
             event.replyEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Votação não encontrada", "Não encontrei essa votação. Provavelmente já encerrou ou existe um erro algures...")
-            ).queue();
+            ).setEphemeral(true).queue();
             return;
         }
 
         if (!(pollInstance instanceof BinaryPoll)) {
             event.replyEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Votação inválida", "Essa votação não é uma votação binária.")
-            ).queue();
+            ).setEphemeral(true).queue();
             return;
         }
 
@@ -85,7 +85,7 @@ public class PollCommand extends CallbackCommand {
         if (poll.hasVoteFrom(event.getUser())) {
             event.replyEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Voto já registado", "Desculpa, mas já participaste nesta votação. Os votos são únicos, privados e permanentes!")
-            ).queue();
+            ).setEphemeral(true).queue();
             return;
         }
 
