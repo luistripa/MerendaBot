@@ -81,7 +81,7 @@ public abstract class CommandClass implements Command {
     public void processButtonPressed(Merenda merenda, ButtonClickEvent event) {
         event.replyEmbeds(
                 getSuccessEmbed("Botão", "Botão premido", "Um botão foi premido, mas não realizou nenhuma ação.")
-        ).queue();
+        ).setEphemeral(true).queue();
     }
 
     @Override
