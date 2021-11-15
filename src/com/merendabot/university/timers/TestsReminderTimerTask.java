@@ -84,7 +84,7 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
         String action = button.getId().split(" ")[2];
         switch (action) {
             case "panic": {
-                event.reply(":eyes:").queue();
+                event.reply(":eyes:").setEphemeral(true).queue();
                 break;
             }
             default: {

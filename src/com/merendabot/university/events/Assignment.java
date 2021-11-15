@@ -5,8 +5,8 @@ import java.util.List;
 
 public interface Assignment extends Event {
 
-    static List<Event> getAssignments() throws SQLException {
+    static List<Assignment> getAssignments() throws SQLException {
 
-        return Event.getEvents(EventType.ASSIGNMENT);
+        return (List<Assignment>) (List<? extends Event>) Event.getEvents(EventType.ASSIGNMENT);
     }
 }

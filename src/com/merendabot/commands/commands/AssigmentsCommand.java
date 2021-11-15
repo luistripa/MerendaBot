@@ -36,7 +36,7 @@ public class AssigmentsCommand extends CommandClass {
         Map<Integer, Subject> subjectCache = new HashMap<>();
 
         try {
-            for (Event assignment : Assignment.getAssignments()) {
+            for (Assignment assignment : Assignment.getAssignments()) {
                 Subject subject;
                 subject = subjectCache.get(assignment.getSubjectId());
 

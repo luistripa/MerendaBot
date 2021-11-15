@@ -136,7 +136,7 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
     private MessageEmbed.Field getAssignments(LocalDate start, LocalDate end) throws SQLException {
         StringBuilder fieldValue = new StringBuilder();
 
-        for (Event assignment : Assignment.getAssignments()) {
+        for (Assignment assignment : Assignment.getAssignments()) {
             if (assignment.getStartDate().isBefore(end) && assignment.getStartDate().isAfter(start)) {
                 Subject subject = Subject.getSubjectById(assignment.getSubjectId());
                 fieldValue.append(
