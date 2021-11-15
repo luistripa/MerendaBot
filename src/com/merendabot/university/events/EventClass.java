@@ -1,9 +1,14 @@
 package com.merendabot.university.events;
 
+import com.merendabot.university.subjects.Subject;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Represents an event.
@@ -121,5 +126,23 @@ public class EventClass implements Event, Test, Assignment {
             return false;
         }
 
+    }
+
+    /**
+     * Generates the embed for a given event
+     *
+     * @return A MessageEmbed object
+     */
+    @Override
+    public void addToEmbed(EmbedBuilder embedBuilder) {
+        embedBuilder.addField(
+                String.format("%s %s", this.getName(), Subject.getSubjectById(this.subjectId).getShortName()),
+                String.format(
+                        "%s - %s",
+                        this.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                        this.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
+                ),
+                false
+        );
     }
 }

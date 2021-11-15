@@ -2,6 +2,7 @@ package com.merendabot.university.events;
 
 
 import com.merendabot.university.Merenda;
+import net.dv8tion.jda.api.EmbedBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.PreparedStatement;
@@ -100,6 +101,13 @@ public interface Event {
     boolean isNow();
 
     /**
+     * Generates the embed for a given event
+     *
+     * @return A MessageEmbed object
+     */
+    void addToEmbed(EmbedBuilder embedBuilder);
+
+    /**
      * Gets a new event from a given ResultSet.
      * The ResultSet must be positioned using the next() method before calling this method.
      *
@@ -181,7 +189,8 @@ public interface Event {
         try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select * " +
                         "from university_event " +
-                        "order by start_date, start_time, id=?"
+                        "where id=? "+
+                        "order by start_date, start_time, id"
         )) {
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
