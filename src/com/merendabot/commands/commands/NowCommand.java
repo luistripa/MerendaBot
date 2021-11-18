@@ -2,14 +2,10 @@ package com.merendabot.commands.commands;
 
 import com.merendabot.commands.CommandCategory;
 import com.merendabot.commands.CommandClass;
-import com.merendabot.university.MessageDispatcher;
-import com.merendabot.university.subjects.Subject;
+import com.merendabot.university.events.Class;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import com.merendabot.university.Merenda;
-import com.merendabot.university.events.Event;
-import com.merendabot.university.events.EventClass;
-import com.merendabot.university.events.EventType;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -30,16 +26,15 @@ public class NowCommand extends CommandClass {
         String fieldValue = "Não existem aulas a decorrer.";
 
         try {
-            for (Event e : Event.getEventsByWeekday(now.getDayOfWeek(), EventType.CLASS)) {
-                Subject subject = Subject.getSubjectById(e.getSubjectId());
-                if (e.isNow()) {
+            for (Class c : Class.getClassesByWeekDay(now.getDayOfWeek())) {
+                if (c.isNow()) {
                     fieldValue = String.format(
                             "%s %s (%s - %s) - [Link](%s)",
-                            e.getName(),
-                            subject.getShortName(),
-                            e.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
-                            e.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm")),
-                            e.getLink()
+                            c.getName(),
+                            c.getSubject().getShortName(),
+                            c.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                            c.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                            c.getLink()
                     );
                     break;
                 }

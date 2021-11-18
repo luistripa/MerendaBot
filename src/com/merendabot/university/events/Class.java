@@ -1,9 +1,8 @@
-package com.merendabot.university.events.newevents;
-
-import com.merendabot.university.events.EventType;
+package com.merendabot.university.events;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,5 +31,20 @@ public interface Class extends BaseEvent {
      */
     static Class getClassById(int id) throws SQLException {
         return (Class) BaseEvent.getEventById(id);
+    }
+
+    /**
+     * Gets a List of classes from a given week day.
+     *
+     * @param dayOfWeek The day of the week
+     * @return A List of Classes
+     * @throws SQLException If a SQL Error occurs
+     */
+    static List<Class> getClassesByWeekDay(DayOfWeek dayOfWeek) throws SQLException {
+        List<Class> classes = new ArrayList<>();
+        ResultSet rs = BaseEvent.getEventsByWeekday(dayOfWeek, EventType.CLASS);
+        while (rs.next())
+            classes.add((Class) BaseEvent.getEventFromRS(rs));
+        return classes;
     }
 }

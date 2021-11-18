@@ -1,7 +1,5 @@
-package com.merendabot.university.events.newevents;
+package com.merendabot.university.events;
 
-import com.merendabot.university.events.EventInterval;
-import com.merendabot.university.events.EventType;
 import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 

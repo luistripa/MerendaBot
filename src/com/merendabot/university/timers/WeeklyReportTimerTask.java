@@ -3,7 +3,6 @@ package com.merendabot.university.timers;
 import com.merendabot.university.Merenda;
 import com.merendabot.university.MessageDispatcher;
 import com.merendabot.university.events.Assignment;
-import com.merendabot.university.events.Event;
 import com.merendabot.university.events.Test;
 import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -112,7 +111,7 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
                         String.format(
                                 "%s %s - %s (%s)%n",
                                 test.getName(),
-                                Subject.getSubjectById(test.getSubjectId()).getShortName(),
+                                test.getSubject().getShortName(),
                                 test.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM")),
                                 test.getStartDate().format(DateTimeFormatter.ofPattern("EEEE", Locale.forLanguageTag("PT")))
                         )
@@ -138,12 +137,11 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
 
         for (Assignment assignment : Assignment.getAssignments()) {
             if (assignment.getStartDate().isBefore(end) && assignment.getStartDate().isAfter(start)) {
-                Subject subject = Subject.getSubjectById(assignment.getSubjectId());
                 fieldValue.append(
                         String.format(
                                 "%s %s - %s (%s)%n",
                                 assignment.getName(),
-                                subject.getShortName(),
+                                assignment.getSubject().getShortName(),
                                 assignment.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM")),
                                 assignment.getStartDate().format(DateTimeFormatter.ofPattern("EEEE", Locale.forLanguageTag("PT")))
                         )

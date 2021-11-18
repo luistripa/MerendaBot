@@ -34,10 +34,10 @@ public class TestsCommand extends CommandClass {
 
         try {
             for (Test test : Test.getTests()) {
-                Subject subject = Subject.getSubjectById(test.getSubjectId());
+                Subject subject = test.getSubject();
 
                 if (subject == null) {
-                    logger.severe("Could not find subject with id "+test.getSubjectId());
+                    logger.severe("Could not find subject with id "+subject.getId());
                     event.getChannel().sendMessageEmbeds(
                             getErrorEmbed(COMMAND_FRIENDLY_NAME, "Erro", "Ocorreu um erro. Contacta um administrador.")
                     ).queue();

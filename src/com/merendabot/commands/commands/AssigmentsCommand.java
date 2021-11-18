@@ -2,7 +2,6 @@ package com.merendabot.commands.commands;
 
 import com.merendabot.commands.CommandCategory;
 import com.merendabot.commands.CommandClass;
-import com.merendabot.university.events.Event;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import com.merendabot.university.Merenda;
@@ -38,13 +37,13 @@ public class AssigmentsCommand extends CommandClass {
         try {
             for (Assignment assignment : Assignment.getAssignments()) {
                 Subject subject;
-                subject = subjectCache.get(assignment.getSubjectId());
+                subject = subjectCache.get(assignment.getSubject().getId());
 
                 if (subject == null) {
-                    subject = Subject.getSubjectById(assignment.getSubjectId());
+                    subject = Subject.getSubjectById(assignment.getSubject().getId());
 
                     if (subject == null) {
-                        logger.severe("Could not find subject with id " + assignment.getSubjectId());
+                        logger.severe("Could not find subject with id " + assignment.getSubject().getId());
                         event.getChannel().sendMessageEmbeds(
                                 getErrorEmbed("Assignments", "Erro", "Ocorreu um erro. Contacta um administrador.")
                         ).queue();

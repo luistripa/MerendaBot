@@ -1,8 +1,6 @@
-package com.merendabot.university.events.newevents;
+package com.merendabot.university.events;
 
 import com.merendabot.university.Merenda;
-import com.merendabot.university.events.EventInterval;
-import com.merendabot.university.events.EventType;
 import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.jetbrains.annotations.Nullable;
@@ -10,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -48,9 +47,9 @@ public interface BaseEvent {
                 EventInterval.valueOf(rs.getString(3).toUpperCase()),   // EventInterval
                 rs.getString(4),                                        // Name
                 rs.getDate(5).toLocalDate(),                            // Start date
-                rs.getDate(6).toLocalDate(),                            // End date
+                rs.getDate(6),                                          // End date
                 rs.getTime(7).toLocalTime(),                            // Start time
-                rs.getTime(8).toLocalTime(),                            // End time
+                rs.getTime(8),                                          // End time
                 rs.getString(9),                                        // Link
                 Subject.getSubjectById(rs.getInt(10))                   // Subject ID
         );
@@ -73,7 +72,7 @@ public interface BaseEvent {
                 "select * " +
                         "from university_event ue " +
                         "inner join university_subject us on ue.subject_id = us.id " +
-                        "where event_type::text = ? " +
+                        "where event_type::text = ?" +
                         "order by ue.start_date, ue.start_time;"
         );
         statement.setString(1, eventType.toString().toLowerCase());
@@ -94,5 +93,20 @@ public interface BaseEvent {
                 return getEventFromRS(rs);
             return null;
         }
+    }
+
+    static ResultSet getEventsByWeekday(DayOfWeek dayOfWeek, EventType eventType) throws SQLException {
+        List<BaseEvent> events = new ArrayList<>();
+        PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
+                "select * from university_event ue\n" +
+                        "inner join university_subject us on ue.subject_id = us.id\n" +
+                        "where ue.end_date >= now() and\n" +
+                        "map_weekday(extract(dow from ue.start_date)) = ? and\n" +
+                        "    ue.event_type::text = ?\n" +
+                        "order by ue.start_date, ue.start_time"
+        );
+        statement.setInt(1, dayOfWeek.getValue());
+        statement.setString(2, eventType.toString().toLowerCase());
+        return statement.executeQuery();
     }
 }

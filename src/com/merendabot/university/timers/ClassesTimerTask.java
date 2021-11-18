@@ -1,10 +1,9 @@
 package com.merendabot.university.timers;
 
 import com.merendabot.university.MessageDispatcher;
+import com.merendabot.university.events.Class;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.interactions.components.Button;
-import com.merendabot.university.events.Event;
-import com.merendabot.university.events.EventType;
 import com.merendabot.university.subjects.Subject;
 
 import java.awt.*;
@@ -26,7 +25,7 @@ public class ClassesTimerTask extends AbstractTimerTask {
     private static final Logger logger = Logger.getLogger("main-log");
 
 
-    private final Queue<Event> eventCache;
+    private final Queue<Class> eventCache;
     private LocalDateTime nextCacheLoad;
 
     public ClassesTimerTask() {
@@ -42,22 +41,16 @@ public class ClassesTimerTask extends AbstractTimerTask {
         if (now.isAfter(nextCacheLoad))
             loadCache();
 
-        Event event = eventCache.peek();
+        Class event = eventCache.peek();
         if (event == null) // There are no events
             return;
-
-        Subject subject = Subject.getSubjectById(event.getSubjectId());
-        if (subject == null) {
-            logger.warning("Could not find subject with id: "+event.getSubjectId());
-            return;
-        }
 
         if (now.toLocalTime().isAfter(event.getEndTime())) { // Event has passed
             eventCache.remove();
 
         } else {
             if (now.toLocalTime().isAfter(event.getStartTime())) { // Start of event has passed but has not ended
-                notifyEvent(eventCache.remove(), subject);
+                notifyEvent(eventCache.remove(), event.getSubject());
             }
         }
     }
@@ -73,7 +66,7 @@ public class ClassesTimerTask extends AbstractTimerTask {
     private void loadCache() {
         LocalDateTime now = LocalDateTime.now();
         try {
-            eventCache.addAll(Event.getEventsByWeekday(now.getDayOfWeek(), EventType.CLASS));
+            eventCache.addAll(Class.getClassesByWeekDay(now.getDayOfWeek()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -85,7 +78,7 @@ public class ClassesTimerTask extends AbstractTimerTask {
      *
      * @param event The event that is happening now
      */
-    private void notifyEvent(Event event, Subject subject) {
+    private void notifyEvent(Class event, Subject subject) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.WHITE);
         eb.setTitle("Heyy!! Uma aula está prestes a começar!");

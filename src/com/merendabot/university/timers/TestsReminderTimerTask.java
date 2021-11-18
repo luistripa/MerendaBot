@@ -45,12 +45,6 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
         if (test == null) // There are no tests
             return;
 
-        Subject subject = Subject.getSubjectById(test.getSubjectId());
-        if (subject == null) {
-            logger.warning("Could not find subject with id: "+test.getSubjectId());
-            return;
-        }
-
         // Test date already passed
         if (now.toLocalDate().isAfter(test.getStartDate())) {
             testCache.remove();
@@ -60,7 +54,7 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
         LocalDate date = test.getStartDate().minusDays(TEST_REMINDER_DAYS_BEFORE);
 
         if (now.toLocalDate().isEqual(date)) // Test is TEST_REMINDER_DAYS_BEFORE days from now
-            notifyTest(testCache.remove(), subject);
+            notifyTest(testCache.remove(), test.getSubject());
 
         else if (date.isBefore(now.toLocalDate())) // Test reminding date has already passed
             testCache.remove();

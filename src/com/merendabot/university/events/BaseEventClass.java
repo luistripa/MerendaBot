@@ -2,59 +2,51 @@ package com.merendabot.university.events;
 
 import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Represents an event.
- *
- * Events are points or intervals in time where something happens, like a class, test or assignment delivery.
- */
-public class EventClass implements Event, Test, Assignment {
+public class BaseEventClass implements BaseEvent {
 
     private int id;
-    private EventType eventType;
-    private EventInterval eventInterval;
+    private EventType type;
+    private EventInterval interval;
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalTime startTime;
     private LocalTime endTime;
     private String link;
-    private int subjectId;
+    private Subject subject;
 
-    public EventClass(
-            int id,
-            EventType eventType,
-            EventInterval eventInterval,
-            String name,
-            LocalDate startDate,
-            Date endDate,
-            LocalTime startTime,
-            Time endTime,
-            String link,
-            int subjectId) {
+    public BaseEventClass(int id, EventType type, EventInterval interval, String name, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String link, Subject subject) {
         this.id = id;
-        this.eventType = eventType;
-        this.eventInterval = eventInterval;
+        this.type = type;
+        this.interval = interval;
         this.name = name;
         this.startDate = startDate;
-        if (endDate == null)
-            this.endDate = null;
-        else
-            this.endDate = endDate.toLocalDate();
+        this.endDate = endDate;
         this.startTime = startTime;
-        if (endTime == null)
-            this.endTime = null;
-        else
-            this.endTime = endTime.toLocalTime();
+        this.endTime = endTime;
         this.link = link;
-        this.subjectId = subjectId;
+        this.subject = subject;
+    }
+
+    public BaseEventClass(int id, EventType type, EventInterval interval, String name, LocalDate startDate, Date endDate, LocalTime startTime, Time endTime, String link, Subject subject) {
+        this.id = id;
+        this.type = type;
+        this.interval = interval;
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate == null ? null : endDate.toLocalDate();
+        this.startTime = startTime;
+        this.endTime = endTime == null ? null : endTime.toLocalTime();
+        this.link = link;
+        this.subject = subject;
     }
 
     @Override
@@ -63,13 +55,13 @@ public class EventClass implements Event, Test, Assignment {
     }
 
     @Override
-    public EventType getEventType() {
-        return eventType;
+    public EventType getType() {
+        return type;
     }
 
     @Override
-    public EventInterval getEventInterval() {
-        return eventInterval;
+    public EventInterval getInterval() {
+        return interval;
     }
 
     @Override
@@ -103,21 +95,21 @@ public class EventClass implements Event, Test, Assignment {
     }
 
     @Override
-    public int getSubjectId() {
-        return subjectId;
+    public Subject getSubject() {
+        return subject;
     }
 
     @Override
     public boolean isNow() {
         LocalDateTime now = LocalDateTime.now();
-        if (this.getEventInterval().equals(EventInterval.WEEKLY)) {
+        if (this.getInterval().equals(EventInterval.WEEKLY)) {
             return now.toLocalTime().isAfter(this.getStartTime()) &&
                     now.toLocalTime().isBefore(this.getEndTime()) &&
                     (now.toLocalDate().isAfter(this.startDate) || now.toLocalDate().isEqual(this.startDate)) &&
                     (now.toLocalDate().isBefore(this.endDate) || now.toLocalDate().isEqual(this.endDate)) &&
                     now.getDayOfWeek().equals(this.startDate.getDayOfWeek());
 
-        } else if (this.getEventInterval().equals(EventInterval.SINGLE)) {
+        } else if (this.getInterval().equals(EventInterval.SINGLE)) {
             return now.toLocalDate().equals(this.getStartDate()) &&
                     now.toLocalTime().isAfter(startTime) &&
                     now.toLocalTime().isBefore(endTime);
@@ -125,20 +117,14 @@ public class EventClass implements Event, Test, Assignment {
         } else {
             return false;
         }
-
     }
 
-    /**
-     * Generates the embed for a given event
-     *
-     * @return A MessageEmbed object
-     */
     @Override
     public void addToEmbed(EmbedBuilder embedBuilder) {
         embedBuilder.addField(
-                String.format("%s %s", this.getName(), Subject.getSubjectById(this.subjectId).getShortName()),
+                String.format("Evento %s", subject.getShortName()),
                 String.format(
-                        "%s - %s",
+                        "%s - %s (%s - %s)",
                         this.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
                         this.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
                 ),
