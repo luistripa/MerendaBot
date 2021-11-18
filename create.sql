@@ -12,6 +12,9 @@ drop table if exists university_poll;
 drop type if exists event_type;
 drop type if exists event_interval;
 
+create type event_type as enum ('class', 'test', 'assignment');
+create type event_interval as enum ('single', 'weekly');
+
 -- Create all tables
 create table if not exists university_event (
     id serial primary key,
