@@ -1,17 +1,29 @@
 package com.merendabot.university.events;
 
+import com.merendabot.university.subjects.Subject;
+
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface Assignment extends BaseEvent {
+public class Assignment extends BaseEventClass {
 
-    LocalDate getDueDate();
+    public Assignment(int id, String name, LocalDate dueDate, LocalTime dueTime, String link, Subject subject) {
+        super(id, EventType.ASSIGNMENT, EventInterval.SINGLE, name, dueDate, (Date) null, dueTime, null, link, subject);
+    }
 
-    LocalTime getDueTime();
+    public LocalDate getDueDate() {
+        return getStartDate();
+    }
+
+    public LocalTime getDueTime() {
+        return getStartTime();
+    }
 
     /**
      * Gets all assignments from the database.
@@ -19,7 +31,7 @@ public interface Assignment extends BaseEvent {
      * @return A List of Assignments
      * @throws SQLException if an SQL Error occurs
      */
-    static List<Assignment> getAssignments() throws SQLException {
+    public static List<Assignment> getAssignments() throws SQLException {
         List<Assignment> assignments = new ArrayList<>();
         ResultSet rs = BaseEvent.getEvents(EventType.ASSIGNMENT);
         while (rs.next())
@@ -34,7 +46,7 @@ public interface Assignment extends BaseEvent {
      * @return An Assignment object if assignment exists, null otherwise.
      * @throws SQLException If an SQL Error occurs
      */
-    static Assignment getAssignmentById(int id) throws SQLException {
+    public static Assignment getAssignmentById(int id) throws SQLException {
         return (Assignment) BaseEvent.getEventById(id);
     }
 }
