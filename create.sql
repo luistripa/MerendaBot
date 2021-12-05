@@ -15,9 +15,16 @@ drop type if exists event_interval;
 create type event_type as enum ('class', 'test', 'assignment');
 create type event_interval as enum ('single', 'weekly');
 
+create table if not exists guilds (
+    id text primary key,
+    name text not null,
+    default_chat_id text not null
+);
+
 -- Create all tables
-create table if not exists university_event (
+create table if not exists guild_event (
     id serial primary key,
+    guild_id text not null references guilds(id),
     event_type event_type not null,
     event_interval event_interval not null,
     name text not null,
@@ -26,45 +33,35 @@ create table if not exists university_event (
     start_time time not null,
     end_time time,
     link text,
-    subject_id int
+    subject_id int references guild_subject(id)
 );
 
-create table if not exists university_subject (
+create table if not exists guild_subject (
     id serial primary key,
+    guild_id text not null references guilds(id),
     name text not null,
     short_name char(4) not null
 );
 
-create table if not exists university_professor (
+create table if not exists guild_professor (
     id serial primary key,
+    guild_id text not null references guilds(id),
     name text not null,
     email text unique not null,
-    subject_id int
+    subject_id int references guild_subject(id)
 );
 
-create table if not exists university_test (
+create table if not exists guild_link (
     id serial primary key,
-    name text not null,
-    datetime timestamp not null,
-    subject_id int not null
-);
-
-create table if not exists university_assignment (
-    id serial primary key,
-    name text not null,
-    datetime timestamp not null,
-    subject_id int not null
-);
-
-create table if not exists university_link (
-    id serial primary key,
+    guild_id text not null references guilds(id),
     name text not null,
     url text not null,
-    subject_id int
+    subject_id int references guild_subject(id)
 );
 
-create table if not exists university_poll (
+create table if not exists guild_poll (
     id serial primary key,
+    guild_id text not null references guilds(id),
     message_id text not null,
     user_id text not null default 0,
     votes_for int not null default 0,
@@ -77,8 +74,18 @@ create table if not exists university_poll (
     check ( array_length(voters, 1) == votes_for + votes_abstain + votes_against )
 );
 
--- Foreign keys
-alter table university_event add constraint fk_event_subject foreign key (subject_id) references university_subject(id);
-alter table university_professor add constraint fk_professor_subject foreign key (subject_id) references university_subject(id);
-alter table university_link add constraint fk_link_subject foreign key (subject_id) references university_subject(id);
-alter table university_assignment add constraint fk_assignment_subject foreign key (subject_id) references university_subject(id);
+create table if not exists guild_multipoll_option (
+    id serial not null,
+    multipoll_id int references guild_multipoll(id),
+    description text not null,
+    vote_count int default 0,
+
+    constraint pk_multipoll_option_id primary key (id, multipoll_id)
+);
+
+create table if not exists guild_multipoll (
+    id serial primary key,
+    guild_id text not null references guilds(id),
+    message_id text not null,
+    owner_id text not null
+);
