@@ -1,10 +1,9 @@
 package rebuild.merenda.timers;
 
 import rebuild.merenda.GuildManager;
+import rebuild.merenda.timers.exceptions.TimerDoesNotExistException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
+import java.util.*;
 
 public class TimerHandler {
 
@@ -28,6 +27,26 @@ public class TimerHandler {
         return timers.get(timerId);
     }
 
+    public List<EventTimer> getTimers() {
+        return new ArrayList<>(timers.values());
+    }
+
+    public void startTimer(String timerId) throws TimerDoesNotExistException {
+        if (!hasTimer(timerId))
+            throw new TimerDoesNotExistException(timerId);
+        timers.get(timerId).start();
+    }
+
+    public void stopTimer(String timerId) throws TimerDoesNotExistException {
+        if (!hasTimer(timerId))
+            throw new TimerDoesNotExistException(timerId);
+        timers.get(timerId).stop();
+    }
+
+    public boolean hasTimer(String timerId) {
+        return timers.get(timerId) != null;
+    }
+
 
     /*
     PRIVATE METHODS
@@ -38,6 +57,8 @@ public class TimerHandler {
     }
 
     private void registerTimers() {
-
+        addTimer(CLASSES_TIMER, new ClassesEventTimer(guild, timerScheduler, 0, 1000));
+        addTimer(TESTS_REMINDER_TIMER, new TestsReminderEventTimer(guild, timerScheduler, 0, 300000));
+        addTimer(WEEKLY_REPORT_TIMER, new WeeklyReportEventTimer(guild, timerScheduler, 0, 1000));
     }
 }

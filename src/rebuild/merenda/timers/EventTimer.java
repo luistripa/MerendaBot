@@ -11,7 +11,7 @@ public abstract class EventTimer extends TimerTask {
 
     private final GuildManager guild;
     private final Timer scheduler;
-    private long delay; // Timer will wait this time before executing the first time
+    private long delay; // Timer will wait this time before executing the first cycle
     private long period; // Timer will execute in this interval
     private boolean isActive;
 
@@ -20,6 +20,51 @@ public abstract class EventTimer extends TimerTask {
         this.scheduler = scheduler;
         this.delay = delay;
         this.period = period;
+    }
+
+    /**
+     * Gets the guild manager of the timer.
+     *
+     * @return A GuildManager object
+     */
+    public GuildManager getGuild() {
+        return guild;
+    }
+
+    /**
+     * Returns the scheduler of the timer.
+     *
+     * @return A Timer object
+     */
+    public Timer getScheduler() {
+        return scheduler;
+    }
+
+    /**
+     * Gets the delay of the timer. The timer will be executed X milliseconds after being scheduled.
+     *
+     * @return Int representing the timer delay.
+     */
+    public long getDelay() {
+        return delay;
+    }
+
+    /**
+     * Gets the period of the timer.
+     *
+     * @return Int representing the period of the timer.
+     */
+    public long getPeriod() {
+        return period;
+    }
+
+    /**
+     * Checks if the timer is active.
+     *
+     * @return True if timer is active, False otherwise.
+     */
+    public boolean isActive() {
+        return isActive;
     }
 
     /**
@@ -37,15 +82,6 @@ public abstract class EventTimer extends TimerTask {
     public void stop() {
         this.cancel();
         isActive = false;
-    }
-
-    /**
-     * Checks if the timer is active.
-     *
-     * @return True if timer is active, False otherwise.
-     */
-    public boolean isActive() {
-        return isActive;
     }
 
     /**

@@ -53,12 +53,12 @@ public class ClassesEventTimer extends EventTimer {
 
     @Override
     public void processButtonClick(ButtonClickEvent event) {
-        event.reply("Essa operação não é suportada. Contacta um administrador.").queue();
+        event.reply("Essa operação não é suportada. Contacta um administrador.").setEphemeral(true).queue();
     }
 
     @Override
     public void processSelectionMenu(SelectionMenuEvent event) {
-        event.reply("Essa operação não é suportada. Contacta um administrador.").queue();
+        event.reply("Essa operação não é suportada. Contacta um administrador.").setEphemeral(true).queue();
     }
 
 
