@@ -11,6 +11,11 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+/**
+ * Represents a MultiChoicePoll.
+ *
+ * A MultiChoicePoll is a type of poll that has multiple options. Members can choose multiple options from the list.
+ */
 public class MultiChoicePoll extends Poll {
 
     private final Map<String, MultiChoicePollOption> options;
@@ -31,10 +36,22 @@ public class MultiChoicePoll extends Poll {
         isClosed = false;
     }
 
+    /**
+     * Checks if the poll has the given option in its options list.
+     *
+     * @param optionId The id of the option
+     * @return True if it has option, False otherwise
+     */
     public boolean hasOption(String optionId) {
         return options.get(optionId) != null;
     }
 
+    /**
+     * Checks if the poll has ALL the options in the given list in its options list.
+     *
+     * @param values A List of options
+     * @return True if has options, False otherwise
+     */
     public boolean hasOptions(List<String> values) {
         for (String option : values) {
             if (!hasOption(option))
@@ -43,6 +60,15 @@ public class MultiChoicePoll extends Poll {
         return true;
     }
 
+    /**
+     * Deposits a vote from the given user with the given options.
+     *
+     * @param user A User object
+     * @param values The options chosen by the user
+     * @throws PollClosedException if poll has already been closed
+     * @throws OptionsNotFoundException if one of the options in the list does not exist in the poll's option list
+     * @throws MemberAlreadyVotedException if the user has already voted
+     */
     public void vote(User user, List<String> values) throws PollClosedException, OptionsNotFoundException, MemberAlreadyVotedException {
         if (isClosed)
             throw new PollClosedException(getId());
@@ -56,6 +82,7 @@ public class MultiChoicePoll extends Poll {
         }
     }
 
+    @Override
     public boolean hasMajority(int memberCount) {
         int majorityVoteThreshold = (memberCount / 2) + (memberCount%2);
 

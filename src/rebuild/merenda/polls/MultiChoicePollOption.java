@@ -2,6 +2,9 @@ package rebuild.merenda.polls;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents an option for the MultiChoicePoll.
+ */
 public class MultiChoicePollOption implements Comparable<MultiChoicePollOption> {
 
     private String description;
@@ -12,14 +15,27 @@ public class MultiChoicePollOption implements Comparable<MultiChoicePollOption> 
         this.voteCount = 0;
     }
 
+    /**
+     * Gets the description of the option.
+     *
+     * @return String with the description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Gets the number of votes for the option.
+     *
+     * @return Int with the number of votes for the option
+     */
     public int getVoteCount() {
         return voteCount;
     }
 
+    /**
+     * Increment the number of votes.
+     */
     public void vote() {
         voteCount++;
     }

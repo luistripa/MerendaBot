@@ -8,6 +8,12 @@ import rebuild.merenda.polls.exceptions.PollClosedException;
 
 import java.awt.*;
 
+/**
+ * Represents a BinaryPoll.
+ *
+ * A BinaryPoll is a type of poll that can only have two kinds of votes, For or Against.
+ * A BinaryPoll also has the 'Abstain' vote.
+ */
 public class BinaryPoll extends Poll {
 
     private int forVotes;
@@ -21,35 +27,67 @@ public class BinaryPoll extends Poll {
         isClosed = false;
     }
 
+    /**
+     * Gets all 'For' votes count.
+     *
+     * @return Int representing the number of 'For' votes
+     */
     public int getForVotes() {
         return forVotes;
     }
 
+    /**
+     * Gets all 'Abstain' votes count.
+     *
+     * @return Int representing the number of 'Abstain' votes
+     */
     public int getAbstainVotes() {
         return abstainVotes;
     }
 
+    /**
+     * Gets all 'Against' votes count.
+     *
+     * @return Int representing the number of 'Against' votes
+     */
     public int getAgainstVotes() {
         return againstVotes;
     }
 
-    public boolean hasMajority(int memberCount) {
-        int votesLeft = memberCount - this.getVoteCount();
-        return forVotes > againstVotes+votesLeft || againstVotes > forVotes + votesLeft;
-    }
-
+    /**
+     * Checks if the poll has been approved.
+     *
+     * @return True if approved, False otherwise.
+     */
     public boolean isApproved() {
         return forVotes > againstVotes;
     }
 
+    /**
+     * Checks if the poll has entered a draw.
+     *
+     * @return True if is draw, False otherwise.
+     */
     public boolean isDraw() {
         return forVotes == againstVotes;
     }
 
+    /**
+     * Checks if the poll has been rejected.
+     *
+     * @return True if rejected, False otherwise.
+     */
     public boolean isRejected() {
         return againstVotes > forVotes;
     }
 
+    /**
+     * Deposits a 'For' vote from the given user.
+     *
+     * @param user The user object
+     * @throws PollClosedException if poll is already closed
+     * @throws MemberAlreadyVotedException if member has already voted
+     */
     public void voteFor(User user) throws PollClosedException, MemberAlreadyVotedException {
         if (isClosed())
             throw new PollClosedException(getId());
@@ -58,6 +96,13 @@ public class BinaryPoll extends Poll {
         forVotes += 1;
     }
 
+    /**
+     * Deposits an 'Abstain' vote from the given user.
+     *
+     * @param user The user object
+     * @throws PollClosedException if poll is already closed
+     * @throws MemberAlreadyVotedException if member has already voted
+     */
     public void voteAbstain(User user) throws PollClosedException, MemberAlreadyVotedException {
         if (isClosed())
             throw new PollClosedException(getId());
@@ -66,12 +111,25 @@ public class BinaryPoll extends Poll {
         abstainVotes += 1;
     }
 
+    /**
+     * Deposits an 'Against' vote from the given user.
+     *
+     * @param user The user object
+     * @throws PollClosedException if poll is already closed
+     * @throws MemberAlreadyVotedException if member has already voted
+     */
     public void voteAgainst(User user) throws PollClosedException, MemberAlreadyVotedException {
         if (isClosed())
             throw new PollClosedException(getId());
 
         addVoter(user);
         againstVotes += 1;
+    }
+
+    @Override
+    public boolean hasMajority(int memberCount) {
+        int votesLeft = memberCount - this.getVoteCount();
+        return forVotes > againstVotes+votesLeft || againstVotes > forVotes + votesLeft;
     }
 
     @Override
@@ -107,6 +165,8 @@ public class BinaryPoll extends Poll {
         eb.addField("Contra", String.valueOf(againstVotes), true);
 
         isClosed = true;
+
+        // setActionRows() is necessary to remove poll controls from original message
         getMessage().editMessageEmbeds(eb.build()).setActionRows().queue();
     }
 }
