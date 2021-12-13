@@ -37,7 +37,7 @@ public class TestsReminderEventTimer extends EventTimer {
         LocalDateTime now = LocalDateTime.now();
 
         if (now.isAfter(nextCacheReload))
-            testCache = loadCache();
+            loadCache();
 
         Test test = testCache.peek();
         if (test == null) // There are no tests
@@ -64,13 +64,13 @@ public class TestsReminderEventTimer extends EventTimer {
 
         if (button == null) {
             logger.severe("Could not find button.");
-            event.reply("Não encontrei esse botão... Contacta um administrador.").queue();
+            event.reply("Não encontrei esse botão... Contacta um administrador.").setEphemeral(true).queue();
             return;
         }
 
         if (button.getId() == null) {
             logger.severe("Button does not have an id.");
-            event.reply("Não encontrei esse botão... Contacta um administrador.").queue();
+            event.reply("Não encontrei esse botão... Contacta um administrador.").setEphemeral(true).queue();
             return;
         }
         String action = button.getId().split(" ")[2];
@@ -81,7 +81,7 @@ public class TestsReminderEventTimer extends EventTimer {
             }
             default: {
                 logger.warning("Could not find action with id: "+action);
-                event.reply("A ação que esse botão pediu não é válida. Contacta um administrador.").queue();
+                event.reply("A ação que esse botão pediu não é válida. Contacta um administrador.").setEphemeral(true).queue();
             }
         }
     }
@@ -91,21 +91,20 @@ public class TestsReminderEventTimer extends EventTimer {
         event.reply("Essa operação não é suportada. Contacta um administrador.").setEphemeral(true).queue();
     }
 
-        /*
+    /*
     Private Methods
-     */
+    */
 
-    private Queue<Test> loadCache() {
-        Queue<Test> newTestCache = new ConcurrentLinkedQueue<>();
+    private void loadCache() {
+        testCache.clear();
         LocalDateTime now = LocalDateTime.now();
         try {
-            newTestCache.addAll(Test.getTests());
+            testCache.addAll(Test.getTests());
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         nextCacheReload = now.plusDays(1).withHour(0).withMinute(0).withSecond(0);
-        return newTestCache;
     }
 
 
