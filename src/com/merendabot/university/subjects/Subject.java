@@ -1,6 +1,7 @@
 package com.merendabot.university.subjects;
 
-import com.merendabot.university.Merenda;
+import com.merendabot.Merenda;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,36 +11,58 @@ import java.util.List;
 
 public interface Subject {
 
+    /**
+     * Gets the id of the subject.
+     *
+     * @return The id of the subject
+     */
     int getId();
 
+    String getGuildId();
+
+    /**
+     * Gets the name of the subject.
+     *
+     * @return The name of the subject
+     */
     String getName();
 
+    /**
+     * Gets a short version of the subject's name.
+     *
+     * Example: Software Engineering becomes SE
+     *
+     * @return The subject's short name
+     */
     String getShortName();
 
-    List<Professor> getProfessors();
-
-    void addProfessor(Professor professor);
-
+    /**
+     * Gets a Subject object from a given ResultSet.
+     * The ResultSet.next() method should be called before calling this method.
+     *
+     * @param rs A ResultSet object
+     * @return A Subject object
+     * @throws SQLException if an SQL Error occurs
+     */
     static Subject getSubjectFromRS(ResultSet rs) throws SQLException {
         return new SubjectClass(
-                rs.getInt(1),
-                rs.getString(2),
-                rs.getString(3)
+                rs.getInt(1),       // ID
+                rs.getString(2),       // GUILD ID
+                rs.getString(3),    // NAME
+                rs.getString(4)     // SHORT NAME
         );
     }
 
-    static Subject getSubjectFromRS(ResultSet rs, int start) throws SQLException {
-        return new SubjectClass(
-                rs.getInt(start),
-                rs.getString(start+1),
-                rs.getString(start+2)
-        );
-    }
-
-    static Subject getSubjectById(int id) {
+    /**
+     * Gets a subject by id from the database.
+     *
+     * @param id The subject's id
+     * @return A Subject object if found, null otherwise
+     */
+    @Nullable static Subject getSubjectById(int id) {
         try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select *\n" +
-                        "from university_subject\n" +
+                        "from guild_subject\n" +
                         "where id=?;"
         )) {
             statement.setInt(1, id);
@@ -53,6 +76,12 @@ public interface Subject {
         return null;
     }
 
+    /**
+     * Gets all subject from the database.
+     *
+     * @return A List of Subjects
+     * @throws SQLException if an SQL Error occurs
+     */
     static List<Subject> getSubjects() throws SQLException {
         List<Subject> subjects = new ArrayList<>();
         try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(

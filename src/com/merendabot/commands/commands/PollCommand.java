@@ -1,25 +1,25 @@
 package com.merendabot.commands.commands;
 
-import com.merendabot.commands.CallbackCommand;
-import com.merendabot.commands.CommandCategory;
-import com.merendabot.university.MessageDispatcher;
+import com.merendabot.commands.Command;
+import com.merendabot.polls.exceptions.PollClosedException;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
-import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
-import com.merendabot.university.Merenda;
-import com.merendabot.university.polls.Poll;
-import com.merendabot.university.polls.PollClass;
+import com.merendabot.GuildManager;
+import com.merendabot.commands.CommandCategory;
+import com.merendabot.polls.BinaryPoll;
+import com.merendabot.polls.Poll;
+import com.merendabot.polls.exceptions.MemberAlreadyVotedException;
+import com.merendabot.polls.exceptions.PollDoesNotExistException;
 
 import java.awt.*;
-import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.List;
 
-public class PollCommand extends CallbackCommand {
+public class PollCommand extends Command {
 
     private static final String COMMAND_FRIENDLY_NAME = "Votação";
 
@@ -28,17 +28,16 @@ public class PollCommand extends CallbackCommand {
     }
 
     @Override
-    public void execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
+    public void execute(GuildManager guild, SlashCommandEvent event) {
 
         if (!event.isFromGuild()) {
-            event.getChannel().sendMessageEmbeds(
+            event.replyEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Funcionalidade não disponível", "Desculpa, mas esta funcionalidade só pode ser utilizada em servidores.")
-            ).queue();
+            ).setEphemeral(true).queue();
             return;
         }
 
-        String[] pollDescription = Arrays.copyOfRange(command, 1, command.length);
-        String description = String.join(" ", pollDescription);
+        String description = event.getOption("descrição").getAsString();
 
         EmbedBuilder eb = new EmbedBuilder();
         eb.setDescription("Esta votação será encerrada quando atingir maioria.");
@@ -47,74 +46,87 @@ public class PollCommand extends CallbackCommand {
         );
         eb.setColor(new Color(0, 220, 240));
 
-        eb.addField("Iniciada por:", String.format("<@%s>", event.getAuthor().getId()), true);
+        eb.addField("Iniciada por:", String.format("<@%s>", event.getUser().getId()), true);
         eb.addField("Status:", "Aberta :pencil:", true);
 
         event.getChannel().sendMessageEmbeds(eb.build()).setActionRow(
                 Button.success("command poll vote-for", "A Favor"),
                 Button.secondary("command poll vote-abstain", "Abster"),
                 Button.danger("command poll vote-against", "Contra")
-        ).queue(message -> messageCallback(message, event));
+        ).queue(message -> {
+            Poll poll = new BinaryPoll(message, event.getUser(), description);
+            guild.getPollHandler().addPoll(poll);
+            event.reply("Votação criada com sucesso.").setEphemeral(true).queue();
+        });
     }
 
     @Override
-    public void messageCallback(Message message, MessageReceivedEvent event) {
-        Poll poll = new PollClass(message, event.getAuthor(), event.getMessageId());
-        Merenda.getInstance().addPoll(poll);
-        event.getMessage().delete().queue();
-    }
-
-    @Override
-    public void processButtonPressed(Merenda merenda, ButtonClickEvent event) {
+    public void processButtonClick(GuildManager guild, ButtonClickEvent event) {
         String buttonId = event.getButton().getId().split(" ")[2];
-        Message message = event.getMessage();
 
-        Poll poll = merenda.getPoll(message.getId());
-        if (poll == null) {
+        try {
+            BinaryPoll poll = (BinaryPoll) guild.getPollHandler().getPoll(event.getMessageId());
+
+            switch (buttonId) {
+                case "vote-for":
+                    poll.voteFor(event.getUser());
+                    break;
+                case "vote-abstain":
+                    poll.voteAbstain(event.getUser());
+                    break;
+                case "vote-against":
+                    poll.voteAgainst(event.getUser());
+                    break;
+                default: {
+                    event.replyEmbeds(
+                            getErrorEmbed(COMMAND_FRIENDLY_NAME, "Erro", "O botão não executou a ação correta. Contacta um administrador.")
+                    ).setEphemeral(true).queue();
+                }
+            }
+
+            event.getGuild().loadMembers().onSuccess(members -> {
+                int memberCount = 0;
+                for (Member member : members) {
+                    if (!member.getUser().isBot())
+                        memberCount += 1;
+                }
+
+                if (poll.hasMajority(memberCount) || poll.getVoteCount() == memberCount) {
+                    poll.close();
+                    try {
+                        guild.getPollHandler().closePoll(poll.getId());
+                    } catch (PollDoesNotExistException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            event.replyEmbeds(
+                    getSuccessEmbed(COMMAND_FRIENDLY_NAME, "Voto registado", "Obrigado! O teu voto foi registado!")
+            ).setEphemeral(true).queue();
+
+        } catch (ClassCastException e) {
+            event.replyEmbeds(
+                    getErrorEmbed(COMMAND_FRIENDLY_NAME, "Votação inválida", "Essa votação não é uma votação binária.")
+            ).setEphemeral(true).queue();
+
+        } catch (PollClosedException | PollDoesNotExistException e) {
             event.replyEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Votação não encontrada", "Não encontrei essa votação. Provavelmente já encerrou ou existe um erro algures...")
-            ).queue();
-            return;
-        }
+            ).setEphemeral(true).queue();
 
-        if (poll.hasVoteFrom(event.getUser())) {
+        } catch (MemberAlreadyVotedException e) {
             event.replyEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Voto já registado", "Desculpa, mas já participaste nesta votação. Os votos são únicos, privados e permanentes!")
-            ).queue();
-            return;
+            ).setEphemeral(true).queue();
         }
 
-        switch (buttonId) {
-            case "vote-for":
-                poll.voteFor(event.getUser());
-                break;
-            case "vote-abstain":
-                poll.voteAbstain(event.getUser());
-                break;
-            case "vote-against":
-                poll.voteAgainst(event.getUser());
-                break;
-            default: {
-                event.replyEmbeds(
-                        getErrorEmbed(COMMAND_FRIENDLY_NAME, "Erro", "O botão não executou a ação correta. Contacta um administrador.")
-                ).setEphemeral(true).queue();
-            }
-        }
 
-        event.getGuild().loadMembers().onSuccess(members -> {
-            int memberCount = 0;
-            for (Member member : members) {
-                if (!member.getUser().isBot())
-                    memberCount += 1;
-            }
+    }
 
-            if (poll.hasMajority(memberCount) || poll.getVoteCount() == memberCount) {
-                poll.closePoll();
-                merenda.closePoll(poll.getId());
-            }
-        });
+    @Override
+    public void processSelectionMenu(GuildManager guild, SelectionMenuEvent event) {
         event.replyEmbeds(
-                getSuccessEmbed(COMMAND_FRIENDLY_NAME, "Voto registado", "Obrigado! O teu voto foi registado!")
+                getErrorEmbed("Assignments", "Ação não encontrada", "Uma seleção foi feita, mas não realizou nenhuma ação.")
         ).setEphemeral(true).queue();
     }
 }

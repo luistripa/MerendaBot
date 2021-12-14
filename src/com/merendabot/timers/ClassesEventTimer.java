@@ -1,36 +1,29 @@
-package com.merendabot.university.timers;
+package com.merendabot.timers;
 
-import com.merendabot.university.MessageDispatcher;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.interactions.components.Button;
-import com.merendabot.university.events.Event;
-import com.merendabot.university.events.EventClass;
-import com.merendabot.university.events.EventType;
+import com.merendabot.GuildManager;
+import com.merendabot.university.events.Class;
 import com.merendabot.university.subjects.Subject;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
+import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.awt.*;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Queue;
+import java.util.Timer;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Logger;
 
-/**
- * Represents the alert for classes.
- *
- * This sends a message to a specific channel warning a class is about to start.
- * It also includes the zoom link for that class.
- */
-public class ClassesTimerTask extends AbstractTimerTask {
+public class ClassesEventTimer extends EventTimer {
 
-    private static final Logger logger = Logger.getLogger("main-log");
-
-
-    private final Queue<Event> eventCache;
+    private final Queue<Class> eventCache;
     private LocalDateTime nextCacheLoad;
 
-    public ClassesTimerTask() {
+    public ClassesEventTimer(GuildManager guild, Timer scheduler, long delay, long period) {
+        super(guild, scheduler, delay, period);
+
         eventCache = new ConcurrentLinkedQueue<>();
         loadCache();
     }
@@ -43,24 +36,28 @@ public class ClassesTimerTask extends AbstractTimerTask {
         if (now.isAfter(nextCacheLoad))
             loadCache();
 
-        Event event = eventCache.peek();
+        Class event = eventCache.peek();
         if (event == null) // There are no events
             return;
-
-        Subject subject = Subject.getSubjectById(event.getSubjectId());
-        if (subject == null) {
-            logger.warning("Could not find subject with id: "+event.getSubjectId());
-            return;
-        }
 
         if (now.toLocalTime().isAfter(event.getEndTime())) { // Event has passed
             eventCache.remove();
 
         } else {
             if (now.toLocalTime().isAfter(event.getStartTime())) { // Start of event has passed but has not ended
-                notifyEvent(eventCache.remove(), subject);
+                notifyEvent(eventCache.remove(), event.getSubject());
             }
         }
+    }
+
+    @Override
+    public void processButtonClick(ButtonClickEvent event) {
+        event.reply("Essa operação não é suportada. Contacta um administrador.").setEphemeral(true).queue();
+    }
+
+    @Override
+    public void processSelectionMenu(SelectionMenuEvent event) {
+        event.reply("Essa operação não é suportada. Contacta um administrador.").setEphemeral(true).queue();
     }
 
 
@@ -74,7 +71,7 @@ public class ClassesTimerTask extends AbstractTimerTask {
     private void loadCache() {
         LocalDateTime now = LocalDateTime.now();
         try {
-            eventCache.addAll(EventClass.getEventsByWeekday(now.getDayOfWeek(), EventType.CLASS));
+            eventCache.addAll(Class.getClassesByWeekDay(now.getDayOfWeek()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -86,7 +83,7 @@ public class ClassesTimerTask extends AbstractTimerTask {
      *
      * @param event The event that is happening now
      */
-    private void notifyEvent(Event event, Subject subject) {
+    private void notifyEvent(Class event, Subject subject) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.WHITE);
         eb.setTitle("Heyy!! Uma aula está prestes a começar!");
@@ -107,8 +104,7 @@ public class ClassesTimerTask extends AbstractTimerTask {
         );
 
         // Send the message
-        MessageDispatcher.getInstance().getDefaultChannel()
-                .sendMessageEmbeds(eb.build())
+        getGuild().generateMessageEmbed(eb.build())
                 .setActionRow(Button.link(event.getLink(), "Zoom"))
                 .queue();
     }

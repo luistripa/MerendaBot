@@ -1,11 +1,12 @@
 package com.merendabot.commands.commands;
 
-import com.merendabot.commands.CommandCategory;
-import com.merendabot.commands.CommandClass;
-import com.merendabot.university.events.Event;
+import com.merendabot.commands.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import com.merendabot.university.Merenda;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import com.merendabot.GuildManager;
+import com.merendabot.commands.CommandCategory;
 import com.merendabot.university.events.Assignment;
 import com.merendabot.university.subjects.Subject;
 
@@ -16,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class AssigmentsCommand extends CommandClass {
+public class AssigmentsCommand extends Command {
 
     private static final Logger logger = Logger.getLogger("main-log");
 
@@ -25,7 +26,7 @@ public class AssigmentsCommand extends CommandClass {
     }
 
     @Override
-    public void execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
+    public void execute(GuildManager guild, SlashCommandEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Trabalhos");
 
@@ -36,18 +37,18 @@ public class AssigmentsCommand extends CommandClass {
         Map<Integer, Subject> subjectCache = new HashMap<>();
 
         try {
-            for (Event assignment : Assignment.getAssignments()) {
+            for (Assignment assignment : Assignment.getAssignments()) {
                 Subject subject;
-                subject = subjectCache.get(assignment.getSubjectId());
+                subject = subjectCache.get(assignment.getSubject().getId());
 
                 if (subject == null) {
-                    subject = Subject.getSubjectById(assignment.getSubjectId());
+                    subject = Subject.getSubjectById(assignment.getSubject().getId());
 
                     if (subject == null) {
-                        logger.severe("Could not find subject with id " + assignment.getSubjectId());
-                        event.getChannel().sendMessageEmbeds(
+                        logger.severe("Could not find subject with id " + assignment.getSubject().getId());
+                        event.replyEmbeds(
                                 getErrorEmbed("Assignments", "Erro", "Ocorreu um erro. Contacta um administrador.")
-                        ).queue();
+                        ).setEphemeral(true).queue();
                         return;
                     }
                     subjectCache.put(subject.getId(), subject);
@@ -69,13 +70,27 @@ public class AssigmentsCommand extends CommandClass {
                 fieldValue.append("Não existem trabalhos.");
 
             eb.addField(fieldTitle, fieldValue.toString(), false);
-            event.getChannel().sendMessageEmbeds(eb.build()).queue();
+            event.replyEmbeds(eb.build()).setEphemeral(true).queue();
 
         } catch (SQLException e) {
             e.printStackTrace();
-            event.getChannel().sendMessageEmbeds(
+            event.replyEmbeds(
                     getErrorEmbed("Assignments", "Erro SQL", "Ocorreu um erro. Contacta o admininstrador.")
-            ).queue();
+            ).setEphemeral(true).queue();
         }
+    }
+
+    @Override
+    public void processButtonClick(GuildManager guild, ButtonClickEvent event) {
+        event.replyEmbeds(
+                getErrorEmbed("Assignments", "Ação não encontrada", "Um botão foi pressionado, mas não realizou nenhuma ação.")
+        ).setEphemeral(true).queue();
+    }
+
+    @Override
+    public void processSelectionMenu(GuildManager guild, SelectionMenuEvent event) {
+        event.replyEmbeds(
+                getErrorEmbed("Assignments", "Ação não encontrada", "Uma seleção foi feita, mas não realizou nenhuma ação.")
+        ).setEphemeral(true).queue();
     }
 }

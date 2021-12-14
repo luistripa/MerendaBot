@@ -1,11 +1,12 @@
-package com.merendabot.university.timers;
+package com.merendabot.timers;
 
-import com.merendabot.university.MessageDispatcher;
 import com.merendabot.university.events.Test;
 import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
+import com.merendabot.GuildManager;
 
 import java.awt.*;
 import java.sql.SQLException;
@@ -13,10 +14,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Timer;
 import java.util.logging.Logger;
 
-public class TestsReminderTimerTask extends AbstractTimerTask {
+public class TestsReminderEventTimer extends EventTimer {
 
     private static final int TEST_REMINDER_DAYS_BEFORE = 5;
 
@@ -25,8 +26,8 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
     private Queue<Test> testCache;
     private LocalDateTime nextCacheReload;
 
-    public TestsReminderTimerTask() {
-        testCache = loadCache();
+    public TestsReminderEventTimer(GuildManager guild, Timer scheduler, long delay, long period) {
+        super(guild, scheduler, delay, period);
     }
 
     @Override
@@ -34,17 +35,11 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
         LocalDateTime now = LocalDateTime.now();
 
         if (now.isAfter(nextCacheReload))
-            testCache = loadCache();
+            loadCache();
 
         Test test = testCache.peek();
         if (test == null) // There are no tests
             return;
-
-        Subject subject = Subject.getSubjectById(test.getSubjectId());
-        if (subject == null) {
-            logger.warning("Could not find subject with id: "+test.getSubjectId());
-            return;
-        }
 
         // Test date already passed
         if (now.toLocalDate().isAfter(test.getStartDate())) {
@@ -55,7 +50,7 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
         LocalDate date = test.getStartDate().minusDays(TEST_REMINDER_DAYS_BEFORE);
 
         if (now.toLocalDate().isEqual(date)) // Test is TEST_REMINDER_DAYS_BEFORE days from now
-            notifyTest(testCache.remove(), subject);
+            notifyTest(testCache.remove(), test.getSubject());
 
         else if (date.isBefore(now.toLocalDate())) // Test reminding date has already passed
             testCache.remove();
@@ -67,43 +62,47 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
 
         if (button == null) {
             logger.severe("Could not find button.");
-            event.reply("Não encontrei esse botão... Contacta um administrador.").queue();
+            event.reply("Não encontrei esse botão... Contacta um administrador.").setEphemeral(true).queue();
             return;
         }
 
         if (button.getId() == null) {
             logger.severe("Button does not have an id.");
-            event.reply("Não encontrei esse botão... Contacta um administrador.").queue();
+            event.reply("Não encontrei esse botão... Contacta um administrador.").setEphemeral(true).queue();
             return;
         }
         String action = button.getId().split(" ")[2];
         switch (action) {
             case "panic": {
-                event.reply(":eyes:").queue();
+                event.reply(":eyes:").setEphemeral(true).queue();
                 break;
             }
             default: {
                 logger.warning("Could not find action with id: "+action);
-                event.reply("A ação que esse botão pediu não é válida. Contacta um administrador.").queue();
+                event.reply("A ação que esse botão pediu não é válida. Contacta um administrador.").setEphemeral(true).queue();
             }
         }
     }
 
+    @Override
+    public void processSelectionMenu(SelectionMenuEvent event) {
+        event.reply("Essa operação não é suportada. Contacta um administrador.").setEphemeral(true).queue();
+    }
+
     /*
     Private Methods
-     */
+    */
 
-    private Queue<Test> loadCache() {
-        Queue<Test> newTestCache = new ConcurrentLinkedQueue<>();
+    private void loadCache() {
+        testCache.clear();
         LocalDateTime now = LocalDateTime.now();
         try {
-            newTestCache.addAll(Test.getTests());
+            testCache.addAll(Test.getTests());
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         nextCacheReload = now.plusDays(1).withHour(0).withMinute(0).withSecond(0);
-        return newTestCache;
     }
 
 
@@ -125,8 +124,7 @@ public class TestsReminderTimerTask extends AbstractTimerTask {
         );
         eb.addField(fieldTitle, fieldValue, false);
 
-        MessageDispatcher.getInstance().getDefaultChannel()
-                .sendMessageEmbeds(eb.build())
+        getGuild().generateMessageEmbed(eb.build())
                 .setActionRow(Button.danger("timer test-reminder panic", "Panic!"))
                 .queue();
     }

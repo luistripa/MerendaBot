@@ -1,16 +1,15 @@
-package com.merendabot.university.timers;
+package com.merendabot.timers;
 
-import com.merendabot.university.Merenda;
-import com.merendabot.university.MessageDispatcher;
+import com.merendabot.Merenda;
 import com.merendabot.university.events.Assignment;
-import com.merendabot.university.events.Event;
 import com.merendabot.university.events.Test;
-import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
+import com.merendabot.GuildManager;
 
 import java.awt.*;
 import java.sql.SQLException;
@@ -18,15 +17,11 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Locale;
+import java.util.Timer;
 import java.util.logging.Logger;
 
-public class WeeklyReportTimerTask extends AbstractTimerTask {
-    /**
-     * Represents the weekly report.
-     *
-     * The weekly report is a report that comes out every sunday detailing all the activities, such as assignments
-     * or tests, that are going to be done that week.
-     */
+public class WeeklyReportEventTimer extends EventTimer {
 
     private static final DayOfWeek REPORT_DAY_OF_WEEK = DayOfWeek.SUNDAY;
 
@@ -34,15 +29,17 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
 
     private boolean hasReported;
 
-    public WeeklyReportTimerTask() {
-        this.hasReported = false;
+    public WeeklyReportEventTimer(GuildManager guild, Timer scheduler, long delay, long period) {
+        super(guild, scheduler, delay, period);
+
+        hasReported = false;
     }
 
     @Override
     public void run() {
         // JDA connection not available
-        if (!Merenda.getJDA().getStatus().equals(JDA.Status.CONNECTED)) {
-            logger.warning("JDA status is not CONNECTED. Weekly report will not be sent. STATUS: "+Merenda.getJDA().getStatus());
+        if (!Merenda.getInstance().getJda().getStatus().equals(JDA.Status.CONNECTED)) {
+            logger.warning("JDA status is not CONNECTED. Weekly report will not be sent. STATUS: "+Merenda.getInstance().getJda().getStatus());
             return;
         }
 
@@ -65,14 +62,11 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
 
             this.hasReported = true;
 
-            MessageDispatcher.getInstance().getDefaultChannel()
-                    .sendMessageEmbeds(messageEmbed).setActionRow(Button.secondary("timer weekly-report next-week", "E para a semana?"))
+            getGuild().generateMessageEmbed(messageEmbed).setActionRow(Button.secondary("timer weekly-report next-week", "E para a semana?"))
                     .queue();
 
         } catch (SQLException e) {
-            MessageDispatcher.getInstance().getDefaultChannel()
-                    .sendMessage("Ocorreu um erro. Contacta um administrador.")
-                    .queue();
+            getGuild().generateMessage("Ocorreu um erro. Contacta um administrador.").queue();
         }
     }
 
@@ -94,6 +88,11 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
         }
     }
 
+    @Override
+    public void processSelectionMenu(SelectionMenuEvent event) {
+        event.reply("Essa operação não é suportada. Contacta uma administrador.").setEphemeral(true).queue();
+    }
+
     /**
      * Gets all the tests and generates an embed field for display.
      *
@@ -111,9 +110,9 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
                         String.format(
                                 "%s %s - %s (%s)%n",
                                 test.getName(),
-                                Subject.getSubjectById(test.getSubjectId()).getShortName(),
+                                test.getSubject().getShortName(),
                                 test.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM")),
-                                test.getStartDate().format(DateTimeFormatter.ofPattern("E"))
+                                test.getStartDate().format(DateTimeFormatter.ofPattern("EEEE", Locale.forLanguageTag("PT")))
                         )
                 );
         }
@@ -135,16 +134,18 @@ public class WeeklyReportTimerTask extends AbstractTimerTask {
     private MessageEmbed.Field getAssignments(LocalDate start, LocalDate end) throws SQLException {
         StringBuilder fieldValue = new StringBuilder();
 
-        for (Event assignment : Assignment.getAssignments()) {
-            if (assignment.getStartDate().isBefore(end) && assignment.getStartDate().isAfter(start))
+        for (Assignment assignment : Assignment.getAssignments()) {
+            if (assignment.getStartDate().isBefore(end) && assignment.getStartDate().isAfter(start)) {
                 fieldValue.append(
                         String.format(
-                                "%s - %s (%s)%n",
+                                "%s %s - %s (%s)%n",
                                 assignment.getName(),
+                                assignment.getSubject().getShortName(),
                                 assignment.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM")),
-                                assignment.getStartDate().format(DateTimeFormatter.ofPattern("E"))
+                                assignment.getStartDate().format(DateTimeFormatter.ofPattern("EEEE", Locale.forLanguageTag("PT")))
                         )
                 );
+            }
         }
         if (fieldValue.length() == 0)
             fieldValue.append("Não há trabalhos esta semana.");

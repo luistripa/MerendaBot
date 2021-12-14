@@ -3,21 +3,27 @@ package com.merendabot.university.subjects;
 public class ProfessorClass implements Professor {
 
     private int id;
+    private String guild_id;
     private String name;
     private String email;
-    private int subject_id;
-    private Subject subject;
+    private int subjectId;
 
-    public ProfessorClass(int id, String name, String email, int subject_id) {
+    public ProfessorClass(int id, String guild_id, String name, String email, int subjectId) {
         this.id = id;
+        this.guild_id = guild_id;
         this.name = name;
         this.email = email;
-        this.subject_id = subject_id;
+        this.subjectId = subjectId;
     }
 
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public String getGuildId() {
+        return guild_id;
     }
 
     @Override
@@ -32,16 +38,6 @@ public class ProfessorClass implements Professor {
 
     @Override
     public int getSubjectId() {
-        return subject_id;
-    }
-
-    @Override
-    public Subject getSubject() {
-        return subject;
-    }
-
-    @Override
-    public void setSubject(Subject subject) {
-        this.subject = subject;
+        return subjectId;
     }
 }

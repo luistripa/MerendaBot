@@ -1,30 +1,27 @@
 package com.merendabot.university.subjects;
 
-import com.merendabot.university.important_links.ImportantLink;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class SubjectClass implements Subject {
 
     private int id;
+    private String guild_id;
     private final String name;
-    private String short_name;
+    private String shortName;
 
-    private final List<Professor> professorList;
-    private final List<ImportantLink> importantLinkList;
-
-    public SubjectClass(int id, String name, String short_name) {
+    public SubjectClass(int id, String guild_id, String name, String shortName) {
         this.id = id;
+        this.guild_id = guild_id;
         this.name = name;
-        this.short_name = short_name;
-        this.professorList = new ArrayList<>();
-        this.importantLinkList = new ArrayList<>();
+        this.shortName = shortName;
     }
 
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public String getGuildId() {
+        return guild_id;
     }
 
     @Override
@@ -34,16 +31,6 @@ public class SubjectClass implements Subject {
 
     @Override
     public String getShortName() {
-        return short_name;
-    }
-
-    @Override
-    public List<Professor> getProfessors() {
-        return this.professorList;
-    }
-
-    @Override
-    public void addProfessor(Professor professor) {
-        this.professorList.add(professor);
+        return shortName;
     }
 }

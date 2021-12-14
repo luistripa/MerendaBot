@@ -1,24 +1,24 @@
 package com.merendabot;
 
-import com.merendabot.commands.*;
-import com.merendabot.university.MessageDispatcher;
+import com.merendabot.commands.Command;
+import com.merendabot.commands.CommandHandler;
+import com.merendabot.commands.exceptions.CommandDoesNotExistException;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.jetbrains.annotations.NotNull;
-import com.merendabot.university.Merenda;
-import com.merendabot.university.timers.*;
+import com.merendabot.timers.EventTimer;
 
 import javax.security.auth.login.LoginException;
-import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +35,6 @@ public class Main extends ListenerAdapter {
         JDA jda;
         try {
             jda = JDABuilder.createDefault(System.getenv("TOKEN"))
-                    .setActivity(Activity.watching(CommandHandler.COMMAND_PREFIX))
                     .enableIntents(GatewayIntent.GUILD_MEMBERS)
                     .build();
             jda.addEventListener(new Main());
@@ -49,36 +48,30 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onReady(@NotNull ReadyEvent event) {
-        logger.info("JDA Ready");
-        Merenda.getInstance();
-        Merenda.setJDA(event.getJDA());
-        MessageDispatcher.getInstance();
+    public void onSlashCommand(@NotNull SlashCommandEvent event) {
 
-        Merenda.getInstance().setup();
+        Merenda merenda = Merenda.getInstance();
+        GuildManager guild = merenda.getGuild(event.getGuild().getId());
+
+        try {
+            Command command = merenda.getCommand(event.getCommandPath());
+            command.execute(guild, event);
+
+        } catch (CommandDoesNotExistException e) {
+            event.reply(
+                    "Oops! Não encontrei esse comando. Tenta **merenda!help** para um lista de comandos"
+            ).setEphemeral(true).queue();
+        }
     }
 
     @Override
-    public void onMessageReceived(@NotNull MessageReceivedEvent event)
-    {
-        Message message = event.getMessage();
-        if (!isCommand(message))
-            return;
-
-        Merenda merenda = Merenda.getInstance();
-
-        String[] splitCommand = splitCommand(message.getContentDisplay());
-
-        if (merenda.hasCommand(splitCommand[0])) {
-            Command command = merenda.getCommand(splitCommand[0]);
-            command.execute(merenda, splitCommand, event);
-
-        } else {
-            event.getChannel().sendMessage(
-                    "Oops! Não encontrei esse comando. Tenta **merenda!help** para um lista de comandos"
-            ).queue();
-        }
+    public void onReady(@NotNull ReadyEvent event) {
+        logger.info("JDA Ready");
+        Merenda.getInstance().setup(event.getJDA());
     }
+
+    @Override
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {}
 
     /**
      * Fired when a selection is made in a selection menu.
@@ -98,16 +91,24 @@ public class Main extends ListenerAdapter {
          * section 3 - Instruction (Handler specific. Some handlers may completely ignore this) (may have internal sections)
          */
         Merenda merenda = Merenda.getInstance();
+        GuildManager guild = merenda.getGuild(event.getGuild().getId());
         SelectionMenu selectionMenu = event.getSelectionMenu();
+
         if (selectionMenu == null || selectionMenu.getId() == null) {
             logger.warning("Selection Menu is null or does not have an ID.");
             return;
         }
+
         String[] selectionMenuId = selectionMenu.getId().split(" ");
         switch (selectionMenuId[0]) {
             case "command": {
-                Command command = merenda.getCommand(selectionMenuId[1]);
-                command.processSelectionMenu(merenda, event);
+                try {
+                    Command command = merenda.getCommand(selectionMenuId[1]);
+                    command.processSelectionMenu(guild, event);
+
+                } catch (CommandDoesNotExistException e) {
+                    event.getChannel().sendMessage("Comando não encontrado.").queue();
+                }
                 break;
             }
             case "timer": {
@@ -136,6 +137,7 @@ public class Main extends ListenerAdapter {
          */
 
         Merenda merenda = Merenda.getInstance();
+        GuildManager guild = merenda.getGuild(event.getGuild().getId());
         Button button = event.getButton();
 
         if (button == null || button.getId() == null) {
@@ -147,17 +149,18 @@ public class Main extends ListenerAdapter {
 
         switch (buttonId[0]) { // Section 1 of button id
             case "command": {
-                if (merenda.hasCommand(buttonId[1])) {
-                    Command command  = merenda.getCommand(buttonId[1]); // Command id is in Section 2
-                    command.processButtonPressed(merenda, event);
-                } else {
+                try {
+                    Command command = merenda.getCommand(buttonId[1]);
+                    command.processButtonClick(guild, event);
+
+                } catch (CommandDoesNotExistException e) {
                     event.reply("Uhmm... não encontrei essa ação. Se isto for um erro contacta o administrador.")
                             .setEphemeral(true).queue();
                 }
                 break;
             }
             case "timer": {
-                ScheduleTimer timer = merenda.getTimer(buttonId[1]);
+                EventTimer timer = guild.getTimerHandler().getTimer(buttonId[1]);
                 timer.processButtonClick(event);
                 break;
             }
@@ -210,29 +213,5 @@ public class Main extends ListenerAdapter {
         }
 
         return true;
-    }
-
-    /**
-     * Checks if given message is a command, AKA starts with COMMAND_PREFIX.
-     *
-     * @param message The message object that was received.
-     * @return True if is command, False otherwise
-     */
-    private boolean isCommand(Message message) {
-        return message.getContentDisplay().startsWith(CommandHandler.COMMAND_PREFIX);
-    }
-
-    /**
-     * Splits the command into parts.
-     *
-     * 0 - The command name
-     * 1 ... * - The command arguments
-     *
-     * @param content The content of the command.
-     * @return A split command
-     */
-    private String[] splitCommand(String content) {
-        String commandMessage = content.split(CommandHandler.COMMAND_PREFIX)[1];
-        return commandMessage.split(" ");
     }
 }
