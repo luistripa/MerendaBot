@@ -1,6 +1,6 @@
 package com.merendabot.university.subjects;
 
-import com.merendabot.university.Merenda;
+import com.merendabot.Merenda;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +17,8 @@ public interface Professor {
      * @return The professor's id
      */
     int getId();
+
+    String getGuildId();
 
     /**
      * Gets the name of the professor.
@@ -49,10 +51,12 @@ public interface Professor {
      */
     static Professor getProfessorFromRS(ResultSet rs) throws SQLException {
         return new ProfessorClass(
-                rs.getInt(1),
-                rs.getString(2),
-                rs.getString(3),
-                rs.getInt(4));
+                rs.getInt(1),       // ID
+                rs.getString(2),       // GUILD ID
+                rs.getString(3),    // NAME
+                rs.getString(4),    // EMAIL
+                rs.getInt(5)        // SUBJECT ID
+        );
     }
 
     /**
@@ -65,7 +69,7 @@ public interface Professor {
     static Professor getProfessorById(int id) throws SQLException {
         try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select *\n" +
-                        "from university_professor\n" +
+                        "from guild_professor\n" +
                         "where id = ?;"
         )) {
             ResultSet rs = statement.executeQuery();
@@ -89,9 +93,9 @@ public interface Professor {
         List<Professor> professors = new ArrayList<>();
         try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select *\n" +
-                        "from university_professor up\n" +
-                        "inner join public.university_subject us on up.subject_id = us.id\n" +
-                        "order by us.id;"
+                        "from guild_professor gp\n" +
+                        "inner join guild_subject gs on gp.subject_id = gs.id\n" +
+                        "order by gs.id;"
         )) {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {

@@ -1,63 +1,124 @@
 package com.merendabot.commands;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
-import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
-import com.merendabot.university.Merenda;
+import com.merendabot.GuildManager;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
-import java.util.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public interface Command {
+public abstract class Command extends CommandData {
 
-    CommandCategory getCategory();
+    public static final String COMMAND_PREFIX = "merenda!";
+    public static final String ADMIN_ID = "647790893646086167";
 
-    String getName();
+    private CommandCategory category;
+    private String name;
+    private String description;
+    private List<CommandParam> params;
 
-    String getDescription();
+    public Command(CommandCategory category, String name, String description) {
+        super(name, description);
+        this.category = category;
+        this.name = name;
+        this.description = description;
+        this.params = new ArrayList<>();
+    }
 
-    List<CommandParam> getParams();
+    public CommandCategory getCategory() {
+        return category;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public List<CommandParam> getParams() {
+        return params;
+    }
+
+    public MessageEmbed getHelp() {
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setDescription(this.getDescription());
+        eb.setColor(Color.WHITE);
+        StringBuilder embedTitle = new StringBuilder();
+        embedTitle.append(COMMAND_PREFIX).append(this.getName());
+
+        StringBuilder fieldValue = new StringBuilder();
+        for (CommandParam param : this.getParams()) {
+            String fieldTitle = String.format("%s - %s", param.getName(), param.getDescription());
+            embedTitle.append(String.format(" <%s>", param.getName()));
+
+            for (String possibleValue : param.getPossibleValues()) {
+                fieldValue.append(possibleValue).append("\n");
+            }
+            eb.addField(fieldTitle, fieldValue.toString(), false);
+        }
+        eb.setTitle(embedTitle.toString());
+        return eb.build();
+    }
+
+    public Command addParam(CommandParam param) {
+        params.add(param);
+        return this;
+    }
+
+    public abstract void execute(GuildManager guild, SlashCommandEvent event);
+
+    public abstract void processButtonClick(GuildManager guild, ButtonClickEvent event);
+
+    public abstract void processSelectionMenu(GuildManager guild, SelectionMenuEvent event);
 
     /**
-     * Generate a help message embed specifying all the parameters.
+     * Checks if the command has at least the number of provided params.
      *
-     * @return An MessageEmbed object ready to send.
+     * @param command The command space-split
+     * @param params The number of required params
+     * @return True if verifies the condition, False otherwise.
      */
-    MessageEmbed getHelp();
+    protected boolean verifyCommandParams(List<String> command, int params) {
+        return command.size() >= params+1;
+    }
 
     /**
-     * Adds a parameter to the command.
-     * Parameters will show on command help messages.
+     * Generates a message embed as an error.
      *
-     * @param param A CommandParam object
-     * @return A Command Object.
+     * @param title The title of the embed
+     * @param fieldTitle The field title of the embed. Usually describes the error generically. Ex.: SQL Error
+     * @param fieldValue The field description of the embed. Describes the error or tells the user how to proceed.
+     * @return A MessageEmbed object
      */
-    Command addParam(CommandParam param);
+    protected MessageEmbed getErrorEmbed(String title, String fieldTitle, String fieldValue) {
+        return new EmbedBuilder()
+                .setColor(new Color(255, 50, 50))
+                .setTitle(title)
+                .addField(fieldTitle, fieldValue, false)
+                .build();
+    }
 
     /**
-     * Executes the command itself.
+     * Generates a message embed as a success message.
      *
-     *  @param merenda The system object
-     * @param command An array containing the command and its parameters
-     * @param event The event that triggered the method
+     * @param title The title of the embed
+     * @param fieldTitle The field title of the embed
+     * @param fieldValue The field description of the embed
+     * @return A MessageEmbed object
      */
-    void execute(Merenda merenda, String[] command, MessageReceivedEvent event);
-
-    /**
-     * Processes a button click for this command.
-     *
-     *  @param merenda The system object
-     * @param event The event that triggered the method
-     */
-    void processButtonPressed(Merenda merenda, ButtonClickEvent event);
-
-    /**
-     * Processes a selection menu event.
-     *
-     * @param merenda The system object
-     * @param event The event that triggered the method
-     */
-    void processSelectionMenu(Merenda merenda, SelectionMenuEvent event);
+    protected MessageEmbed getSuccessEmbed(String title, String fieldTitle, String fieldValue) {
+        return new EmbedBuilder()
+                .setColor(new Color(150, 255, 70))
+                .setTitle(title)
+                .addField(fieldTitle, fieldValue, false)
+                .build();
+    }
 }

@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 public class BaseEventClass implements BaseEvent {
 
     private int id;
+    private String guild_id;
     private EventType type;
     private EventInterval interval;
     private String name;
@@ -23,8 +24,9 @@ public class BaseEventClass implements BaseEvent {
     private String link;
     private Subject subject;
 
-    public BaseEventClass(int id, EventType type, EventInterval interval, String name, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String link, Subject subject) {
+    public BaseEventClass(int id, String guild_id, EventType type, EventInterval interval, String name, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String link, Subject subject) {
         this.id = id;
+        this.guild_id = guild_id;
         this.type = type;
         this.interval = interval;
         this.name = name;
@@ -36,8 +38,9 @@ public class BaseEventClass implements BaseEvent {
         this.subject = subject;
     }
 
-    public BaseEventClass(int id, EventType type, EventInterval interval, String name, LocalDate startDate, Date endDate, LocalTime startTime, Time endTime, String link, Subject subject) {
+    public BaseEventClass(int id, String guild_id, EventType type, EventInterval interval, String name, LocalDate startDate, Date endDate, LocalTime startTime, Time endTime, String link, Subject subject) {
         this.id = id;
+        this.guild_id = guild_id;
         this.type = type;
         this.interval = interval;
         this.name = name;
@@ -52,6 +55,11 @@ public class BaseEventClass implements BaseEvent {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public String getGuildId() {
+        return guild_id;
     }
 
     @Override

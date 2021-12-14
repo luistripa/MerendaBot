@@ -1,6 +1,6 @@
 package com.merendabot.university.subjects;
 
-import com.merendabot.university.Merenda;
+import com.merendabot.Merenda;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.PreparedStatement;
@@ -17,6 +17,8 @@ public interface Subject {
      * @return The id of the subject
      */
     int getId();
+
+    String getGuildId();
 
     /**
      * Gets the name of the subject.
@@ -44,9 +46,10 @@ public interface Subject {
      */
     static Subject getSubjectFromRS(ResultSet rs) throws SQLException {
         return new SubjectClass(
-                rs.getInt(1),
-                rs.getString(2),
-                rs.getString(3)
+                rs.getInt(1),       // ID
+                rs.getString(2),       // GUILD ID
+                rs.getString(3),    // NAME
+                rs.getString(4)     // SHORT NAME
         );
     }
 
@@ -59,7 +62,7 @@ public interface Subject {
     @Nullable static Subject getSubjectById(int id) {
         try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select *\n" +
-                        "from university_subject\n" +
+                        "from guild_subject\n" +
                         "where id=?;"
         )) {
             statement.setInt(1, id);

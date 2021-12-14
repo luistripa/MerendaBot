@@ -1,8 +1,10 @@
 package com.merendabot.university.events;
 
+import com.merendabot.Merenda;
 import com.merendabot.university.subjects.Subject;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -12,8 +14,8 @@ import java.util.List;
 
 public class Test extends BaseEventClass {
 
-    public Test(int id, String name, LocalDate dueDate, LocalTime dueTime, String link, Subject subject) {
-        super(id, EventType.TEST, EventInterval.SINGLE, name, dueDate, (Date) null, dueTime, null, link, subject);
+    public Test(int id, String guild_id, String name, LocalDate dueDate, LocalTime dueTime, String link, Subject subject) {
+        super(id, guild_id, EventType.TEST, EventInterval.SINGLE, name, dueDate, (Date) null, dueTime, null, link, subject);
     }
 
 
@@ -25,6 +27,18 @@ public class Test extends BaseEventClass {
         return getStartTime();
     }
 
+    static Test getTestFromRS(ResultSet rs) throws SQLException {
+        return new Test(
+                rs.getInt(1),                                           // ID
+                rs.getString(2),                                        // Guild ID
+                rs.getString(5),                                        // Name
+                rs.getDate(6).toLocalDate(),                            // Start date
+                rs.getTime(8).toLocalTime(),                            // Start time
+                rs.getString(10),                                       // Link
+                Subject.getSubjectById(rs.getInt(11))                   // Subject ID
+        );
+    }
+
     /**
      * Gets all tests from the database.
      *
@@ -33,20 +47,15 @@ public class Test extends BaseEventClass {
      */
     public static List<Test> getTests() throws SQLException {
         List<Test> tests = new ArrayList<>();
-        ResultSet rs = BaseEvent.getEvents(EventType.TEST);
+        PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
+                "select * " +
+                        "from guild_event ge " +
+                        "inner join guild_subject gs on gs.id = ge.subject_id " +
+                        "order by ge.start_date, ge.start_time;"
+        );
+        ResultSet rs = statement.executeQuery();
         while (rs.next())
-            tests.add((Test) BaseEvent.getEventFromRS(rs));
+            tests.add(getTestFromRS(rs));
         return tests;
-    }
-
-    /**
-     * Gets a test from the database with the given id.
-     *
-     * @param id The id of the test
-     * @return A Test object if test exists, null otherwise.
-     * @throws SQLException If an SQL Error occurs
-     */
-    public static Test getTestById(int id) throws SQLException {
-        return (Test) BaseEvent.getEventById(id);
     }
 }

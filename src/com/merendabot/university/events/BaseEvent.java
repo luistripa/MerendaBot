@@ -1,6 +1,6 @@
 package com.merendabot.university.events;
 
-import com.merendabot.university.Merenda;
+import com.merendabot.Merenda;
 import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +17,8 @@ import java.util.List;
 public interface BaseEvent {
 
     int getId();
+
+    String getGuildId();
 
     EventType getType();
 
@@ -43,15 +45,16 @@ public interface BaseEvent {
     static BaseEventClass getEventFromRS(ResultSet rs) throws SQLException {
         return new BaseEventClass(
                 rs.getInt(1),                                           // ID
-                EventType.valueOf(rs.getString(2).toUpperCase()),       // EventType
-                EventInterval.valueOf(rs.getString(3).toUpperCase()),   // EventInterval
-                rs.getString(4),                                        // Name
-                rs.getDate(5).toLocalDate(),                            // Start date
-                rs.getDate(6),                                          // End date
-                rs.getTime(7).toLocalTime(),                            // Start time
-                rs.getTime(8),                                          // End time
-                rs.getString(9),                                        // Link
-                Subject.getSubjectById(rs.getInt(10))                   // Subject ID
+                rs.getString(2),                                        // Guild ID
+                EventType.valueOf(rs.getString(3).toUpperCase()),       // EventType
+                EventInterval.valueOf(rs.getString(4).toUpperCase()),   // EventInterval
+                rs.getString(5),                                        // Name
+                rs.getDate(6).toLocalDate(),                            // Start date
+                rs.getDate(7),                                          // End date
+                rs.getTime(8).toLocalTime(),                            // Start time
+                rs.getTime(9),                                          // End time
+                rs.getString(10),                                       // Link
+                Subject.getSubjectById(rs.getInt(11))                   // Subject ID
         );
     }
 
@@ -59,9 +62,9 @@ public interface BaseEvent {
         List<BaseEvent> events = new ArrayList<>();
         PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select * " +
-                        "from university_event ue " +
-                        "inner join university_subject us on us.id = ue.subject_id " +
-                        "order by ue.start_date, ue.start_time;"
+                        "from guild_event ge " +
+                        "inner join guild_subject gs on gs.id = ge.subject_id " +
+                        "order by ge.start_date, ge.start_time;"
         );
         return statement.executeQuery();
     }
@@ -70,10 +73,10 @@ public interface BaseEvent {
         List<BaseEvent> events = new ArrayList<>();
         PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select * " +
-                        "from university_event ue " +
-                        "inner join university_subject us on ue.subject_id = us.id " +
+                        "from guild_event ge " +
+                        "inner join guild_subject gs on ge.subject_id = gs.id " +
                         "where event_type::text = ?" +
-                        "order by ue.start_date, ue.start_time;"
+                        "order by ge.start_date, ge.start_time;"
         );
         statement.setString(1, eventType.toString().toLowerCase());
         return statement.executeQuery();
@@ -83,7 +86,7 @@ public interface BaseEvent {
     static BaseEvent getEventById(int id) throws SQLException {
         try (PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
                 "select * " +
-                        "from university_event " +
+                        "from guild_event " +
                         "where id=? "+
                         "order by start_date, start_time, id"
         )) {
@@ -98,12 +101,12 @@ public interface BaseEvent {
     static ResultSet getEventsByWeekday(DayOfWeek dayOfWeek, EventType eventType) throws SQLException {
         List<BaseEvent> events = new ArrayList<>();
         PreparedStatement statement = Merenda.getInstance().getConnection().prepareStatement(
-                "select * from university_event ue\n" +
-                        "inner join university_subject us on ue.subject_id = us.id\n" +
-                        "where ue.end_date >= now() and\n" +
-                        "map_weekday(extract(dow from ue.start_date)) = ? and\n" +
-                        "    ue.event_type::text = ?\n" +
-                        "order by ue.start_date, ue.start_time"
+                "select * from guild_event ge\n" +
+                        "inner join guild_subject gs on ge.subject_id = gs.id\n" +
+                        "where ge.end_date >= now() and\n" +
+                        "extract(isodow from ge.start_date) = ? and\n" +
+                        "    ge.event_type::text = ?\n" +
+                        "order by ge.start_date, ge.start_time"
         );
         statement.setInt(1, dayOfWeek.getValue());
         statement.setString(2, eventType.toString().toLowerCase());

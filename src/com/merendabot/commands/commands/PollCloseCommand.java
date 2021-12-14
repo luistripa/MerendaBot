@@ -1,17 +1,24 @@
 package com.merendabot.commands.commands;
 
-import com.merendabot.commands.CommandCategory;
-import com.merendabot.commands.RestrictedCommandClass;
+import com.merendabot.Merenda;
+import com.merendabot.commands.Command;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import com.merendabot.university.Merenda;
-import com.merendabot.university.polls.Poll;
+import com.merendabot.GuildManager;
+import com.merendabot.commands.CommandCategory;
+import com.merendabot.polls.Poll;
+import com.merendabot.polls.exceptions.PollDoesNotExistException;
+
+import java.util.List;
 
 /**
  * Command to close a poll, regardless of the number of votes.
  * To close a poll, you must reply to the poll's original message.
  */
-public class PollCloseCommand extends RestrictedCommandClass {
+public class PollCloseCommand extends Command {
 
     private static final String COMMAND_FRIENDLY_NAME = "Poll Close";
 
@@ -20,37 +27,60 @@ public class PollCloseCommand extends RestrictedCommandClass {
     }
 
     @Override
-    public void execute(Merenda merenda, String[] command, MessageReceivedEvent event) {
+    public void execute(GuildManager guild, SlashCommandEvent event) {
 
         // User does not have permission
-        if (!isAdmin(event.getAuthor())) {
+        if (!event.getUser().getId().equals(ADMIN_ID)) {
             event.getChannel().sendMessageEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Erro de permissão", "Não tens permissão para executar esse comando")
             ).queue();
             return;
         }
 
-        // User did not reply to the original message
-        Message pollMessage = event.getMessage().getReferencedMessage();
-        if (pollMessage == null) {
-            event.getChannel().sendMessageEmbeds(
-                    getErrorEmbed(COMMAND_FRIENDLY_NAME, "Mensagem sem reply", "Faz reply à mensagem da votação!")
-            ).queue();
-            return;
-        }
+        try {
+            // User did not reply to the original message
 
-        // The poll does not exist
-        Poll poll = merenda.getPoll(pollMessage.getId());
-        if (poll == null) {
-            event.getChannel().sendMessageEmbeds(
+            Message pollMessage = event.getChannel().retrieveMessageById(event.getOption("id_mensagem").getAsString()).complete();
+            if (pollMessage == null) {
+                event.replyEmbeds(
+                        getErrorEmbed(COMMAND_FRIENDLY_NAME, "Mensagem sem reply", "Faz reply à mensagem da votação!")
+                ).setEphemeral(true).queue();
+                return;
+            }
+
+            // The poll does not exist
+            Poll poll = guild.getPollHandler().getPoll(pollMessage.getId());
+
+            guild.getPollHandler().closePoll(poll.getId());
+            event.replyEmbeds(
+                    getSuccessEmbed(COMMAND_FRIENDLY_NAME, "Votação encerrada", "Votação encerrada com sucesso.")
+            ).setEphemeral(true).queue();
+
+        } catch (PollDoesNotExistException e) {
+            event.replyEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Votação não encontrada", "Votação não foi encontrada. Ou já encerrou, ou ocorreu um erro.")
-            ).queue();
-            return;
+            ).setEphemeral(true).queue();
+
+        } catch (IllegalArgumentException e) {
+            event.replyEmbeds(
+                    getErrorEmbed(COMMAND_FRIENDLY_NAME, "ID inválido", "O ID introduzido não é válido.")
+            ).setEphemeral(true).queue();
         }
 
-        merenda.closePoll(poll.getId());
-        event.getChannel().sendMessageEmbeds(
-                getSuccessEmbed(COMMAND_FRIENDLY_NAME, "Votação encerrada", "Votação encerrada com sucesso.")
-        ).queue();
+
+    }
+
+    @Override
+    public void processButtonClick(GuildManager guild, ButtonClickEvent event) {
+        event.replyEmbeds(
+                getErrorEmbed("Assignments", "Ação não encontrada", "Um botão foi pressionado, mas não realizou nenhuma ação.")
+        ).setEphemeral(true).queue();
+    }
+
+    @Override
+    public void processSelectionMenu(GuildManager guild, SelectionMenuEvent event) {
+        event.replyEmbeds(
+                getErrorEmbed("Assignments", "Ação não encontrada", "Uma seleção foi feita, mas não realizou nenhuma ação.")
+        ).setEphemeral(true).queue();
     }
 }
