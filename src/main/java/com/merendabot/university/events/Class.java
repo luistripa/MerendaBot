@@ -26,7 +26,7 @@ public class Class extends BaseEventClass {
     @Column(name = "endTime", nullable = false)
     private Time endTime;
 
-    public Class(int id, GuildManager guild, String name, Date startDate, Date endDate, Time startTime, Time endTime, String link, SubjectClass subject) {
+    public Class(GuildManager guild, String name, Date startDate, Date endDate, Time startTime, Time endTime, String link, SubjectClass subject) {
         super(guild, name, startDate, startTime, link, subject);
         this.endDate = endDate;
         this.endTime = endTime;
