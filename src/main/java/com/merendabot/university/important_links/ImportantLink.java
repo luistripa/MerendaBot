@@ -1,16 +1,9 @@
-package com.merendabot.university.important_links;
+package main.java.com.merendabot.university.important_links;
 
-import com.merendabot.GuildManager;
-import com.merendabot.Merenda;
-import com.merendabot.university.subjects.Subject;
-import com.sun.xml.bind.v2.schemagen.xmlschema.Import;
+import main.java.com.merendabot.GuildManager;
+import main.java.com.merendabot.university.subjects.Subject;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface ImportantLink {

@@ -1,30 +1,15 @@
-package com.merendabot.commands.commands.events;
+package main.java.com.merendabot.commands.commands.events;
 
-import com.merendabot.GuildManager;
-import com.merendabot.Merenda;
-import com.merendabot.commands.Command;
-import com.merendabot.commands.CommandCategory;
-import com.merendabot.university.events.Class;
-import com.merendabot.university.subjects.Subject;
-import net.dv8tion.jda.api.EmbedBuilder;
+import main.java.com.merendabot.GuildManager;
+import main.java.com.merendabot.commands.Command;
+import main.java.com.merendabot.commands.CommandCategory;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
-import java.awt.*;
-import java.sql.Date;
-import java.sql.Time;
-import java.time.format.TextStyle;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
 
 public class EventsCommand extends Command {
 

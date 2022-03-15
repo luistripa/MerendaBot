@@ -1,25 +1,21 @@
-package com.merendabot.commands.commands;
+package main.java.com.merendabot.commands.commands;
 
-import com.merendabot.Merenda;
-import com.merendabot.commands.Command;
+import main.java.com.merendabot.Merenda;
+import main.java.com.merendabot.commands.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import com.merendabot.GuildManager;
-import com.merendabot.commands.CommandCategory;
-import com.merendabot.university.events.Class;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import main.java.com.merendabot.GuildManager;
+import main.java.com.merendabot.commands.CommandCategory;
+import main.java.com.merendabot.university.events.Class;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.awt.Color;
-import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.List;
 import java.util.Locale;
 
 public class ClassesCommand extends Command {

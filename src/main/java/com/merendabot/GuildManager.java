@@ -1,8 +1,8 @@
-package com.merendabot;
+package main.java.com.merendabot;
 
-import com.merendabot.polls.PollHandler;
+import main.java.com.merendabot.polls.PollHandler;
+import main.java.com.merendabot.timers.TimerHandler;
 import net.dv8tion.jda.api.entities.*;
-import com.merendabot.timers.TimerHandler;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.concurrent.Task;
 import org.hibernate.Session;

@@ -1,9 +1,7 @@
-package com.merendabot.university.events;
+package main.java.com.merendabot.university.events;
 
-import com.merendabot.GuildManager;
-import com.merendabot.Merenda;
-import com.merendabot.university.subjects.Subject;
-import com.merendabot.university.subjects.SubjectClass;
+import main.java.com.merendabot.GuildManager;
+import main.java.com.merendabot.university.subjects.SubjectClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.hibernate.Session;
 
@@ -13,6 +11,9 @@ import javax.persistence.Table;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -51,7 +52,19 @@ public class Class extends BaseEventClass {
 
     @Override
     public boolean isNow() {
-        return false; // TODO
+        LocalDateTime now = LocalDateTime.now();
+
+        LocalDate startDate = getDate().toLocalDate();
+        LocalDate endDate = getEndDate().toLocalDate();
+
+        LocalTime startTime = getTime().toLocalTime();
+        LocalTime endTime = getEndTime().toLocalTime();
+
+        return (now.isAfter(startDate.atStartOfDay()) || now.isEqual(startDate.atStartOfDay())) && // After or equal to start date
+                (now.isBefore(endDate.atStartOfDay()) || now.isEqual(endDate.atStartOfDay())) && // Before or equal to end date
+                startDate.getDayOfWeek().equals(now.getDayOfWeek()) && // Same week day
+                (now.toLocalTime().isAfter(startTime) || now.toLocalTime().equals(startTime)) && // After or equal start time
+                (now.toLocalTime().isBefore(endTime) || now.toLocalTime().equals(endTime)); // Before or equal end time
     }
 
     @Override

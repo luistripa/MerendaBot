@@ -1,15 +1,15 @@
-package com.merendabot.commands.commands;
+package main.java.com.merendabot.commands.commands;
 
-import com.merendabot.Merenda;
-import com.merendabot.commands.Command;
-import com.merendabot.university.subjects.Professor;
+import main.java.com.merendabot.Merenda;
+import main.java.com.merendabot.commands.Command;
+import main.java.com.merendabot.university.subjects.Professor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import com.merendabot.GuildManager;
-import com.merendabot.commands.CommandCategory;
-import com.merendabot.university.subjects.Subject;
+import main.java.com.merendabot.GuildManager;
+import main.java.com.merendabot.commands.CommandCategory;
+import main.java.com.merendabot.university.subjects.Subject;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

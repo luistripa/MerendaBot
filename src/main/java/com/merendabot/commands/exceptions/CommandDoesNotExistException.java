@@ -1,4 +1,4 @@
-package com.merendabot.commands.exceptions;
+package main.java.com.merendabot.commands.exceptions;
 
 public class CommandDoesNotExistException extends Exception {
 

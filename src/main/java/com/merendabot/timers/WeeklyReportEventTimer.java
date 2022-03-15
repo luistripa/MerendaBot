@@ -1,16 +1,15 @@
-package com.merendabot.timers;
+package main.java.com.merendabot.timers;
 
-import com.merendabot.Merenda;
-import com.merendabot.university.events.Assignment;
-import com.merendabot.university.events.Test;
-import net.bytebuddy.implementation.bytecode.Throw;
+import main.java.com.merendabot.Merenda;
+import main.java.com.merendabot.university.events.Assignment;
+import main.java.com.merendabot.university.events.Test;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
-import com.merendabot.GuildManager;
+import main.java.com.merendabot.GuildManager;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

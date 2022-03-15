@@ -1,4 +1,4 @@
-package com.merendabot.commands;
+package main.java.com.merendabot.commands;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import com.merendabot.GuildManager;
+import main.java.com.merendabot.GuildManager;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
 import java.awt.*;

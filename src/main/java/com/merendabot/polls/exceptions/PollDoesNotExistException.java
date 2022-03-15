@@ -1,4 +1,4 @@
-package com.merendabot.polls.exceptions;
+package main.java.com.merendabot.polls.exceptions;
 
 public class PollDoesNotExistException extends Exception {
 

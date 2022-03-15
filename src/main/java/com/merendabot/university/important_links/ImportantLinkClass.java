@@ -1,8 +1,8 @@
-package com.merendabot.university.important_links;
+package main.java.com.merendabot.university.important_links;
 
-import com.merendabot.GuildManager;
-import com.merendabot.university.subjects.Subject;
-import com.merendabot.university.subjects.SubjectClass;
+import main.java.com.merendabot.GuildManager;
+import main.java.com.merendabot.university.subjects.Subject;
+import main.java.com.merendabot.university.subjects.SubjectClass;
 
 import javax.persistence.*;
 

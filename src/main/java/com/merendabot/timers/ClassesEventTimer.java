@@ -1,9 +1,9 @@
-package com.merendabot.timers;
+package main.java.com.merendabot.timers;
 
-import com.merendabot.GuildManager;
-import com.merendabot.Merenda;
-import com.merendabot.university.events.Class;
-import com.merendabot.university.subjects.Subject;
+import main.java.com.merendabot.GuildManager;
+import main.java.com.merendabot.Merenda;
+import main.java.com.merendabot.university.events.Class;
+import main.java.com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
@@ -12,7 +12,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.awt.*;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Queue;

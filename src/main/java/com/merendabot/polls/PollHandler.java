@@ -1,7 +1,7 @@
-package com.merendabot.polls;
+package main.java.com.merendabot.polls;
 
-import com.merendabot.GuildManager;
-import com.merendabot.polls.exceptions.PollDoesNotExistException;
+import main.java.com.merendabot.GuildManager;
+import main.java.com.merendabot.polls.exceptions.PollDoesNotExistException;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.interactions.components.ActionRow;

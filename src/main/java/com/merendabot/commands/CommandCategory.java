@@ -1,4 +1,4 @@
-package com.merendabot.commands;
+package main.java.com.merendabot.commands;
 
 public enum CommandCategory {
     CORE("Core"),

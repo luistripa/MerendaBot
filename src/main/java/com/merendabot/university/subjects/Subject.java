@@ -1,6 +1,6 @@
-package com.merendabot.university.subjects;
+package main.java.com.merendabot.university.subjects;
 
-import com.merendabot.GuildManager;
+import main.java.com.merendabot.GuildManager;
 import org.hibernate.Session;
 
 import java.util.List;

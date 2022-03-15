@@ -1,23 +1,19 @@
-package com.merendabot.commands.commands;
+package main.java.com.merendabot.commands.commands;
 
-import com.merendabot.Merenda;
-import com.merendabot.commands.Command;
-import com.merendabot.university.important_links.ImportantLink;
+import main.java.com.merendabot.Merenda;
+import main.java.com.merendabot.commands.Command;
+import main.java.com.merendabot.university.important_links.ImportantLink;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import com.merendabot.GuildManager;
-import com.merendabot.commands.CommandCategory;
-import com.merendabot.university.subjects.Subject;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import main.java.com.merendabot.GuildManager;
+import main.java.com.merendabot.commands.CommandCategory;
+import main.java.com.merendabot.university.subjects.Subject;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.awt.*;
-import java.sql.SQLException;
-import java.util.List;
 
 public class LinksCommand extends Command {
 

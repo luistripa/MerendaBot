@@ -1,9 +1,9 @@
-package com.merendabot.commands;
+package main.java.com.merendabot.commands;
 
-import com.merendabot.commands.commands.*;
-import com.merendabot.commands.commands.events.EventsCommand;
-import com.merendabot.commands.exceptions.CommandAlreadyExistsException;
-import com.merendabot.commands.exceptions.CommandDoesNotExistException;
+import main.java.com.merendabot.commands.commands.*;
+import main.java.com.merendabot.commands.commands.events.EventsCommand;
+import main.java.com.merendabot.commands.exceptions.CommandAlreadyExistsException;
+import main.java.com.merendabot.commands.exceptions.CommandDoesNotExistException;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.*;

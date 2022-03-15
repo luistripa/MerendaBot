@@ -1,4 +1,4 @@
-package com.merendabot.polls;
+package main.java.com.merendabot.polls;
 
 import org.jetbrains.annotations.NotNull;
 
