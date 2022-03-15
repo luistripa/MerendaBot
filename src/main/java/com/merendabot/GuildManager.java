@@ -1,7 +1,7 @@
-package main.java.com.merendabot;
+package com.merendabot;
 
-import main.java.com.merendabot.polls.PollHandler;
-import main.java.com.merendabot.timers.TimerHandler;
+import com.merendabot.polls.PollHandler;
+import com.merendabot.timers.TimerHandler;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.concurrent.Task;

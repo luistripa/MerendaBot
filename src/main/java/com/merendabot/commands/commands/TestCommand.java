@@ -1,12 +1,12 @@
-package main.java.com.merendabot.commands.commands;
+package com.merendabot.commands.commands;
 
-import main.java.com.merendabot.commands.Command;
+import com.merendabot.commands.Command;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
-import main.java.com.merendabot.GuildManager;
-import main.java.com.merendabot.commands.CommandCategory;
+import com.merendabot.GuildManager;
+import com.merendabot.commands.CommandCategory;
 
 import java.util.List;
 

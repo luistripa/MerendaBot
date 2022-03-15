@@ -1,4 +1,4 @@
-package main.java.com.merendabot.commands.exceptions;
+package com.merendabot.commands.exceptions;
 
 public class CommandAlreadyExistsException extends RuntimeException {
 

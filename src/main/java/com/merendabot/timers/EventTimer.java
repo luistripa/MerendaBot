@@ -1,6 +1,6 @@
-package main.java.com.merendabot.timers;
+package com.merendabot.timers;
 
-import main.java.com.merendabot.GuildManager;
+import com.merendabot.GuildManager;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 

@@ -1,4 +1,4 @@
-package main.java.com.merendabot.polls.exceptions;
+package com.merendabot.polls.exceptions;
 
 import java.util.List;
 

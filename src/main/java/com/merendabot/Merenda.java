@@ -1,8 +1,8 @@
-package main.java.com.merendabot;
+package com.merendabot;
 
-import main.java.com.merendabot.commands.Command;
-import main.java.com.merendabot.commands.CommandHandler;
-import main.java.com.merendabot.commands.exceptions.CommandDoesNotExistException;
+import com.merendabot.commands.Command;
+import com.merendabot.commands.CommandHandler;
+import com.merendabot.commands.exceptions.CommandDoesNotExistException;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import org.hibernate.SessionFactory;

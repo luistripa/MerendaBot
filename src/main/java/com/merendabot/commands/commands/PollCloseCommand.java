@@ -1,14 +1,14 @@
-package main.java.com.merendabot.commands.commands;
+package com.merendabot.commands.commands;
 
-import main.java.com.merendabot.commands.Command;
+import com.merendabot.commands.Command;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import main.java.com.merendabot.GuildManager;
-import main.java.com.merendabot.commands.CommandCategory;
-import main.java.com.merendabot.polls.Poll;
-import main.java.com.merendabot.polls.exceptions.PollDoesNotExistException;
+import com.merendabot.GuildManager;
+import com.merendabot.commands.CommandCategory;
+import com.merendabot.polls.Poll;
+import com.merendabot.polls.exceptions.PollDoesNotExistException;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 

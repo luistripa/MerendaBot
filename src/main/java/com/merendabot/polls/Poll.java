@@ -1,15 +1,15 @@
-package main.java.com.merendabot.polls;
+package com.merendabot.polls;
 
-import main.java.com.merendabot.GuildManager;
-import main.java.com.merendabot.Merenda;
-import main.java.com.merendabot.polls.exceptions.MemberDidNotVoteException;
-import main.java.com.merendabot.polls.exceptions.PollMessageNotFoundException;
+import com.merendabot.GuildManager;
+import com.merendabot.Merenda;
+import com.merendabot.polls.exceptions.MemberDidNotVoteException;
+import com.merendabot.polls.exceptions.PollMessageNotFoundException;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import main.java.com.merendabot.polls.exceptions.MemberAlreadyVotedException;
+import com.merendabot.polls.exceptions.MemberAlreadyVotedException;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.requests.RestActionImpl;
 

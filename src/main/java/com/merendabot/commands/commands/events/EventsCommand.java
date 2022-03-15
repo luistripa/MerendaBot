@@ -1,8 +1,8 @@
-package main.java.com.merendabot.commands.commands.events;
+package com.merendabot.commands.commands.events;
 
-import main.java.com.merendabot.GuildManager;
-import main.java.com.merendabot.commands.Command;
-import main.java.com.merendabot.commands.CommandCategory;
+import com.merendabot.GuildManager;
+import com.merendabot.commands.Command;
+import com.merendabot.commands.CommandCategory;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;

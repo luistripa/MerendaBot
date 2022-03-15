@@ -1,8 +1,8 @@
-package main.java.com.merendabot.timers;
+package com.merendabot.timers;
 
-import main.java.com.merendabot.GuildManager;
-import main.java.com.merendabot.Main;
-import main.java.com.merendabot.timers.exceptions.TimerDoesNotExistException;
+import com.merendabot.GuildManager;
+import com.merendabot.Main;
+import com.merendabot.timers.exceptions.TimerDoesNotExistException;
 
 import java.util.*;
 import java.util.logging.Logger;

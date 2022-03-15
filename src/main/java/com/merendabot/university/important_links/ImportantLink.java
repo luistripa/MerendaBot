@@ -1,7 +1,7 @@
-package main.java.com.merendabot.university.important_links;
+package com.merendabot.university.important_links;
 
-import main.java.com.merendabot.GuildManager;
-import main.java.com.merendabot.university.subjects.Subject;
+import com.merendabot.GuildManager;
+import com.merendabot.university.subjects.Subject;
 import org.hibernate.Session;
 
 import java.util.List;

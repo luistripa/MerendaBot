@@ -1,4 +1,4 @@
-package main.java.com.merendabot.timers.exceptions;
+package com.merendabot.timers.exceptions;
 
 public class TimerDoesNotExistException extends Exception {
 

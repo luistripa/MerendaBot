@@ -1,7 +1,7 @@
-package main.java.com.merendabot.university.events;
+package com.merendabot.university.events;
 
-import main.java.com.merendabot.GuildManager;
-import main.java.com.merendabot.university.subjects.SubjectClass;
+import com.merendabot.GuildManager;
+import com.merendabot.university.subjects.SubjectClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.hibernate.Session;
 

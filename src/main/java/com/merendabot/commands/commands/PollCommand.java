@@ -1,9 +1,9 @@
-package main.java.com.merendabot.commands.commands;
+package com.merendabot.commands.commands;
 
-import main.java.com.merendabot.commands.Command;
-import main.java.com.merendabot.polls.MultiChoicePoll;
-import main.java.com.merendabot.polls.exceptions.OptionsNotFoundException;
-import main.java.com.merendabot.polls.exceptions.PollClosedException;
+import com.merendabot.commands.Command;
+import com.merendabot.polls.MultiChoicePoll;
+import com.merendabot.polls.exceptions.OptionsNotFoundException;
+import com.merendabot.polls.exceptions.PollClosedException;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
@@ -13,12 +13,12 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.components.Button;
-import main.java.com.merendabot.GuildManager;
-import main.java.com.merendabot.commands.CommandCategory;
-import main.java.com.merendabot.polls.BinaryPoll;
-import main.java.com.merendabot.polls.Poll;
-import main.java.com.merendabot.polls.exceptions.MemberAlreadyVotedException;
-import main.java.com.merendabot.polls.exceptions.PollDoesNotExistException;
+import com.merendabot.GuildManager;
+import com.merendabot.commands.CommandCategory;
+import com.merendabot.polls.BinaryPoll;
+import com.merendabot.polls.Poll;
+import com.merendabot.polls.exceptions.MemberAlreadyVotedException;
+import com.merendabot.polls.exceptions.PollDoesNotExistException;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 
 import java.awt.*;

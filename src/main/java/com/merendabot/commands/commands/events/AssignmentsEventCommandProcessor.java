@@ -1,10 +1,10 @@
-package main.java.com.merendabot.commands.commands.events;
+package com.merendabot.commands.commands.events;
 
-import main.java.com.merendabot.GuildManager;
-import main.java.com.merendabot.Merenda;
-import main.java.com.merendabot.commands.Command;
-import main.java.com.merendabot.university.events.Assignment;
-import main.java.com.merendabot.university.subjects.SubjectClass;
+import com.merendabot.GuildManager;
+import com.merendabot.Merenda;
+import com.merendabot.commands.Command;
+import com.merendabot.university.events.Assignment;
+import com.merendabot.university.subjects.SubjectClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;

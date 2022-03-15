@@ -1,9 +1,9 @@
-package main.java.com.merendabot.polls;
+package com.merendabot.polls;
 
-import main.java.com.merendabot.Merenda;
-import main.java.com.merendabot.polls.exceptions.MemberAlreadyVotedException;
-import main.java.com.merendabot.polls.exceptions.MemberDidNotVoteException;
-import main.java.com.merendabot.polls.exceptions.PollClosedException;
+import com.merendabot.Merenda;
+import com.merendabot.polls.exceptions.MemberAlreadyVotedException;
+import com.merendabot.polls.exceptions.MemberDidNotVoteException;
+import com.merendabot.polls.exceptions.PollClosedException;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;

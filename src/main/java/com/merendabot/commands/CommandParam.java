@@ -1,4 +1,4 @@
-package main.java.com.merendabot.commands;
+package com.merendabot.commands;
 
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
