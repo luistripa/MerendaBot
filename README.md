@@ -23,27 +23,27 @@ The bot requires `applications.commands` and `bot` scopes in the OAuth2 URL gene
         <th>Variable Value Description</th>
     </tr>
     <tr style="text-align: center;">
-        <td>TOKEN</td>
+        <td>MERENDABOT_TOKEN</td>
         <td>Yes</td>
         <td>The discord bot token.</td>
     </tr>
     <tr style="text-align: center;">
-        <td>DATABASE_NAME</td>
+        <td>MERENDABOT_DB_NAME</td>
         <td>Yes</td>
         <td>The name of the database to connect to.</td>
     </tr>
     <tr style="text-align: center;">
-        <td>DATABASE_USER</td>
+        <td>MERENDABOT_DB_USER</td>
         <td>Yes</td>
         <td>The user for the database connection.</td>
     </tr>
     <tr style="text-align: center;">
-        <td>DATABASE_PASSWORD</td>
+        <td>MERENDABOT_DB_PASSWORD</td>
         <td>Yes</td>
         <td>The password for the database connection.</td>
     </tr>
     <tr style="text-align: center;">
-        <td>DEBUG</td>
+        <td>MERENDABOT_DEBUG</td>
         <td>No (Default FALSE)</td>
         <td>Enable/Disable debug mode (TRUE or FALSE respectively)</td>
     </tr>
@@ -52,17 +52,14 @@ The bot requires `applications.commands` and `bot` scopes in the OAuth2 URL gene
 # Database connection
 The bot was programmed to support connection to a PostgreSQL database.
 
-You must create an **empty** and run the `create.sql` file to create all tables.
+You must create an **empty** database and set the `MERENDABOT_DB_NAME` environment table with the database's name.
 
-**WARNING!** The file `create.sql` deletes **<u>all tables, constraints and types</u>** with the same names before creating the tables.
-Make sure you're executing it on an empty database.
+After running the bot for the first time, all necessary tables will be created and the bot may be used normally.
 
 
 # Commands
 
-Commands are available only through slash commands.
-If it's the first time you run MerendaBot, it may take some time before commands appear in discord clients.
-According to discord's documentation, it may take up to **1 hour**.
+Commands are available only through slash commands. These propagate instantaneously to guilds since they are guild commands instead of global commands.
 
 The bot possesses the following commands:
 - [x] list of all classes
@@ -73,6 +70,7 @@ The bot possesses the following commands:
 - [x] list of important links
 - [x] voting
 - [x] multi-choice polls
+- [x] list/add/edit/remove class/assignment/test/subject/professor entries
 
 
 # Timers (periodic alerts)
