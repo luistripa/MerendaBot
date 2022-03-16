@@ -3,8 +3,11 @@ package com.merendabot.commands.commands.events;
 import com.merendabot.GuildManager;
 import com.merendabot.Merenda;
 import com.merendabot.commands.Command;
+import com.merendabot.commands.exceptions.MissingParameterException;
 import com.merendabot.university.events.Test;
+import com.merendabot.university.events.exceptions.TestNotFoundException;
 import com.merendabot.university.subjects.Subject;
+import com.merendabot.university.subjects.exceptions.SubjectNotFoundException;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -95,18 +98,29 @@ public class TestsEventCommandProcessor {
         c.setGuild(guild);
 
         try {
-            c.setName(event.getOption("nome").getAsString());
-            c.setDate(Date.valueOf(event.getOption("data").getAsString()));
-            c.setTime(Time.valueOf(event.getOption("hora").getAsString()+":00"));
-            c.setLink(event.getOption("link").getAsString());
+            OptionMapping nameMapping = event.getOption("nome");
+            OptionMapping subjectMapping = event.getOption("disciplina");
+            OptionMapping dateMapping = event.getOption("data");
+            OptionMapping startTimeMapping = event.getOption("hora");
+            OptionMapping endTimeMapping = event.getOption("hora_fim");
+            OptionMapping linkMapping = event.getOption("link");
+
+            if (nameMapping == null || subjectMapping == null || dateMapping == null || startTimeMapping == null || endTimeMapping == null || linkMapping == null)
+                throw new MissingParameterException();
+
+
+            c.setName(nameMapping.getAsString());
+            c.setDate(Date.valueOf(dateMapping.getAsString()));
+            c.setTime(Time.valueOf(startTimeMapping.getAsString()+":00"));
+            c.setEndTime(Time.valueOf(endTimeMapping.getAsString()+":00"));
+            c.setLink(linkMapping.getAsString());
 
             session = Merenda.getInstance().getFactory().openSession();
             tx = session.beginTransaction();
 
-            Subject subject = (Subject) session.createQuery("from Subject where shortName = :short")
-                    .setParameter("short", event.getOption("disciplina").getAsString()).uniqueResult();
+            String subjectShortName = subjectMapping.getAsString();
 
-            // TODO: subject == null?
+            Subject subject = Subject.getSubjectByShortName(session, subjectShortName);
 
             c.setSubject(subject);
 
@@ -118,11 +132,22 @@ public class TestsEventCommandProcessor {
                     Command.getSuccessEmbed("Adicionar Teste", "Sucesso", "Teste adicionado com sucesso.")
             ).setEphemeral(true).queue();
 
-        } catch (NullPointerException e) {
+        } catch (MissingParameterException e) {
             if (tx != null)
                 tx.rollback();
-            e.printStackTrace();
-            event.reply("Falta um parâmetro!").setEphemeral(true).queue();
+            event.replyEmbeds(Command.getErrorEmbed("Erro", "Parâmetros em falta", e.getMessage())).setEphemeral(true).queue();
+
+        } catch (SubjectNotFoundException e) {
+            if (tx != null)
+                tx.rollback();
+            event.replyEmbeds(
+                    Command.getErrorEmbed(
+                            "Erro",
+                            "Disciplina não encontrada",
+                            e.getMessage()
+
+                    )
+            ).setEphemeral(true).queue();
 
         } catch (IllegalArgumentException e) {
             if (tx != null)
@@ -146,49 +171,46 @@ public class TestsEventCommandProcessor {
     }
 
     static void processTestEdit(GuildManager guild, SlashCommandEvent event) {
-        if (event.getOptions().size() == 1) {
-            event.replyEmbeds(
-                    Command.getErrorEmbed(
-                            "Erro",
-                            "Número de parâmetros invalidos",
-                            "É necessário pelo menos mais um parâmetro para editar um trabalho."
-                    )
-            ).queue();
-            return;
-        }
-
         Session session = Merenda.getInstance().getFactory().openSession();
         Transaction tx = null;
 
         try {
             tx = session.beginTransaction();
 
-            int id = (int) event.getOption("id").getAsLong();
+            OptionMapping idMapping = event.getOption("id");
+            OptionMapping nameMapping = event.getOption("nome");
+            OptionMapping dateMapping = event.getOption("data");
+            OptionMapping startTimeMapping = event.getOption("hora");
+            OptionMapping endTimeMapping = event.getOption("hora_fim");
+            OptionMapping linkMapping = event.getOption("link");
+            OptionMapping subjectMapping = event.getOption("disciplina");
 
-            Test c = (Test) session.createQuery("from Class where id = :id").setParameter("id", id).uniqueResult();
+            if (idMapping == null)
+                throw new NullPointerException();
 
-            OptionMapping name = event.getOption("nome");
-            OptionMapping date = event.getOption("data");
-            OptionMapping time = event.getOption("hora");
-            OptionMapping link = event.getOption("link");
-            OptionMapping subject = event.getOption("disciplina");
+            int id = (int) idMapping.getAsLong();
 
-            if (name != null)
-                c.setName(name.getAsString());
+            Test c = Test.getTestById(session, id);
 
-            if (date != null)
-                c.setDate(Date.valueOf(date.getAsString()));
+            if (nameMapping != null)
+                c.setName(nameMapping.getAsString());
 
-            if (time != null)
-                c.setTime(Time.valueOf(time.getAsString()+":00"));
+            if (dateMapping != null)
+                c.setDate(Date.valueOf(dateMapping.getAsString()));
 
-            if (link != null)
-                c.setLink(link.getAsString());
+            if (startTimeMapping != null)
+                c.setTime(Time.valueOf(startTimeMapping.getAsString()+":00"));
 
-            if (subject != null) {
-                Subject s = (Subject) session.createQuery("from Subject where shortName = :short")
-                        .setParameter("short", event.getOption("disciplina").getAsString()).uniqueResult();
-                // TODO: subject == null?
+            if (endTimeMapping != null)
+                c.setEndTime(Time.valueOf(endTimeMapping.getAsString()+":00"));
+
+            if (linkMapping != null)
+                c.setLink(linkMapping.getAsString());
+
+            if (subjectMapping != null) {
+                String subjectShortName = subjectMapping.getAsString();
+                Subject s = Subject.getSubjectByShortName(session, subjectShortName);
+
                 c.setSubject(s);
             }
 
@@ -197,6 +219,18 @@ public class TestsEventCommandProcessor {
 
             event.replyEmbeds(
                     Command.getSuccessEmbed("Editar Teste", "Sucesso", "Teste editado com sucesso.")
+            ).setEphemeral(true).queue();
+
+        } catch (SubjectNotFoundException e) {
+            if (tx != null)
+                tx.rollback();
+            event.replyEmbeds(
+                    Command.getErrorEmbed(
+                            "Erro",
+                            "Disciplina não encontrada",
+                            e.getMessage()
+
+                    )
             ).setEphemeral(true).queue();
 
         } catch (IllegalArgumentException e) {
@@ -222,21 +256,38 @@ public class TestsEventCommandProcessor {
     }
 
     static void processTestRemove(GuildManager guild, SlashCommandEvent event) {
-        int id = (int) event.getOption("id").getAsLong();
-
         Session session = Merenda.getInstance().getFactory().openSession();
         Transaction tx = null;
 
         try {
             tx = session.beginTransaction();
 
-            Test c = session.find(Test.class, id);
+            OptionMapping idMapping = event.getOption("id");
+
+            if (idMapping == null)
+                throw new MissingParameterException();
+
+            int id = (int) idMapping.getAsLong();
+
+            Test c = Test.getTestById(session, id);
+
             session.remove(c);
 
             tx.commit();
 
             event.replyEmbeds(
                     Command.getSuccessEmbed("Remover Teste", "Sucesso", "Teste removido com sucesso.")
+            ).setEphemeral(true).queue();
+
+        } catch (TestNotFoundException e) {
+            if (tx != null)
+                tx.rollback();
+            event.replyEmbeds(
+                    Command.getErrorEmbed(
+                            "Erro",
+                            "Teste não encontrado",
+                            e.getMessage()
+                    )
             ).setEphemeral(true).queue();
 
         } catch (Throwable e) {

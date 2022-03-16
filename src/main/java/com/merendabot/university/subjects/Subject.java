@@ -2,6 +2,7 @@ package com.merendabot.university.subjects;
 
 import com.merendabot.GuildManager;
 import com.merendabot.Merenda;
+import com.merendabot.university.subjects.exceptions.SubjectNotFoundException;
 import org.hibernate.Session;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -69,6 +70,21 @@ public class Subject {
 
     public void setShortName(String shortName) {
         this.shortName = shortName;
+    }
+
+    public static Subject getSubjectById(Session session, int id) throws SubjectNotFoundException {
+        Subject subject = session.get(Subject.class, id);
+        if (subject == null)
+            throw new SubjectNotFoundException(id);
+        return subject;
+    }
+
+    public static Subject getSubjectByShortName(Session session, String shortName) throws SubjectNotFoundException {
+        Subject subject = (Subject) session.createQuery("from Subject where shortName = :short")
+                .setParameter("short", shortName).uniqueResult();
+        if (subject == null)
+            throw new SubjectNotFoundException(shortName);
+        return subject;
     }
 
     public static List<Subject> getSubjects(Session session) {

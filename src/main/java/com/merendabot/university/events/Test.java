@@ -1,6 +1,7 @@
 package com.merendabot.university.events;
 
 import com.merendabot.GuildManager;
+import com.merendabot.university.events.exceptions.TestNotFoundException;
 import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.hibernate.Session;
@@ -44,6 +45,13 @@ public class Test extends BaseEventClass {
     @Override
     public void addToEmbed(EmbedBuilder embedBuilder) {
         // TODO
+    }
+
+    public static Test getTestById(Session session, int id) throws TestNotFoundException {
+        Test test = session.get(Test.class, id);
+        if (test == null)
+            throw new TestNotFoundException(id);
+        return test;
     }
 
     public static List<Test> getTests(Session session) {

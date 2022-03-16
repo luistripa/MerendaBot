@@ -80,7 +80,7 @@ public class EventsCommand extends Command {
                                                 new OptionData(OptionType.STRING, "data", "Data do teste no formato YYYY-MM-DD", true),
                                                 new OptionData(OptionType.STRING, "hora", "Hora de início do teste no formato HH:MM", true),
                                                 new OptionData(OptionType.STRING, "hora_fim", "Hora de fim do teste no formato HH:MM", true),
-                                                new OptionData(OptionType.STRING, "link", "Link do teste", false)
+                                                new OptionData(OptionType.STRING, "link", "Link do teste", true)
                                         ),
                                 new SubcommandData("editar", "Edita um teste")
                                         .addOptions(
