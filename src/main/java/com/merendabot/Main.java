@@ -5,14 +5,12 @@ import com.merendabot.commands.exceptions.CommandDoesNotExistException;
 import com.merendabot.polls.BinaryPoll;
 import com.merendabot.polls.MultiChoicePoll;
 import com.merendabot.polls.MultiChoicePollOption;
-import com.merendabot.polls.PollHandler;
 import com.merendabot.university.events.Assignment;
 import com.merendabot.university.events.Class;
 import com.merendabot.university.events.Test;
-import com.merendabot.university.important_links.ImportantLinkClass;
+import com.merendabot.university.important_links.ImportantLink;
 import com.merendabot.university.subjects.Professor;
-import com.merendabot.university.subjects.ProfessorClass;
-import com.merendabot.university.subjects.SubjectClass;
+import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
@@ -49,9 +47,9 @@ public class Main extends ListenerAdapter {
                     .addAnnotatedClass(Class.class)
                     .addAnnotatedClass(Assignment.class)
                     .addAnnotatedClass(Test.class)
-                    .addAnnotatedClass(SubjectClass.class)
-                    .addAnnotatedClass(ProfessorClass.class)
-                    .addAnnotatedClass(ImportantLinkClass.class)
+                    .addAnnotatedClass(Subject.class)
+                    .addAnnotatedClass(Professor.class)
+                    .addAnnotatedClass(ImportantLink.class)
                     .addAnnotatedClass(BinaryPoll.class)
                     .addAnnotatedClass(MultiChoicePoll.class)
                     .addAnnotatedClass(MultiChoicePollOption.class)

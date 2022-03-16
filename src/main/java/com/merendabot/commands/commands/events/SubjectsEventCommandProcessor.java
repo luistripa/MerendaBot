@@ -4,7 +4,6 @@ import com.merendabot.GuildManager;
 import com.merendabot.Merenda;
 import com.merendabot.commands.Command;
 import com.merendabot.university.subjects.Subject;
-import com.merendabot.university.subjects.SubjectClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -40,7 +39,7 @@ public class SubjectsEventCommandProcessor {
             eb.setColor(Color.WHITE);
             eb.setTitle("Lista de disciplinas");
 
-            List subjectList = session.createQuery("from SubjectClass").list();
+            List subjectList = session.createQuery("from Subject").list();
 
             for (Object o : subjectList) {
                 Subject subject = (Subject) o;
@@ -74,7 +73,7 @@ public class SubjectsEventCommandProcessor {
                 return;
             }
 
-            Subject subject = new SubjectClass(guild, fullNameMapping.getAsString(), shortNameMapping.getAsString());
+            Subject subject = new Subject(guild, fullNameMapping.getAsString(), shortNameMapping.getAsString());
             session.persist(subject);
 
             tx.commit();
@@ -110,7 +109,7 @@ public class SubjectsEventCommandProcessor {
 
             int id = (int) idMapping.getAsLong();
 
-            SubjectClass subject = session.get(SubjectClass.class, id);
+            Subject subject = session.get(Subject.class, id);
 
             if (subject == null) {
                 event.replyEmbeds(
@@ -174,7 +173,7 @@ public class SubjectsEventCommandProcessor {
 
             int id = (int) idMapping.getAsLong();
 
-            SubjectClass subject = session.get(SubjectClass.class, id);
+            Subject subject = session.get(Subject.class, id);
 
             if (subject == null) {
                 event.replyEmbeds(

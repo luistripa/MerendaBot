@@ -4,8 +4,7 @@ import com.merendabot.GuildManager;
 import com.merendabot.Merenda;
 import com.merendabot.commands.Command;
 import com.merendabot.university.subjects.Professor;
-import com.merendabot.university.subjects.ProfessorClass;
-import com.merendabot.university.subjects.SubjectClass;
+import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -57,7 +56,7 @@ public class ProfessorsEventCommandProcessor {
             eb.setColor(Color.WHITE);
             eb.setTitle("Lista de professores");
 
-            List professorList = session.createQuery("from ProfessorClass ").list();
+            List professorList = session.createQuery("from Professor ").list();
 
             for (Object o : professorList) {
                 Professor professor = (Professor) o;
@@ -93,11 +92,11 @@ public class ProfessorsEventCommandProcessor {
             }
 
             CriteriaBuilder cb = session.getCriteriaBuilder();
-            CriteriaQuery<SubjectClass> cr = cb.createQuery(SubjectClass.class);
-            Root<SubjectClass> root = cr.from(SubjectClass.class);
+            CriteriaQuery<Subject> cr = cb.createQuery(Subject.class);
+            Root<Subject> root = cr.from(Subject.class);
             cr.select(root).where(cb.equal(root.get("shortName"), subjectMapping.getAsString()));
 
-            SubjectClass subject = session.createQuery(cr).getSingleResult();
+            Subject subject = session.createQuery(cr).getSingleResult();
 
             if (subject == null) {
                 event.replyEmbeds(
@@ -111,7 +110,7 @@ public class ProfessorsEventCommandProcessor {
                 return;
             }
 
-            Professor professor = new ProfessorClass(guild, nameMapping.getAsString(), emailMapping.getAsString(), subject);
+            Professor professor = new Professor(guild, nameMapping.getAsString(), emailMapping.getAsString(), subject);
 
             session.persist(professor);
 
@@ -151,7 +150,7 @@ public class ProfessorsEventCommandProcessor {
 
             int id = (int) idMapping.getAsLong();
 
-            ProfessorClass professor = session.get(ProfessorClass.class, id);
+            Professor professor = session.get(Professor.class, id);
 
             if (professor == null) {
                 event.replyEmbeds(
@@ -175,11 +174,11 @@ public class ProfessorsEventCommandProcessor {
 
             if (subjectMapping != null) {
                 CriteriaBuilder cb = session.getCriteriaBuilder();
-                CriteriaQuery<SubjectClass> cr = cb.createQuery(SubjectClass.class);
-                Root<SubjectClass> root = cr.from(SubjectClass.class);
+                CriteriaQuery<Subject> cr = cb.createQuery(Subject.class);
+                Root<Subject> root = cr.from(Subject.class);
                 cr.select(root).where(cb.equal(root.get("shortName"), subjectMapping.getAsString()));
 
-                SubjectClass subject = session.createQuery(cr).getSingleResult();
+                Subject subject = session.createQuery(cr).getSingleResult();
                 professor.setSubject(subject);
             }
 
@@ -222,7 +221,7 @@ public class ProfessorsEventCommandProcessor {
 
             int id = (int) idMapping.getAsLong();
 
-            ProfessorClass professor = session.get(ProfessorClass.class, id);
+            Professor professor = session.get(Professor.class, id);
 
             if (professor == null) {
                 event.replyEmbeds(

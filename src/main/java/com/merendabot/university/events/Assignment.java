@@ -1,7 +1,7 @@
 package com.merendabot.university.events;
 
 import com.merendabot.GuildManager;
-import com.merendabot.university.subjects.SubjectClass;
+import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.hibernate.Session;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @Table(name = "guild_events_assignment")
 public class Assignment extends BaseEventClass {
 
-    public Assignment(GuildManager guild, String name, Date dueDate, Time dueTime, String link, SubjectClass subject) {
+    public Assignment(GuildManager guild, String name, Date dueDate, Time dueTime, String link, Subject subject) {
         super(guild, name, dueDate, dueTime, link, subject);
     }
 

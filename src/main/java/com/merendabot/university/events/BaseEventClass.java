@@ -1,7 +1,7 @@
 package com.merendabot.university.events;
 
 import com.merendabot.GuildManager;
-import com.merendabot.university.subjects.SubjectClass;
+import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -38,11 +38,11 @@ public abstract class BaseEventClass {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private SubjectClass subject;
+    private Subject subject;
 
     protected BaseEventClass() {}
 
-    public BaseEventClass(GuildManager guild, String name, Date date, Time time, String link, SubjectClass subject) {
+    public BaseEventClass(GuildManager guild, String name, Date date, Time time, String link, Subject subject) {
         this.guild = guild;
         this.name = name;
         this.date = date;
@@ -99,11 +99,11 @@ public abstract class BaseEventClass {
         this.link = link;
     }
 
-    public SubjectClass getSubject() {
+    public Subject getSubject() {
         return subject;
     }
 
-    public void setSubject(SubjectClass subject) {
+    public void setSubject(Subject subject) {
         this.subject = subject;
     }
 

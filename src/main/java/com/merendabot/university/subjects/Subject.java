@@ -1,40 +1,79 @@
 package com.merendabot.university.subjects;
 
 import com.merendabot.GuildManager;
+import com.merendabot.Merenda;
 import org.hibernate.Session;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
+import javax.persistence.*;
 import java.util.List;
 
-public interface Subject {
+@Entity
+@Table(name = "guild_subject")
+public class Subject {
 
-    /**
-     * Gets the id of the subject.
-     *
-     * @return The id of the subject
-     */
-    int getId();
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
-    GuildManager getGuild();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "guild_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private GuildManager guild;
 
-    /**
-     * Gets the name of the subject.
-     *
-     * @return The name of the subject
-     */
-    String getFullName();
+    private String fullName;
 
-    /**
-     * Gets a short version of the subject's name.
-     *
-     * Example: Software Engineering becomes SE
-     *
-     * @return The subject's short name
-     */
-    String getShortName();
+    private String shortName;
 
-    static List<Subject> getSubjects(Session session) {
+    public Subject(GuildManager guild, String fullName, String shortName) {
+        this.guild = guild;
+        this.fullName = fullName;
+        this.shortName = shortName;
+    }
+
+    public Subject() {}
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public GuildManager getGuild() {
+        GuildManager guildManager = Merenda.getInstance().getGuild(guild.getGuildId());
+        if (guildManager == null)
+            return guild;
+        guild = guildManager;
+        return guildManager;
+    }
+
+    public void setGuild(GuildManager guild) {
+        this.guild = guild;
+    }
+
+    public String getFullName() {
+        return this.fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
+    public static List<Subject> getSubjects(Session session) {
         List subjects;
-        subjects = session.createQuery("from SubjectClass").list();
+        subjects = session.createQuery("from Subject ").list();
         return subjects;
     }
 }

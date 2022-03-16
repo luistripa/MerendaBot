@@ -1,7 +1,7 @@
 package com.merendabot.university.events;
 
 import com.merendabot.GuildManager;
-import com.merendabot.university.subjects.SubjectClass;
+import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.hibernate.Session;
 
@@ -26,7 +26,7 @@ public class Class extends BaseEventClass {
     @Column(name = "endTime", nullable = false)
     private Time endTime;
 
-    public Class(GuildManager guild, String name, Date startDate, Date endDate, Time startTime, Time endTime, String link, SubjectClass subject) {
+    public Class(GuildManager guild, String name, Date startDate, Date endDate, Time startTime, Time endTime, String link, Subject subject) {
         super(guild, name, startDate, startTime, link, subject);
         this.endDate = endDate;
         this.endTime = endTime;

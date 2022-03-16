@@ -4,40 +4,89 @@ import com.merendabot.GuildManager;
 import com.merendabot.Merenda;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import javax.persistence.*;
 import java.util.List;
 
-public interface Professor {
+@Entity
+@Table(name = "guild_professors")
+public class Professor {
 
-    /**
-     * Gets the id of the professor.
-     * This is equal to the primary key inside the database.
-     *
-     * @return The professor's id
-     */
-    int getId();
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
-    GuildManager getGuild();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "guild_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private GuildManager guild;
 
-    /**
-     * Gets the name of the professor.
-     *
-     * @return The name of the professor
-     */
-    String getName();
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    /**
-     * Gets the email of the professor.
-     *
-     * @return The email of the professor
-     */
-    String getEmail();
+    @Column(name = "email", nullable = false)
+    private String email;
 
-    Subject getSubject();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Subject subject;
+
+    public Professor(GuildManager guild, String name, String email, Subject subject) {
+        this.guild = guild;
+        this.name = name;
+        this.email = email;
+        this.subject = subject;
+    }
+
+    public Professor() {}
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public GuildManager getGuild() {
+        GuildManager guildManager = Merenda.getInstance().getGuild(guild.getGuildId());
+        if (guildManager == null)
+            return guild;
+        guild = guildManager;
+        return guildManager;
+    }
+
+    public void setGuild(GuildManager guild) {
+        this.guild = guild;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
 
     /**
      * Gets a Professor by id.
@@ -45,21 +94,19 @@ public interface Professor {
      * @param id The id of the professor
      * @return A Professor object if found, null otherwise
      */
-    static Professor getProfessorById(int id) {
+    public static Professor getProfessorById(int id) {
         Session session = Merenda.getInstance().getFactory().openSession();
-        Transaction tx = session.beginTransaction();
+        Transaction tx = null;
 
-        try {
-            Professor professor = session.get(ProfessorClass.class, id);
+        try (session) {
+            tx = session.beginTransaction();
+            Professor professor = session.get(Professor.class, id);
             tx.commit();
             return professor;
 
         } catch (Throwable throwable) {
             if (tx != null)
                 tx.rollback();
-
-        } finally {
-            session.close();
         }
         return null;
     }
@@ -69,9 +116,9 @@ public interface Professor {
      *
      * @return A List of Professors
      */
-    static List<Professor> getProfessors(Session session) {
+    public static List<Professor> getProfessors(Session session) {
         List professors;
-        professors = session.createQuery("from ProfessorClass order by subject.shortName").list();
+        professors = session.createQuery("from Professor order by subject.shortName").list();
         return professors;
     }
 }

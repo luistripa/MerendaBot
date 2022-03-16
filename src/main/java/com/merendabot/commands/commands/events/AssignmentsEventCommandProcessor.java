@@ -4,7 +4,7 @@ import com.merendabot.GuildManager;
 import com.merendabot.Merenda;
 import com.merendabot.commands.Command;
 import com.merendabot.university.events.Assignment;
-import com.merendabot.university.subjects.SubjectClass;
+import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -103,7 +103,7 @@ public class AssignmentsEventCommandProcessor {
             session = Merenda.getInstance().getFactory().openSession();
             tx = session.beginTransaction();
 
-            SubjectClass subject = (SubjectClass) session.createQuery("from SubjectClass where shortName = :short")
+            Subject subject = (Subject) session.createQuery("from Subject where shortName = :short")
                     .setParameter("short", event.getOption("disciplina").getAsString()).uniqueResult();
 
             // TODO: subject == null?
@@ -186,7 +186,7 @@ public class AssignmentsEventCommandProcessor {
                 c.setLink(link.getAsString());
 
             if (subject != null) {
-                SubjectClass s = (SubjectClass) session.createQuery("from SubjectClass where shortName = :short")
+                Subject s = (Subject) session.createQuery("from Subject where shortName = :short")
                         .setParameter("short", event.getOption("disciplina").getAsString()).uniqueResult();
                 // TODO: subject == null?
                 c.setSubject(s);
