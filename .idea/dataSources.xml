@@ -1,25 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="merendabot@localhost" uuid="088d75cb-8450-4457-b820-28025da8f6ce">
+    <data-source source="LOCAL" name="production" uuid="2ab0f6e6-4f44-4713-b8fb-fbc559f8efbf">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5432/merendabot</jdbc-url>
+      <jdbc-url>jdbc:postgresql://192.168.0.123:5432/postgres</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="Live" uuid="aaa92455-1705-40a1-bdfc-bbacd792840d">
+    <data-source source="LOCAL" name="dev" uuid="7a833c2a-f85a-4312-b1fa-e36f5b17792d">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://192.168.0.123:5432/merendabot</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
-    <data-source source="LOCAL" name="merendabot_new" uuid="ae73ad3a-cdc0-497f-b953-dbd9ac26b957">
-      <driver-ref>postgresql</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://192.168.0.123:5432/merendabot_new</jdbc-url>
+      <jdbc-url>jdbc:postgresql://localhost:5432/merendabot_dev</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

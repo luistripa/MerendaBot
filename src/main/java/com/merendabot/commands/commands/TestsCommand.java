@@ -30,17 +30,16 @@ public class TestsCommand extends Command {
 
     @Override
     public void execute(GuildManager guild, SlashCommandEvent event) {
-        Session session = Merenda.getInstance().getFactory().openSession();;
         Transaction tx = null;
 
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle(COMMAND_FRIENDLY_NAME);
-        eb.setColor(Color.WHITE);
-
-        StringBuilder fieldValue = new StringBuilder();
-
-        try {
+        try (Session session = Merenda.getInstance().getFactory().openSession()) {
             tx = session.beginTransaction();
+
+            EmbedBuilder eb = new EmbedBuilder();
+            eb.setTitle(COMMAND_FRIENDLY_NAME);
+            eb.setColor(Color.WHITE);
+
+            StringBuilder fieldValue = new StringBuilder();
 
             for (Test test : Test.getTests(session)) {
                 Subject subject = test.getSubject();
@@ -86,9 +85,6 @@ public class TestsCommand extends Command {
             event.replyEmbeds(
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "Erro SQL", "Ocorreu um erro. Contacta o administrador.")
             ).setEphemeral(true).queue();
-
-        } finally {
-            session.close();
         }
     }
 

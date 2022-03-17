@@ -136,8 +136,28 @@ public class EventsCommand extends Command {
                                         .addOptions(
                                                 new OptionData(OptionType.INTEGER, "id", "Id do professor", true)
                                         )
+                        ),
+                new SubcommandGroupData("link", "Comandos relacionados com links importantes")
+                        .addSubcommands(
+                                new SubcommandData("listar", "Lista todos os links importantes"),
+                                new SubcommandData("novo", "Adiciona um link")
+                                        .addOptions(
+                                                new OptionData(OptionType.STRING, "nome", "Nome de display do link", true),
+                                                new OptionData(OptionType.STRING, "link", "URL do link", true),
+                                                new OptionData(OptionType.STRING, "disciplina", "Nome curto da disciplina", true)
+                                        ),
+                                new SubcommandData("editar", "Edita um link")
+                                        .addOptions(
+                                                new OptionData(OptionType.INTEGER, "id", "Id do link", true),
+                                                new OptionData(OptionType.STRING, "nome", "Nome de display do link", false),
+                                                new OptionData(OptionType.STRING, "link", "URL do link", false),
+                                                new OptionData(OptionType.STRING, "disciplina", "Nome curto da disciplina", false)
+                                        ),
+                                new SubcommandData("apagar", "Apaga um link")
+                                        .addOptions(
+                                                new OptionData(OptionType.INTEGER, "id", "Id do link", true)
+                                        )
                         )
-                // TODO: Important links
         );
     }
 
@@ -145,13 +165,35 @@ public class EventsCommand extends Command {
     public void execute(GuildManager guild, SlashCommandEvent event) {
         String subcommandGroup = event.getSubcommandGroup();
 
+        if (subcommandGroup == null) {
+            event.reply("Error. Subcommand Name is invalid").setEphemeral(true).queue();
+            return;
+        }
+
         switch (subcommandGroup) {
             case "aula" -> ClassesEventCommandProcessor.processClass(guild, event);
             case "trabalho" -> AssignmentsEventCommandProcessor.processAssignment(guild, event);
             case "teste" -> TestsEventCommandProcessor.processTest(guild, event);
             case "disciplina" -> SubjectsEventCommandProcessor.processSubject(guild, event);
             case "professor" -> ProfessorsEventCommandProcessor.processProfessor(guild, event);
-            default -> {} // TODO
+            case "link" -> {
+                event.replyEmbeds(
+                        Command.getErrorEmbed(
+                                "Erro",
+                                "Não Implementado",
+                                "Esse funcionalidade ainda não foi implementada"
+                        )
+                ).setEphemeral(true).queue();
+            }
+            default -> {
+                event.replyEmbeds(
+                        Command.getErrorEmbed(
+                                "Erro",
+                                "Ação inválida",
+                                "A ação executada por esse comando é inválida. Contacta um administrador."
+                        )
+                ).setEphemeral(true).queue();
+            }
         }
     }
 

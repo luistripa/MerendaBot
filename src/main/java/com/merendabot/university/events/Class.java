@@ -1,6 +1,7 @@
 package com.merendabot.university.events;
 
 import com.merendabot.GuildManager;
+import com.merendabot.university.events.exceptions.ClassNotFoundException;
 import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.hibernate.Session;
@@ -82,5 +83,12 @@ public class Class extends BaseEventClass {
         List classes;
         classes = session.createQuery("from Class where function('date_part', 'dow', date) = :dows ").setParameter("dows", dayOfWeek.getValue()%7).list();
         return classes;
+    }
+
+    public static Class getClassById(Session session, int id) throws ClassNotFoundException {
+        Class c = session.get(Class.class, id);
+        if (c == null)
+            throw new ClassNotFoundException(id);
+        return c;
     }
 }

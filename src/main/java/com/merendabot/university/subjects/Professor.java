@@ -2,6 +2,7 @@ package com.merendabot.university.subjects;
 
 import com.merendabot.GuildManager;
 import com.merendabot.Merenda;
+import com.merendabot.university.subjects.exceptions.ProfessorNotFoundException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.annotations.OnDelete;
@@ -94,21 +95,11 @@ public class Professor {
      * @param id The id of the professor
      * @return A Professor object if found, null otherwise
      */
-    public static Professor getProfessorById(int id) {
-        Session session = Merenda.getInstance().getFactory().openSession();
-        Transaction tx = null;
-
-        try (session) {
-            tx = session.beginTransaction();
-            Professor professor = session.get(Professor.class, id);
-            tx.commit();
-            return professor;
-
-        } catch (Throwable throwable) {
-            if (tx != null)
-                tx.rollback();
-        }
-        return null;
+    public static Professor getProfessorById(Session session, int id) throws ProfessorNotFoundException {
+        Professor professor = session.get(Professor.class, id);
+        if (professor == null)
+            throw new ProfessorNotFoundException(id);
+        return professor;
     }
 
     /**

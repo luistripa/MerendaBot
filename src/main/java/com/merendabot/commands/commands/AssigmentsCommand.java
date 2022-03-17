@@ -29,20 +29,19 @@ public class AssigmentsCommand extends Command {
 
     @Override
     public void execute(GuildManager guild, SlashCommandEvent event) {
-        Session session = Merenda.getInstance().getFactory().openSession();;
         Transaction tx = null;
 
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("Trabalhos");
-
-        String fieldTitle = "Trabalhos";
-        StringBuilder fieldValue = new StringBuilder();
-
-        // Used to avoid creation of unnecessary SubjectClass duplicates
-        Map<Integer, Subject> subjectCache = new HashMap<>();
-
-        try {
+        try (Session session = Merenda.getInstance().getFactory().openSession()) {
             tx = session.beginTransaction();
+
+            EmbedBuilder eb = new EmbedBuilder();
+            eb.setTitle("Trabalhos");
+
+            String fieldTitle = "Trabalhos";
+            StringBuilder fieldValue = new StringBuilder();
+
+            // Used to avoid creation of unnecessary SubjectClass duplicates
+            Map<Integer, Subject> subjectCache = new HashMap<>();
 
             for (Assignment assignment : Assignment.getAssignments(session)) {
                 Subject subject;
@@ -88,9 +87,6 @@ public class AssigmentsCommand extends Command {
             event.replyEmbeds(
                     getErrorEmbed("Assignments", "Erro SQL", "Ocorreu um erro. Contacta o admininstrador.")
             ).setEphemeral(true).queue();
-
-        } finally {
-            session.close();
         }
     }
 

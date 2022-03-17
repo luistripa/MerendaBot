@@ -3,8 +3,12 @@ package com.merendabot.commands.commands.events;
 import com.merendabot.GuildManager;
 import com.merendabot.Merenda;
 import com.merendabot.commands.Command;
+import com.merendabot.commands.exceptions.InvalidDateTimeFormatException;
+import com.merendabot.commands.exceptions.MissingParameterException;
 import com.merendabot.university.events.Assignment;
+import com.merendabot.university.events.exceptions.AssignmentNotFoundException;
 import com.merendabot.university.subjects.Subject;
+import com.merendabot.university.subjects.exceptions.SubjectNotFoundException;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -23,33 +27,21 @@ public class AssignmentsEventCommandProcessor {
     static void processAssignment(GuildManager guild, SlashCommandEvent event) {
         String subcommandName = event.getSubcommandName();
         if (subcommandName == null) {
-            event.reply("Error. Subcommand Name is invalid").queue();
+            event.reply("Error. Subcommand Name is invalid").setEphemeral(true).queue();
             return;
         }
         switch (event.getSubcommandName()) {
-            case "listar":
-                processAssignmentList(guild, event);
-                break;
-
-            case "novo":
-                processAssignmentAdd(guild, event);
-                break;
-
-            case "editar":
-                processAssignmentEdit(guild, event);
-                break;
-
-            case "apagar":
-                processAssignmentRemove(guild, event);
-                break;
+            case "listar" -> processAssignmentList(guild, event);
+            case "novo" -> processAssignmentAdd(guild, event);
+            case "editar" -> processAssignmentEdit(guild, event);
+            case "apagar" -> processAssignmentRemove(guild, event);
         }
     }
 
     static void processAssignmentList(GuildManager guild, SlashCommandEvent event) {
-        Session session = Merenda.getInstance().getFactory().openSession();
         Transaction tx = null;
 
-        try {
+        try (Session session = Merenda.getInstance().getFactory().openSession()) {
             tx = session.beginTransaction();
 
             EmbedBuilder eb = new EmbedBuilder();
@@ -82,35 +74,41 @@ public class AssignmentsEventCommandProcessor {
                     Command.getErrorEmbed("Erro", "Contacta um administrador", e.getMessage())
             ).queue();
 
-        } finally {
-            session.close();
         }
     }
 
     static void processAssignmentAdd(GuildManager guild, SlashCommandEvent event) {
-        Session session = null;
         Transaction tx = null;
 
-        Assignment c = new Assignment();
-        c.setGuild(guild);
-
-        try {
-            c.setName(event.getOption("nome").getAsString());
-            c.setDate(Date.valueOf(event.getOption("data").getAsString()));
-            c.setTime(Time.valueOf(event.getOption("hora").getAsString()+":00"));
-            c.setLink(event.getOption("link").getAsString());
-
-            session = Merenda.getInstance().getFactory().openSession();
+        try (Session session = Merenda.getInstance().getFactory().openSession();) {
             tx = session.beginTransaction();
 
-            Subject subject = (Subject) session.createQuery("from Subject where shortName = :short")
-                    .setParameter("short", event.getOption("disciplina").getAsString()).uniqueResult();
+            OptionMapping nameMapping = event.getOption("nome");
+            OptionMapping subjectMapping = event.getOption("disciplina");
+            OptionMapping dateMapping = event.getOption("data");
+            OptionMapping timeMapping = event.getOption("hora");
+            OptionMapping linkMapping = event.getOption("link");
 
-            // TODO: subject == null?
+            if (nameMapping == null || subjectMapping == null || dateMapping == null || timeMapping == null || linkMapping == null)
+                throw new MissingParameterException();
 
-            c.setSubject(subject);
+            Assignment assignment = new Assignment();
 
-            session.persist(c);
+            assignment.setGuild(guild);
+            assignment.setName(event.getOption("nome").getAsString());
+            try {
+                assignment.setDate(Date.valueOf(event.getOption("data").getAsString()));
+                assignment.setTime(Time.valueOf(event.getOption("hora").getAsString()+":00"));
+            } catch (IllegalArgumentException e) {
+                throw new InvalidDateTimeFormatException();
+            }
+            assignment.setLink(event.getOption("link").getAsString());
+
+            Subject subject = Subject.getSubjectByShortName(session, subjectMapping.getAsString());
+
+            assignment.setSubject(subject);
+
+            session.persist(assignment);
 
             tx.commit();
 
@@ -118,18 +116,10 @@ public class AssignmentsEventCommandProcessor {
                     Command.getSuccessEmbed("Adicionar Trabalho", "Sucesso", "Trabalho adicionado com sucesso.")
             ).setEphemeral(true).queue();
 
-        } catch (NullPointerException e) {
+        } catch (MissingParameterException | SubjectNotFoundException | InvalidDateTimeFormatException e) {
             if (tx != null)
                 tx.rollback();
-            e.printStackTrace();
-            event.reply("Falta um parâmetro!").setEphemeral(true).queue();
-
-        } catch (IllegalArgumentException e) {
-            if (tx != null)
-                tx.rollback();
-            event.replyEmbeds(
-                    Command.getErrorEmbed("Erro", "Formato da data/hora inválido.", "O formato da data deve ser YYYY-MM-DD e da hora deve ser HH:MM")
-            ).setEphemeral(true).queue();
+            event.replyEmbeds(e.getEmbed()).setEphemeral(true).queue();
 
         } catch (Throwable e) {
             if (tx != null)
@@ -138,73 +128,58 @@ public class AssignmentsEventCommandProcessor {
             event.replyEmbeds(
                     Command.getErrorEmbed("Erro", "Contacta um administrador", e.getMessage())
             ).setEphemeral(true).queue();
-
-        } finally {
-            if (session != null)
-                session.close();
         }
     }
 
     static void processAssignmentEdit(GuildManager guild, SlashCommandEvent event) {
-        if (event.getOptions().size() == 1) {
-            event.replyEmbeds(
-                    Command.getErrorEmbed(
-                            "Erro",
-                            "Número de parâmetros invalidos",
-                            "É necessário pelo menos mais um parâmetro para editar um trabalho."
-                    )
-            ).queue();
-            return;
-        }
-
-        Session session = Merenda.getInstance().getFactory().openSession();
         Transaction tx = null;
 
-        try {
+        try (Session session = Merenda.getInstance().getFactory().openSession()) {
             tx = session.beginTransaction();
 
-            int id = (int) event.getOption("id").getAsLong();
+            OptionMapping idMapping = event.getOption("id");
 
-            Assignment c = (Assignment) session.createQuery("from Class where id = :id").setParameter("id", id).uniqueResult();
+            if (idMapping == null)
+                throw new MissingParameterException();
 
-            OptionMapping name = event.getOption("nome");
-            OptionMapping date = event.getOption("data");
-            OptionMapping time = event.getOption("hora");
-            OptionMapping link = event.getOption("link");
-            OptionMapping subject = event.getOption("disciplina");
+            int id = (int) idMapping.getAsLong();
 
-            if (name != null)
-                c.setName(name.getAsString());
+            Assignment assignment = Assignment.getAssignmentById(session, id);
 
-            if (date != null)
-                c.setDate(Date.valueOf(date.getAsString()));
+            OptionMapping nameMapping = event.getOption("nome");
+            OptionMapping dateMapping = event.getOption("data");
+            OptionMapping timeMapping = event.getOption("hora");
+            OptionMapping linkMapping = event.getOption("link");
+            OptionMapping subjectMapping = event.getOption("disciplina");
 
-            if (time != null)
-                c.setTime(Time.valueOf(time.getAsString()+":00"));
+            if (nameMapping != null)
+                assignment.setName(nameMapping.getAsString());
 
-            if (link != null)
-                c.setLink(link.getAsString());
+            if (dateMapping != null)
+                assignment.setDate(Date.valueOf(dateMapping.getAsString()));
 
-            if (subject != null) {
-                Subject s = (Subject) session.createQuery("from Subject where shortName = :short")
-                        .setParameter("short", event.getOption("disciplina").getAsString()).uniqueResult();
-                // TODO: subject == null?
-                c.setSubject(s);
+            if (timeMapping != null)
+                assignment.setTime(Time.valueOf(timeMapping.getAsString() + ":00"));
+
+            if (linkMapping != null)
+                assignment.setLink(linkMapping.getAsString());
+
+            if (subjectMapping != null) {
+                Subject subject = Subject.getSubjectByShortName(session, subjectMapping.getAsString());
+                assignment.setSubject(subject);
             }
 
-            session.update(c);
+            session.update(assignment);
             tx.commit();
 
             event.replyEmbeds(
                     Command.getSuccessEmbed("Editar Trabalho", "Sucesso", "Trabalho editado com sucesso.")
             ).setEphemeral(true).queue();
 
-        } catch (IllegalArgumentException e) {
+        } catch (MissingParameterException | AssignmentNotFoundException | SubjectNotFoundException e) {
             if (tx != null)
                 tx.rollback();
-            event.replyEmbeds(
-                    Command.getErrorEmbed("Erro", "Formato da data/hora inválido.", "O formato da data deve ser YYYY-MM-DD e da hora deve ser HH:MM")
-            ).setEphemeral(true).queue();
+            event.replyEmbeds(e.getEmbed()).setEphemeral(true).queue();
 
         } catch (Throwable e) {
             if (tx != null)
@@ -214,23 +189,23 @@ public class AssignmentsEventCommandProcessor {
                     Command.getErrorEmbed("Erro", "Contacta um administrador", e.getMessage())
             ).setEphemeral(true).queue();
 
-        } finally {
-            session.close();
         }
-
-        session.close();
     }
 
     static void processAssignmentRemove(GuildManager guild, SlashCommandEvent event) {
-        int id = (int)event.getOption("id").getAsLong();
-
-        Session session = Merenda.getInstance().getFactory().openSession();
         Transaction tx = null;
 
-        try {
+        try (Session session = Merenda.getInstance().getFactory().openSession()) {
             tx = session.beginTransaction();
 
-            Assignment c = session.find(Assignment.class, id);
+            OptionMapping idMapping = event.getOption("id");
+
+            if (idMapping == null)
+                throw new MissingParameterException();
+
+            int id = (int) idMapping.getAsLong();
+
+            Assignment c = Assignment.getAssignmentById(session, id);
             session.remove(c);
 
             tx.commit();
@@ -239,6 +214,11 @@ public class AssignmentsEventCommandProcessor {
                     Command.getSuccessEmbed("Remover Trabalho", "Sucesso", "Trabalho removido com sucesso.")
             ).setEphemeral(true).queue();
 
+        } catch (MissingParameterException | AssignmentNotFoundException e) {
+            if (tx != null)
+                tx.rollback();
+            event.replyEmbeds(e.getEmbed()).setEphemeral(true).queue();
+
         } catch (Throwable e) {
             if (tx != null)
                 tx.rollback();
@@ -246,8 +226,6 @@ public class AssignmentsEventCommandProcessor {
                     Command.getErrorEmbed("Erro", "Contacta um administrador", e.getMessage())
             ).setEphemeral(true).queue();
 
-        } finally {
-            session.close();
         }
     }
 }

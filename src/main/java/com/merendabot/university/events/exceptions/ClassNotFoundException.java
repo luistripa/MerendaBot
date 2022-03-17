@@ -4,16 +4,16 @@ import com.merendabot.MerendaBaseExceptionClass;
 import com.merendabot.commands.Command;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
-public class TestNotFoundException extends MerendaBaseExceptionClass {
+public class ClassNotFoundException extends MerendaBaseExceptionClass {
 
-    public TestNotFoundException(int id) {
-        super(String.format("Teste com id %d não encontrado.", id));
+    public ClassNotFoundException(int id) {
+        super(String.format("Aula com o id '%d' não encontrada", id));
     }
 
     public MessageEmbed getEmbed() {
         return Command.getErrorEmbed(
                 "Erro",
-                "Teste não encontrado",
+                "Aula não encontrada",
                 getMessage()
         );
     }

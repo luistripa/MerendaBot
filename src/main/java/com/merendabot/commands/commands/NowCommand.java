@@ -23,18 +23,17 @@ public class NowCommand extends Command {
 
     @Override
     public void execute(GuildManager guild, SlashCommandEvent event) {
-        Session session = Merenda.getInstance().getFactory().openSession();
         Transaction tx = null;
 
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("Aulas a decorrer agora");
-
-        LocalDateTime now = LocalDateTime.now();
-        String fieldTitle = "Aulas";
-        String fieldValue = "Não existem aulas a decorrer.";
-
-        try {
+        try (Session session = Merenda.getInstance().getFactory().openSession();) {
             tx = session.beginTransaction();
+
+            EmbedBuilder eb = new EmbedBuilder();
+            eb.setTitle("Aulas a decorrer agora");
+
+            LocalDateTime now = LocalDateTime.now();
+            String fieldTitle = "Aulas";
+            String fieldValue = "Não existem aulas a decorrer.";
 
             for (Class c : Class.getClassesByWeekday(session, now.getDayOfWeek())) {
                 if (c.isNow()) {
@@ -62,9 +61,6 @@ public class NowCommand extends Command {
             event.getChannel().sendMessageEmbeds(
                     getErrorEmbed("Agora", "Erro SQL", "Ocorreu um erro. Contacta o administrador.")
             ).queue();
-
-        } finally {
-            session.close();
         }
     }
 

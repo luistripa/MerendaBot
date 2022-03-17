@@ -26,15 +26,14 @@ public class ClassesCommand extends Command {
 
     @Override
     public void execute(GuildManager guild, SlashCommandEvent event) {
-        Session session = Merenda.getInstance().getFactory().openSession();;
         Transaction tx = null;
 
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("Aulas");
-        eb.setColor(Color.WHITE);
-
-        try {
+        try (Session session = Merenda.getInstance().getFactory().openSession()) {
             tx = session.beginTransaction();
+
+            EmbedBuilder eb = new EmbedBuilder();
+            eb.setTitle("Aulas");
+            eb.setColor(Color.WHITE);
 
             for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
                 String fieldTitle = dayOfWeek.getDisplayName(TextStyle.FULL_STANDALONE, Locale.forLanguageTag("PT"));
@@ -70,9 +69,6 @@ public class ClassesCommand extends Command {
             event.replyEmbeds(
                     getErrorEmbed("Aulas", "Erro SQL", "Ocorreu um erro. Contacta o administrador.")
             ).setEphemeral(true).queue();
-
-        } finally {
-            session.close();
         }
     }
 

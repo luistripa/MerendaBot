@@ -38,7 +38,6 @@ public class PollCloseCommand extends Command {
 
         try {
             // User did not reply to the original message
-
             Message pollMessage = event.getChannel().retrieveMessageById(event.getOption("id_mensagem").getAsString()).complete();
             if (pollMessage == null) {
                 event.replyEmbeds(
@@ -63,8 +62,6 @@ public class PollCloseCommand extends Command {
                     getErrorEmbed(COMMAND_FRIENDLY_NAME, "ID inválido", "O ID introduzido não é válido.")
             ).setEphemeral(true).queue();
         }
-
-
     }
 
     @Override

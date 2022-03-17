@@ -3,6 +3,7 @@ package com.merendabot.commands.commands.events;
 import com.merendabot.GuildManager;
 import com.merendabot.Merenda;
 import com.merendabot.commands.Command;
+import com.merendabot.commands.exceptions.InvalidDateTimeFormatException;
 import com.merendabot.commands.exceptions.MissingParameterException;
 import com.merendabot.university.events.Test;
 import com.merendabot.university.events.exceptions.TestNotFoundException;
@@ -26,33 +27,21 @@ public class TestsEventCommandProcessor {
     static void processTest(GuildManager guild, SlashCommandEvent event) {
         String subcommandName = event.getSubcommandName();
         if (subcommandName == null) {
-            event.reply("Error. Subcommand Name is invalid").queue();
+            event.reply("Error. Subcommand Name is invalid").setEphemeral(true).queue();
             return;
         }
         switch (event.getSubcommandName()) {
-            case "listar":
-                processTestList(guild, event);
-                break;
-
-            case "novo":
-                processTestAdd(guild, event);
-                break;
-
-            case "editar":
-                processTestEdit(guild, event);
-                break;
-
-            case "apagar":
-                processTestRemove(guild, event);
-                break;
+            case "listar" -> processTestList(guild, event);
+            case "novo" -> processTestAdd(guild, event);
+            case "editar" -> processTestEdit(guild, event);
+            case "apagar" -> processTestRemove(guild, event);
         }
     }
 
     static void processTestList(GuildManager guild, SlashCommandEvent event) {
-        Session session = Merenda.getInstance().getFactory().openSession();
         Transaction tx = null;
 
-        try {
+        try (Session session = Merenda.getInstance().getFactory().openSession()) {
             tx = session.beginTransaction();
 
             EmbedBuilder eb = new EmbedBuilder();
@@ -84,20 +73,13 @@ public class TestsEventCommandProcessor {
             event.replyEmbeds(
                     Command.getErrorEmbed("Erro", "Contacta um administrador", e.getMessage())
             ).queue();
-
-        } finally {
-            session.close();
         }
     }
 
     static void processTestAdd(GuildManager guild, SlashCommandEvent event) {
-        Session session = null;
         Transaction tx = null;
 
-        Test c = new Test();
-        c.setGuild(guild);
-
-        try {
+        try (Session session = Merenda.getInstance().getFactory().openSession()) {
             OptionMapping nameMapping = event.getOption("nome");
             OptionMapping subjectMapping = event.getOption("disciplina");
             OptionMapping dateMapping = event.getOption("data");
@@ -108,23 +90,29 @@ public class TestsEventCommandProcessor {
             if (nameMapping == null || subjectMapping == null || dateMapping == null || startTimeMapping == null || endTimeMapping == null || linkMapping == null)
                 throw new MissingParameterException();
 
+            Test test = new Test();
+            test.setGuild(guild);
 
-            c.setName(nameMapping.getAsString());
-            c.setDate(Date.valueOf(dateMapping.getAsString()));
-            c.setTime(Time.valueOf(startTimeMapping.getAsString()+":00"));
-            c.setEndTime(Time.valueOf(endTimeMapping.getAsString()+":00"));
-            c.setLink(linkMapping.getAsString());
+            test.setName(nameMapping.getAsString());
+            test.setDate(Date.valueOf(dateMapping.getAsString()));
+            try {
+                test.setTime(Time.valueOf(startTimeMapping.getAsString()+":00"));
+                test.setEndTime(Time.valueOf(endTimeMapping.getAsString()+":00"));
+            } catch (IllegalArgumentException e) {
+                throw new InvalidDateTimeFormatException();
+            }
 
-            session = Merenda.getInstance().getFactory().openSession();
+            test.setLink(linkMapping.getAsString());
+
             tx = session.beginTransaction();
 
             String subjectShortName = subjectMapping.getAsString();
 
             Subject subject = Subject.getSubjectByShortName(session, subjectShortName);
 
-            c.setSubject(subject);
+            test.setSubject(subject);
 
-            session.persist(c);
+            session.persist(test);
 
             tx.commit();
 
@@ -132,29 +120,10 @@ public class TestsEventCommandProcessor {
                     Command.getSuccessEmbed("Adicionar Teste", "Sucesso", "Teste adicionado com sucesso.")
             ).setEphemeral(true).queue();
 
-        } catch (MissingParameterException e) {
+        } catch (MissingParameterException | InvalidDateTimeFormatException | SubjectNotFoundException e) {
             if (tx != null)
                 tx.rollback();
             event.replyEmbeds(Command.getErrorEmbed("Erro", "Parâmetros em falta", e.getMessage())).setEphemeral(true).queue();
-
-        } catch (SubjectNotFoundException e) {
-            if (tx != null)
-                tx.rollback();
-            event.replyEmbeds(
-                    Command.getErrorEmbed(
-                            "Erro",
-                            "Disciplina não encontrada",
-                            e.getMessage()
-
-                    )
-            ).setEphemeral(true).queue();
-
-        } catch (IllegalArgumentException e) {
-            if (tx != null)
-                tx.rollback();
-            event.replyEmbeds(
-                    Command.getErrorEmbed("Erro", "Formato da data/hora inválido.", "O formato da data deve ser YYYY-MM-DD e da hora deve ser HH:MM")
-            ).setEphemeral(true).queue();
 
         } catch (Throwable e) {
             if (tx != null)
@@ -164,17 +133,13 @@ public class TestsEventCommandProcessor {
                     Command.getErrorEmbed("Erro", "Contacta um administrador", e.getMessage())
             ).setEphemeral(true).queue();
 
-        } finally {
-            if (session != null)
-                session.close();
         }
     }
 
     static void processTestEdit(GuildManager guild, SlashCommandEvent event) {
-        Session session = Merenda.getInstance().getFactory().openSession();
         Transaction tx = null;
 
-        try {
+        try (Session session = Merenda.getInstance().getFactory().openSession()) {
             tx = session.beginTransaction();
 
             OptionMapping idMapping = event.getOption("id");
@@ -186,7 +151,7 @@ public class TestsEventCommandProcessor {
             OptionMapping subjectMapping = event.getOption("disciplina");
 
             if (idMapping == null)
-                throw new NullPointerException();
+                throw new MissingParameterException();
 
             int id = (int) idMapping.getAsLong();
 
@@ -198,11 +163,16 @@ public class TestsEventCommandProcessor {
             if (dateMapping != null)
                 c.setDate(Date.valueOf(dateMapping.getAsString()));
 
-            if (startTimeMapping != null)
-                c.setTime(Time.valueOf(startTimeMapping.getAsString()+":00"));
+            try {
+                if (startTimeMapping != null)
+                    c.setTime(Time.valueOf(startTimeMapping.getAsString() + ":00"));
 
-            if (endTimeMapping != null)
-                c.setEndTime(Time.valueOf(endTimeMapping.getAsString()+":00"));
+                if (endTimeMapping != null)
+                    c.setEndTime(Time.valueOf(endTimeMapping.getAsString() + ":00"));
+
+            } catch (IllegalArgumentException e) {
+                throw new InvalidDateTimeFormatException();
+            }
 
             if (linkMapping != null)
                 c.setLink(linkMapping.getAsString());
@@ -221,24 +191,10 @@ public class TestsEventCommandProcessor {
                     Command.getSuccessEmbed("Editar Teste", "Sucesso", "Teste editado com sucesso.")
             ).setEphemeral(true).queue();
 
-        } catch (SubjectNotFoundException e) {
+        } catch (MissingParameterException | InvalidDateTimeFormatException | SubjectNotFoundException e) {
             if (tx != null)
                 tx.rollback();
-            event.replyEmbeds(
-                    Command.getErrorEmbed(
-                            "Erro",
-                            "Disciplina não encontrada",
-                            e.getMessage()
-
-                    )
-            ).setEphemeral(true).queue();
-
-        } catch (IllegalArgumentException e) {
-            if (tx != null)
-                tx.rollback();
-            event.replyEmbeds(
-                    Command.getErrorEmbed("Erro", "Formato da data/hora inválido.", "O formato da data deve ser YYYY-MM-DD e da hora deve ser HH:MM")
-            ).setEphemeral(true).queue();
+            event.replyEmbeds(e.getEmbed()).setEphemeral(true).queue();
 
         } catch (Throwable e) {
             if (tx != null)
@@ -248,18 +204,13 @@ public class TestsEventCommandProcessor {
                     Command.getErrorEmbed("Erro", "Contacta um administrador", e.getMessage())
             ).setEphemeral(true).queue();
 
-        } finally {
-            session.close();
         }
-
-        session.close();
     }
 
     static void processTestRemove(GuildManager guild, SlashCommandEvent event) {
-        Session session = Merenda.getInstance().getFactory().openSession();
         Transaction tx = null;
 
-        try {
+        try (Session session = Merenda.getInstance().getFactory().openSession()) {
             tx = session.beginTransaction();
 
             OptionMapping idMapping = event.getOption("id");
@@ -279,16 +230,10 @@ public class TestsEventCommandProcessor {
                     Command.getSuccessEmbed("Remover Teste", "Sucesso", "Teste removido com sucesso.")
             ).setEphemeral(true).queue();
 
-        } catch (TestNotFoundException e) {
+        } catch (MissingParameterException | TestNotFoundException e) {
             if (tx != null)
                 tx.rollback();
-            event.replyEmbeds(
-                    Command.getErrorEmbed(
-                            "Erro",
-                            "Teste não encontrado",
-                            e.getMessage()
-                    )
-            ).setEphemeral(true).queue();
+            event.replyEmbeds(e.getEmbed()).setEphemeral(true).queue();
 
         } catch (Throwable e) {
             if (tx != null)
@@ -296,9 +241,6 @@ public class TestsEventCommandProcessor {
             event.replyEmbeds(
                     Command.getErrorEmbed("Erro", "Contacta um administrador", e.getMessage())
             ).setEphemeral(true).queue();
-
-        } finally {
-            session.close();
         }
     }
 }

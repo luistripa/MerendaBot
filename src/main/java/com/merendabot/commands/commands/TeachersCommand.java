@@ -22,16 +22,16 @@ public class TeachersCommand extends Command {
 
     @Override
     public void execute(GuildManager guild, SlashCommandEvent event) {
-        Session session = Merenda.getInstance().getFactory().openSession();;
         Transaction tx = null;
 
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("Professores");
-
-        String fieldTitle = "";
-        StringBuilder fieldValue = new StringBuilder();
-        try {
+        try (Session session = Merenda.getInstance().getFactory().openSession()) {
             tx = session.beginTransaction();
+
+            EmbedBuilder eb = new EmbedBuilder();
+            eb.setTitle("Professores");
+
+            String fieldTitle = "";
+            StringBuilder fieldValue = new StringBuilder();
 
             Subject currentSubject = null;
             for (Professor professor : Professor.getProfessors(session)) {
@@ -72,9 +72,6 @@ public class TeachersCommand extends Command {
             event.replyEmbeds(
                     getErrorEmbed("Professores", "Erro SQL", "Ocorreu um erro. Contacta o administrador.")
             ).setEphemeral(true).queue();
-
-        } finally {
-            session.close();
         }
     }
 

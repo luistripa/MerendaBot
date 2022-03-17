@@ -23,18 +23,17 @@ public class LinksCommand extends Command {
 
     @Override
     public void execute(GuildManager guild, SlashCommandEvent event) {
-        Session session = Merenda.getInstance().getFactory().openSession();;
         Transaction tx = null;
 
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("Links Importantes");
-        eb.setColor(Color.WHITE);
-
-        String fieldTitle = "Links";
-        StringBuilder fieldValue = new StringBuilder();
-
-        try {
+        try (Session session = Merenda.getInstance().getFactory().openSession()) {
             tx = session.beginTransaction();
+
+            EmbedBuilder eb = new EmbedBuilder();
+            eb.setTitle("Links Importantes");
+            eb.setColor(Color.WHITE);
+
+            String fieldTitle = "Links";
+            StringBuilder fieldValue = new StringBuilder();
 
             for (ImportantLink link : ImportantLink.getLinks(session)) {
                 if (link.getSubject() == null) {
@@ -71,9 +70,6 @@ public class LinksCommand extends Command {
             event.replyEmbeds(
                     getErrorEmbed("Links", "Erro SQL", "Ocorreu um erro. Contacta o administrador.")
             ).setEphemeral(true).queue();
-
-        } finally {
-            session.close();
         }
     }
 

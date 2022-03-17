@@ -3,7 +3,9 @@ package com.merendabot.commands.commands.events;
 import com.merendabot.GuildManager;
 import com.merendabot.Merenda;
 import com.merendabot.commands.Command;
+import com.merendabot.commands.exceptions.MissingParameterException;
 import com.merendabot.university.subjects.Subject;
+import com.merendabot.university.subjects.exceptions.SubjectNotFoundException;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -18,7 +20,7 @@ public class SubjectsEventCommandProcessor {
     static void processSubject(GuildManager guild, SlashCommandEvent event) {
         String subcommandName = event.getSubcommandName();
         if (subcommandName == null) {
-            event.reply("Error. Subcommand Name is invalid").queue();
+            event.reply("Error. Subcommand Name is invalid").setEphemeral(true).queue();
             return;
         }
 
@@ -39,10 +41,9 @@ public class SubjectsEventCommandProcessor {
             eb.setColor(Color.WHITE);
             eb.setTitle("Lista de disciplinas");
 
-            List subjectList = session.createQuery("from Subject").list();
+            List<Subject> subjectList = Subject.getSubjects(session);
 
-            for (Object o : subjectList) {
-                Subject subject = (Subject) o;
+            for (Subject subject : subjectList) {
                 eb.addField(
                         subject.getShortName() + " (" + subject.getFullName() + ")",
                         "ID: " + subject.getId(),
@@ -95,36 +96,15 @@ public class SubjectsEventCommandProcessor {
             tx = session.beginTransaction();
 
             OptionMapping idMapping = event.getOption("id");
+            OptionMapping fullNameMapping = event.getOption("full_name");
+            OptionMapping shortNameMapping = event.getOption("short_name");
 
-            if (idMapping == null) {
-                event.replyEmbeds(
-                        Command.getErrorEmbed(
-                                "Erro",
-                                "Parâmetro necessário",
-                                "O parâmetro id é necessário para editar uma disciplina"
-                        )
-                ).setEphemeral(true).queue();
-                return;
-            }
+            if (idMapping == null)
+                throw new MissingParameterException();
 
             int id = (int) idMapping.getAsLong();
 
-            Subject subject = session.get(Subject.class, id);
-
-            if (subject == null) {
-                event.replyEmbeds(
-                        Command.getErrorEmbed(
-                                "Erro",
-                                "Disciplina não encontrada",
-                                String.format("Disciplina com id '%d' não foi encontrada.", id)
-
-                        )
-                ).setEphemeral(true).queue();
-                return;
-            }
-
-            OptionMapping fullNameMapping = event.getOption("full_name");
-            OptionMapping shortNameMapping = event.getOption("short_name");
+            Subject subject = Subject.getSubjectById(session, id);
 
             if (fullNameMapping != null) {
                 subject.setFullName(fullNameMapping.getAsString());
@@ -141,6 +121,11 @@ public class SubjectsEventCommandProcessor {
             event.replyEmbeds(
                     Command.getSuccessEmbed("Editar Disciplina", "Sucesso", "Disciplina editada com sucesso.")
             ).setEphemeral(true).queue();
+
+        } catch (MissingParameterException | SubjectNotFoundException e) {
+            if (tx != null)
+                tx.rollback();
+            event.replyEmbeds(e.getEmbed()).setEphemeral(true).queue();
 
         } catch (Throwable throwable) {
             if (tx != null)
@@ -160,32 +145,12 @@ public class SubjectsEventCommandProcessor {
 
             OptionMapping idMapping = event.getOption("id");
 
-            if (idMapping == null) {
-                event.replyEmbeds(
-                        Command.getErrorEmbed(
-                                "Erro",
-                                "Parâmetro necessário",
-                                "O parâmetro id é necessário para remover uma disciplina"
-                        )
-                ).setEphemeral(true).queue();
-                return;
-            }
+            if (idMapping == null)
+                throw new MissingParameterException();
 
             int id = (int) idMapping.getAsLong();
 
-            Subject subject = session.get(Subject.class, id);
-
-            if (subject == null) {
-                event.replyEmbeds(
-                        Command.getErrorEmbed(
-                                "Erro",
-                                "Disciplina não encontrada",
-                                String.format("Disciplina com id '%d' não foi encontrada.", id)
-
-                        )
-                ).setEphemeral(true).queue();
-                return;
-            }
+            Subject subject = Subject.getSubjectById(session, id);
 
             session.remove(subject);
 
@@ -194,6 +159,11 @@ public class SubjectsEventCommandProcessor {
             event.replyEmbeds(
                     Command.getSuccessEmbed("Remover Disciplina", "Sucesso", "Disciplina removida com sucesso.")
             ).setEphemeral(true).queue();
+
+        } catch (MissingParameterException | SubjectNotFoundException e) {
+            if (tx != null)
+                tx.rollback();
+            event.replyEmbeds(e.getEmbed()).setEphemeral(true).queue();
 
         } catch (Throwable throwable) {
             if (tx != null)

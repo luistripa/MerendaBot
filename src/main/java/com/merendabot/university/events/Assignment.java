@@ -1,6 +1,7 @@
 package com.merendabot.university.events;
 
 import com.merendabot.GuildManager;
+import com.merendabot.university.events.exceptions.AssignmentNotFoundException;
 import com.merendabot.university.subjects.Subject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.hibernate.Session;
@@ -31,6 +32,13 @@ public class Assignment extends BaseEventClass {
     @Override
     public void addToEmbed(EmbedBuilder embedBuilder) {
         // TODO
+    }
+
+    public static Assignment getAssignmentById(Session session, int id) throws AssignmentNotFoundException {
+        Assignment assignment = session.get(Assignment.class, id);
+        if (assignment == null)
+            throw new AssignmentNotFoundException(id);
+        return assignment;
     }
 
     public static List<Assignment> getAssignments(Session session) {
